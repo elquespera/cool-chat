@@ -20,7 +20,7 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
     socketInstance.on("connect", () => setIsConnected(true));
     socketInstance.on("disconnect", () => setIsConnected(false));
 
-    setSocket(socket);
+    setSocket(socketInstance);
 
     return () => socketInstance.disconnect();
   }, []);

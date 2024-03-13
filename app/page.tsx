@@ -1,9 +1,19 @@
-import { SocketIndicator } from "@/components/common/socket-indicator";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <SocketIndicator />
+    <main className="flex min-h-screen flex-col">
+      <ResizablePanelGroup className="grow" direction="horizontal">
+        <ResizablePanel defaultSize={35} minSize={35}>
+          list
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel defaultSize={65}>Chat</ResizablePanel>
+      </ResizablePanelGroup>
     </main>
   );
 }

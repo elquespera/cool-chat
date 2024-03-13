@@ -1,17 +1,17 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { useSocket } from "../providers/socket/socket-context";
 
 export const SocketIndicator = () => {
-  const { isConnected, socket } = useSocket();
-
-  // socket.on()
+  const { isConnected } = useSocket();
 
   return (
     <div
-      className={`w-2 h-2 rounded-full ${
+      className={cn(
+        "w-2 h-2 rounded-full",
         isConnected ? "bg-emerald-500" : "bg-gray-500 animate-pulse"
-      }`}
+      )}
     />
   );
 };
