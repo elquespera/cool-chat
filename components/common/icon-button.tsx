@@ -21,6 +21,8 @@ type IconButtonProps = {
   icon?: ReactNode;
   target?: string;
   reverse?: boolean;
+  pending?: boolean;
+  pendingIcon?: ReactNode;
   toolTip?: ReactNode;
   toolTipSide?: "top" | "right" | "bottom" | "left";
   navTransition?: boolean;
@@ -34,6 +36,8 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       target,
       icon,
       reverse,
+      pending,
+      pendingIcon,
       className,
       children,
       size,
@@ -54,12 +58,26 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       if (onClick) onClick(event);
     };
 
+    const actualIcon =
+      isPending || pending ? (
+        pendingIcon ? (
+          pendingIcon
+        ) : (
+          <Spinner className="w-4" />
+        )
+      ) : (
+        icon
+      );
+
     const content = (
       <>
-        {isPending ? <Spinner className="w-4" /> : icon}
+        {actualIcon}
         {children && (
           <span
-            className={cn("inline-flex", icon && (reverse ? "pr-1" : "pl-1"))}
+            className={cn(
+              "inline-flex",
+              actualIcon && (reverse ? "pr-1" : "pl-1")
+            )}
           >
             {children}
           </span>

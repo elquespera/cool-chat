@@ -17,3 +17,7 @@ type AuthPageProps = {
     message?: string;
   };
 };
+
+type PropsWithClassName = {
+  className?: string;
+};

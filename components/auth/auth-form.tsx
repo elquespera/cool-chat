@@ -38,7 +38,7 @@ export default function AuthForm({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
-
+  const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
 
   const handleSignIn = async () => signIn(email, password, redirectURI);
@@ -52,20 +52,25 @@ export default function AuthForm({
 
   const handleSubmit: FormEventHandler = async (event) => {
     event.preventDefault();
-    const result =
-      type === "signIn" ? await handleSignIn() : await handleSignUp();
+    setPending(true);
+    try {
+      const result =
+        type === "signIn" ? await handleSignIn() : await handleSignUp();
 
-    if (result?.error) {
-      toast.error(result.error);
-    } else {
-      toast.success(
-        type === "signIn"
-          ? "You have been logged in"
-          : "You have been successfully registered."
-      );
+      if (result?.error) {
+        toast.error(result.error);
+      } else {
+        toast.success(
+          type === "signIn"
+            ? "You have been logged in"
+            : "You have been successfully registered."
+        );
+      }
+
+      setError(result?.error);
+    } finally {
+      setPending(false);
     }
-
-    setError(result?.error);
   };
 
   return (
@@ -93,7 +98,9 @@ export default function AuthForm({
               type={type === "signUp" ? "email" : "text"}
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              placeholder="email (required)"
+              placeholder={
+                type === "signUp" ? "email (required)" : "email or username"
+              }
               required
             />
           </div>
@@ -120,7 +127,9 @@ export default function AuthForm({
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              placeholder="password (required)"
+              placeholder={
+                type === "signUp" ? "password (required)" : "password"
+              }
               required
             />
           </div>
@@ -144,11 +153,11 @@ export default function AuthForm({
             </div>
           )}
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <Button type="submit" className="mt-4">
-            {type === "signIn" ? "Sign In with Email" : "Sign Up with Email"}
-          </Button>
+          <IconButton type="submit" className="mt-4" pending={pending}>
+            {type === "signIn" ? "Sign In" : "Sign Up with Email"}
+          </IconButton>
         </form>
-        <Divider className="my-6">or sign up with</Divider>
+        <Divider className="my-6">or continue with</Divider>
         <div className="flex justify-center gap-4">
           {authProvidersInfo.map(({ id, icon: Icon }) => (
             <Hint key={id} className="capitalize" value={id}>
