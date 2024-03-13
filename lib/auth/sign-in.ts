@@ -1,17 +1,17 @@
 "use server";
 
-import { getUserByEmail } from "@/db/actions/users";
+import { getUserByEmailOrUsername } from "@/db/actions/users";
 import { Scrypt } from "lucia";
 import { createSession } from "./session";
 import { routes } from "@/constants/routes";
 import { redirect } from "next/navigation";
 
 export async function signIn(
-  email: string,
+  emailOrUsername: string,
   password: string,
   redirectURI: string = routes.home
 ): Promise<AuthActionResult> {
-  const user = await getUserByEmail(email);
+  const user = await getUserByEmailOrUsername(emailOrUsername);
   if (!user || !user.hashedPassword)
     return { error: "Incorrect username or password" };
 
