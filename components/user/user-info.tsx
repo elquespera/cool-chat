@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 type UserInfoProps = {
   user: ContactUser;
-  avatarSize?: "small" | "normal";
+  size?: "sm" | "md" | "lg";
   self?: boolean;
   status?: boolean;
   oneLine?: boolean;
@@ -15,7 +15,7 @@ type UserInfoProps = {
 
 export function UserInfo({
   user,
-  avatarSize = "normal",
+  size = "md",
   oneLine,
   self,
   status,
@@ -27,18 +27,27 @@ export function UserInfo({
       <div className="relative">
         <UserAvatar
           avatarUrl={user.avatarUrl}
-          className={cn(avatarSize === "small" ? "w-8" : "w-10")}
+          className={cn(
+            size === "sm" ? "w-8" : size === "lg" ? "w-12" : "w-10",
+          )}
         />
         {status && self && (
           <SocketIndicator
             className={cn(
               "absolute right-0 top-0",
-              avatarSize === "small" ? "w-2" : "w-2.5",
+              size === "sm" ? "w-2" : size === "lg" ? "w-3" : "w-2.5",
             )}
           />
         )}
       </div>
-      <UserText email={user.email} username={user.username} oneLine={oneLine} />
+      <UserText
+        email={user.email}
+        username={user.username}
+        oneLine={oneLine}
+        className={cn(
+          size === "sm" ? "text-sm" : size === "md" ? "text-sm" : "text-base",
+        )}
+      />
     </div>
   );
 }
