@@ -4,11 +4,11 @@ import { ContactSearchInput } from "./contact-search-input";
 
 export function ContactPanel() {
   return (
-    <div className="grow flex flex-col">
-      <ContactProvider>
+    <ContactProvider>
+      <div className="flex grow flex-col">
         <ContactSearchInput />
         <ContactList />
-      </ContactProvider>
-    </div>
+      </div>
+    </ContactProvider>
   );
 }

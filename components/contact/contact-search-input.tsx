@@ -13,7 +13,7 @@ export function ContactSearchInput() {
   };
 
   return (
-    <div className="p-4 flex w-full">
+    <div className="p-4 flex w-full border-b">
       <input
         className="max-w-auto w-full"
         placeholder="Search contacts"

@@ -9,7 +9,7 @@ export async function UserPanel({}) {
   if (!user) return null;
 
   return (
-    <div className="p-4 flex gap-2 items-center absolute bottom-0 w-full bg-background/80 backdrop-blur-sm">
+    <div className="p-4 flex gap-2 items-center absolute bottom-0 w-full bg-background/80 backdrop-blur-sm border-t">
       <div className="relative">
         <UserAvatar
           avatarUrl={user.avatarUrl}

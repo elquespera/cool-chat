@@ -1,8 +1,9 @@
 "use server";
 
-import { eq, like, or } from "drizzle-orm";
+import { and, eq, like, ne, or } from "drizzle-orm";
 import { db } from "../db";
-import { UserInsert, users } from "../schemas/auth";
+import { ContactUser, UserInsert, users } from "../schemas/auth";
+import { getAuth } from "@/lib/auth/get-auth";
 
 export async function getUserByEmailOrUsername(emailOrUsername: string) {
   return db.query.users.findFirst({
@@ -17,13 +18,26 @@ export async function addUser(data: UserInsert) {
   return db.insert(users).values(data).returning().get();
 }
 
-export async function searchUsers(searchValue: string) {
-  if (!searchValue.length) return [];
+export async function searchUsers(
+  searchValue: string
+): Promise<DBActionResult<ContactUser[]>> {
+  const { user } = await getAuth();
+  if (!user) return { status: "error", error: "Unauthorized access." };
+  if (!searchValue.length) return { status: "ok", data: [] };
 
   const search = `${searchValue}%`;
 
-  return db.query.users.findMany({
-    where: or(like(users.email, search), like(users.username, search)),
-    columns: { hashedPassword: false, providerId: false },
-  });
+  try {
+    const data = await db.query.users.findMany({
+      where: and(
+        or(like(users.email, search), like(users.username, search)),
+        ne(users.id, user.id)
+      ),
+      columns: { hashedPassword: false, providerId: false },
+    });
+
+    return { status: "ok", data };
+  } catch (error) {
+    return { status: "error", error: "Unknown error" };
+  }
 }

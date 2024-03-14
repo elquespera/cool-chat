@@ -21,3 +21,7 @@ type AuthPageProps = {
 type PropsWithClassName = {
   className?: string;
 };
+
+type DBActionResult<DataType> =
+  | { status: "error"; error: string }
+  | { status: "ok"; data: DataType };

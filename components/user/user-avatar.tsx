@@ -35,7 +35,7 @@ export function UserAvatar({
         <img
           alt="Avatar"
           src={src}
-          className="absolute inset-0"
+          className="absolute inset-0 object-cover w-full h-full"
           onError={() => setSrc(null)}
         />
       ) : (
