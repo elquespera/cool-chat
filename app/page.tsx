@@ -1,3 +1,4 @@
+import { ChatPanel } from "@/components/chat/chat-panel";
 import { ContactPanel } from "@/components/contact/contact-panel";
 import {
   ResizableHandle,
@@ -17,7 +18,7 @@ export default async function HomePage() {
     <main className="flex grow flex-col">
       <ResizablePanelGroup className="grow" direction="horizontal">
         <ResizablePanel
-          className="relative flex flex-col grow"
+          className="relative flex grow flex-col"
           defaultSize={35}
           minSize={10}
         >
@@ -26,8 +27,7 @@ export default async function HomePage() {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={65} className="flex flex-col">
-          {/* <div className="w-full h-[1200px]"></div> */}
-          {/* <ChatWindow /> */}
+          <ChatPanel />
         </ResizablePanel>
       </ResizablePanelGroup>
     </main>
