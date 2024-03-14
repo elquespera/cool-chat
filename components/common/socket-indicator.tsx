@@ -1,18 +1,18 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { ComponentProps } from "react";
 import { useSocket } from "../providers/socket/socket-context";
+import { StatusIndicator } from "./status-indicator";
 
-export const SocketIndicator = ({ className }: PropsWithClassName) => {
+type SocketIndicatorProps = Omit<
+  ComponentProps<typeof StatusIndicator>,
+  "status"
+>;
+
+export const SocketIndicator = (props: SocketIndicatorProps) => {
   const { isConnected } = useSocket();
 
   return (
-    <div
-      className={cn(
-        "w-2 aspect-square rounded-full",
-        isConnected ? "bg-emerald-500" : "bg-gray-500 animate-pulse",
-        className
-      )}
-    />
+    <StatusIndicator status={isConnected ? "online" : "pending"} {...props} />
   );
 };

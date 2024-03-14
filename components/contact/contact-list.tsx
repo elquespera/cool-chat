@@ -1,11 +1,10 @@
 "use client";
 import type { ContactUser } from "@/db/schemas/auth";
 import { Spinner } from "../common/spinner";
-import { ScrollArea } from "../ui/scroll-area";
-import { UserAvatar } from "../user/user-avatar";
-import { UserText } from "../user/user-text";
-import { useContacts } from "./contact-context";
 import { useChat } from "../providers/chat/chat-context";
+import { ScrollArea } from "../ui/scroll-area";
+import { UserInfo } from "../user/user-info";
+import { useContacts } from "./contact-context";
 
 export function ContactList() {
   const { contacts, foundContacts, searchValue, pending, error } =
@@ -34,19 +33,17 @@ export function ContactList() {
 
 function ContactItem({ contact }: { contact: ContactUser }) {
   const { interlocutor, setIntercolutor } = useChat();
-  const { id, username, avatarUrl, email } = contact;
   const handleContactClick = () => setIntercolutor(contact);
 
   return (
     <li className="bg-background">
       <button
         role="option"
-        aria-selected={interlocutor?.id === id}
+        aria-selected={interlocutor?.id === contact.id}
         className="flex w-full items-center gap-2 p-2 py-3 hover:bg-accent hover:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground"
         onClick={handleContactClick}
       >
-        <UserAvatar avatarUrl={avatarUrl} providerId={null} className="w-8" />
-        <UserText email={email} username={username} oneLine />
+        <UserInfo user={contact} oneLine status />
       </button>
     </li>
   );

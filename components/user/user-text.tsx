@@ -15,19 +15,22 @@ export function UserText({
   ...props
 }: UserTextProps) {
   return (
-    <div className={cn("ml-1 flex flex-col font-medium", className)} {...props}>
+    <div
+      className={cn("flex flex-col items-start font-medium", className)}
+      {...props}
+    >
       {username && <span className="truncate">{username}</span>}
-      {email && (
-        <span
-          className={cn(
-            "truncate",
-            username && "font-normal text-muted-foreground",
-            oneLine && username && "hidden"
-          )}
-        >
-          {email}
-        </span>
-      )}
+      {email &&
+        (oneLine && username ? null : (
+          <span
+            className={cn(
+              "truncate",
+              username && "text-[0.875em] font-normal opacity-70",
+            )}
+          >
+            {email}
+          </span>
+        ))}
     </div>
   );
 }
