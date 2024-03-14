@@ -1,5 +1,6 @@
 import { ChatPanel } from "@/components/chat/chat-panel";
 import { ContactPanel } from "@/components/contact/contact-panel";
+import { ChatProviders } from "@/components/providers/chat-providers";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -15,21 +16,23 @@ export default async function HomePage() {
   if (!user) redirect(routes.welcome);
 
   return (
-    <main className="flex grow flex-col">
-      <ResizablePanelGroup className="grow" direction="horizontal">
-        <ResizablePanel
-          className="relative flex grow flex-col"
-          defaultSize={35}
-          minSize={10}
-        >
-          <ContactPanel />
-          <UserPanel />
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={65} className="flex flex-col">
-          <ChatPanel />
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </main>
+    <ChatProviders>
+      <main className="flex grow flex-col">
+        <ResizablePanelGroup className="grow" direction="horizontal">
+          <ResizablePanel
+            className="relative flex grow flex-col"
+            defaultSize={35}
+            minSize={10}
+          >
+            <ContactPanel />
+            <UserPanel />
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={65} className="flex flex-col">
+            <ChatPanel />
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </main>
+    </ChatProviders>
   );
 }

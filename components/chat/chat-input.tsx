@@ -2,16 +2,18 @@
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { IconButton } from "../common/icon-button";
 import { FormEventHandler, useState } from "react";
+import { useChat } from "../providers/chat/chat-context";
 
 export function ChatInput() {
   const [message, setMessage] = useState("");
+  const { interlocutor } = useChat();
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     console.log(message);
   };
 
-  return (
+  return interlocutor ? (
     <form className="flex gap-2 bg-background p-4" onSubmit={handleSubmit}>
       <input
         value={message}
@@ -28,5 +30,5 @@ export function ChatInput() {
         icon={<PaperPlaneIcon />}
       />
     </form>
-  );
+  ) : null;
 }

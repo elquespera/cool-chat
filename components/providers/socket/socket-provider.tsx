@@ -14,7 +14,7 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
       {
         path: process.env.NEXT_PUBLIC_SOCKET_IO_URL,
         addTrailingSlash: false,
-      }
+      },
     );
 
     socketInstance.on("connect", () => setIsConnected(true));

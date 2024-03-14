@@ -1,5 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { io as ClientIO } from "socket.io-client";
+import { createContext, useContext } from "react";
 
 type SocketContextType = {
   socket: any | null;
