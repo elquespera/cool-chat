@@ -2,24 +2,26 @@
 
 import { ChangeEventHandler } from "react";
 import { useContacts } from "./contact-context";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 
 export function ContactSearchInput() {
   const { searchValue, setSearchValue } = useContacts();
 
   const handleSearchValueChange: ChangeEventHandler<HTMLInputElement> = (
-    event
+    event,
   ) => {
     setSearchValue(event.target.value);
   };
 
   return (
-    <div className="p-4 flex w-full border-b">
+    <label className="group flex w-full items-center gap-2 border-b p-4">
+      <MagnifyingGlassIcon className="h-4 w-4 shrink-0 text-muted-foreground opacity-50 group-focus-within:opacity-100" />
       <input
-        className="max-w-auto w-full"
+        className="min-w-0 grow outline-transparent"
         placeholder="Search contacts"
         value={searchValue}
         onChange={handleSearchValueChange}
       />
-    </div>
+    </label>
   );
 }
