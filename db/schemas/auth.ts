@@ -42,4 +42,5 @@ export const sessions = sqliteTable("session", {
 
 export type UserInsert = typeof users.$inferInsert;
 export type DatabaseUser = typeof users.$inferSelect;
+export type ContactUser = Omit<DatabaseUser, "hashedPassword" | "providerId">;
 export type AccountInsert = typeof accounts.$inferInsert;
