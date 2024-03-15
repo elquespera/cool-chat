@@ -7,16 +7,12 @@ type ChatContextType = {
   interlocutor: ContactUser | null;
   setIntercolutor: (intercolutor: ContactUser | null) => void;
   chat: ChatSelect | null;
-  messages: MessageWithAuthor[];
-  pending: boolean;
 };
 
 export const ChatContext = createContext<ChatContextType>({
   interlocutor: null,
   setIntercolutor: () => {},
   chat: null,
-  messages: [],
-  pending: false,
 });
 
 export const useChat = () => useContext(ChatContext);

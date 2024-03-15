@@ -5,11 +5,13 @@ import { useChat } from "../providers/chat/chat-context";
 import { ScrollArea } from "../ui/scroll-area";
 import { UserAvatar } from "../user/user-avatar";
 import { cn } from "@/lib/utils";
+import { useMessages } from "../providers/message/message-context";
 
 type ChatWindowProps = {};
 
 export function ChatWindow({}: ChatWindowProps) {
-  const { interlocutor, messages, pending } = useChat();
+  const { interlocutor } = useChat();
+  const { messages, pending } = useMessages();
 
   return (
     <div className="relative grow bg-muted">

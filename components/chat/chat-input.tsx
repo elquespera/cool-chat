@@ -4,6 +4,7 @@ import { IconButton } from "../common/icon-button";
 import { FormEventHandler, useState } from "react";
 import { useChat } from "../providers/chat/chat-context";
 import { sendMessage } from "@/db/actions/messages";
+import { useRouter } from "next/navigation";
 
 export function ChatInput() {
   const [message, setMessage] = useState("");
