@@ -4,13 +4,15 @@ import { createContext, useContext } from "react";
 type MessageContextType = {
   messages: MessageWithAuthor[];
   pending: boolean;
-  refetch: () => Promise<void>;
+  refetch: (scrollBehavior?: ScrollBehavior) => Promise<void>;
+  scrollBehavior: ScrollBehavior;
 };
 
 export const MessageContext = createContext<MessageContextType>({
   messages: [],
   pending: false,
   refetch: () => new Promise(() => {}),
+  scrollBehavior: "smooth",
 });
 
 export const useMessages = () => useContext(MessageContext);

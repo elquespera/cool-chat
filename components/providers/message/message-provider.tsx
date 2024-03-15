@@ -11,15 +11,18 @@ export function MessageProvider({ children }: MessageProviderProps) {
   const { chat } = useChat();
 
   const [messages, setMessages] = useState<MessageWithAuthor[]>([]);
+  const [scrollBehavior, setScrollBehavior] =
+    useState<ScrollBehavior>("smooth");
   const [pending, setPending] = useState(false);
 
-  const refetch = async () => {
+  const refetch = async (scroll: ScrollBehavior = "instant") => {
     if (!chat) {
       setMessages([]);
       return;
     }
     setPending(true);
     try {
+      setScrollBehavior(scroll);
       setMessages(await getMessagesByChatId(chat.id));
     } finally {
       setPending(false);
@@ -32,7 +35,9 @@ export function MessageProvider({ children }: MessageProviderProps) {
   }, [chat]);
 
   return (
-    <MessageContext.Provider value={{ messages, pending, refetch }}>
+    <MessageContext.Provider
+      value={{ messages, pending, refetch, scrollBehavior }}
+    >
       {children}
     </MessageContext.Provider>
   );

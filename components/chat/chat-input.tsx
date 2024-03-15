@@ -23,7 +23,7 @@ export function ChatInput() {
       const result = await sendMessage(interlocutor.id, message);
       if (result.status === "ok") {
         setMessage("");
-        await refetchMessages();
+        await refetchMessages("smooth");
       }
     } finally {
       setPending(false);

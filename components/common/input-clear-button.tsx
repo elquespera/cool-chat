@@ -23,6 +23,7 @@ export function InputClearButton({
     <IconButton
       {...props}
       toolTip="Clear"
+      type="button"
       className="h-7 w-7"
       icon={<Cross1Icon />}
       variant="ghost"

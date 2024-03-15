@@ -9,15 +9,15 @@ type ChatWindowProps = {};
 
 export function ChatWindow({}: ChatWindowProps) {
   const { interlocutor } = useChat();
-  const { messages, pending } = useMessages();
+  const { messages, scrollBehavior, pending } = useMessages();
   const messageRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     messageRef.current?.scrollIntoView({
-      behavior: "smooth",
+      behavior: scrollBehavior,
       block: "end",
     });
-  }, [messages]);
+  }, [messages, scrollBehavior]);
 
   return (
     <div className="relative grow bg-muted">
