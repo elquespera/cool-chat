@@ -1,13 +1,12 @@
 "use client";
-import { PropsWithChildren, useEffect, useState } from "react";
-import { ChatContext } from "./chat-context";
-import type { ContactUser } from "@/db/schemas/auth";
-import { ChatSelect } from "@/db/schemas/chats";
-import { User } from "lucia";
 import { findChatByIds } from "@/db/actions/chats";
 import { getMessagesByChatId } from "@/db/actions/messages";
-import { MessageSelect } from "@/db/schemas/messages";
+import type { ContactUser } from "@/db/schemas/auth";
+import { ChatSelect } from "@/db/schemas/chats";
+import { MessageWithAuthor } from "@/db/schemas/messages";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { useAuth } from "../auth/auth-context";
+import { ChatContext } from "./chat-context";
 
 type ChatProviderProps = PropsWithChildren;
 
@@ -16,7 +15,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
     null,
   );
   const [chat, setChat] = useState<ChatSelect | null>(null);
-  const [messages, setMessages] = useState<MessageSelect[]>([]);
+  const [messages, setMessages] = useState<MessageWithAuthor[]>([]);
   const [pending, setPending] = useState(false);
   const { user } = useAuth();
 

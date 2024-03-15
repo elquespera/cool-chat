@@ -40,5 +40,5 @@ export const chatsRelations = relations(chats, ({ many, one }) => ({
   }),
 }));
 
-export type ChatInsert = typeof chats.$inferInsert;
 export type ChatSelect = typeof chats.$inferSelect;
+export type ChatInsert = typeof chats.$inferInsert;

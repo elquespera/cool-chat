@@ -1,12 +1,13 @@
-import type { ContactUser } from "@/db/schemas/auth";
-import { UserAvatar } from "./user-avatar";
-import { SocketIndicator } from "../common/socket-indicator";
-import { UserText } from "./user-text";
-import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
+import { User } from "lucia";
+import { ComponentProps } from "react";
+import { SocketIndicator } from "../common/socket-indicator";
+import { UserAvatar } from "./user-avatar";
+import { UserText } from "./user-text";
+import { ContactUser } from "@/db/schemas/auth";
 
 type UserInfoProps = {
-  user: ContactUser;
+  user: User | ContactUser;
   size?: "sm" | "md" | "lg";
   self?: boolean;
   status?: boolean;

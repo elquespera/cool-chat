@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import { relations, sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { users } from "./auth";
+import { UserSelect, users } from "./auth";
 import { chats } from "./chats";
 
 export const messages = sqliteTable("message", {
@@ -41,3 +41,5 @@ export const messagesRelations = relations(messages, ({ one }) => ({
 
 export type MessageInsert = typeof messages.$inferInsert;
 export type MessageSelect = typeof messages.$inferSelect;
+
+export type MessageWithAuthor = MessageSelect & { author: UserSelect };
