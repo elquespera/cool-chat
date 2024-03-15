@@ -4,7 +4,7 @@ import { Spinner } from "../common/spinner";
 import { useChat } from "../providers/chat/chat-context";
 import { ScrollArea } from "../ui/scroll-area";
 import { UserInfo } from "../user/user-info";
-import { useContacts } from "./contact-context";
+import { useContacts } from "../providers/contacts/contact-context";
 
 export function ContactList() {
   const { contacts, foundContacts, searchValue, pending, error } =

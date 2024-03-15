@@ -1,8 +1,8 @@
 "use client";
 
 import { ChangeEventHandler } from "react";
-import { useContacts } from "./contact-context";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { useContacts } from "../providers/contacts/contact-context";
 
 export function ContactSearchInput() {
   const { searchValue, setSearchValue } = useContacts();

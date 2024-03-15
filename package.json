@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "check": "tsc & next lint",
+    "check": "tsc && next lint",
     "db:studio": "drizzle-kit studio",
     "migrations:generate": "drizzle-kit generate:sqlite",
     "migrations:push": "drizzle-kit push:sqlite",

@@ -3,25 +3,8 @@
 import { searchUsers } from "@/db/actions/users";
 import type { ContactUser } from "@/db/schemas/auth";
 
-import { PropsWithChildren, createContext, useContext, useState } from "react";
-
-type ContactContextType = {
-  searchValue: string;
-  setSearchValue: (value: string) => void;
-  contacts: ContactUser[];
-  foundContacts: ContactUser[];
-  error: string;
-  pending: boolean;
-};
-
-const ContactContext = createContext<ContactContextType>({
-  searchValue: "",
-  setSearchValue: () => {},
-  contacts: [],
-  foundContacts: [],
-  error: "",
-  pending: false,
-});
+import { PropsWithChildren, useState } from "react";
+import { ContactContext } from "./contact-context";
 
 export function ContactProvider({ children }: PropsWithChildren) {
   const [searchValue, setSearchValueInternal] = useState("");
@@ -45,7 +28,7 @@ export function ContactProvider({ children }: PropsWithChildren) {
         }
       } catch {
         setError(
-          "There was an error fetching contacts. Please try again later."
+          "There was an error fetching contacts. Please try again later.",
         );
       }
     } finally {
@@ -68,5 +51,3 @@ export function ContactProvider({ children }: PropsWithChildren) {
     </ContactContext.Provider>
   );
 }
-
-export const useContacts = () => useContext(ContactContext);
