@@ -28,6 +28,7 @@ export function MessageProvider({ children }: MessageProviderProps) {
 
   useEffect(() => {
     refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chat]);
 
   return (

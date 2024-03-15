@@ -27,6 +27,6 @@ export function setSessionCookie(sessionCookie: Cookie) {
   cookies().set(
     sessionCookie.name,
     sessionCookie.value,
-    sessionCookie.attributes
+    sessionCookie.attributes,
   );
 }
