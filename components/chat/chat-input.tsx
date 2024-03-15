@@ -5,11 +5,13 @@ import { FormEventHandler, useState } from "react";
 import { useChat } from "../providers/chat/chat-context";
 import { sendMessage } from "@/db/actions/messages";
 import { useRouter } from "next/navigation";
+import { useMessages } from "../providers/message/message-context";
 
 export function ChatInput() {
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
   const { interlocutor } = useChat();
+  const { refetch: refetchMessages } = useMessages();
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
@@ -20,6 +22,7 @@ export function ChatInput() {
       const result = await sendMessage(interlocutor.id, message);
       if (result.status === "ok") {
         setMessage("");
+        await refetchMessages();
       }
     } finally {
       setPending(false);

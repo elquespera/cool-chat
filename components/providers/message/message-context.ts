@@ -4,13 +4,13 @@ import { createContext, useContext } from "react";
 type MessageContextType = {
   messages: MessageWithAuthor[];
   pending: boolean;
-  refetch: () => void;
+  refetch: () => Promise<void>;
 };
 
 export const MessageContext = createContext<MessageContextType>({
   messages: [],
   pending: false,
-  refetch: () => {},
+  refetch: () => new Promise(() => {}),
 });
 
 export const useMessages = () => useContext(MessageContext);
