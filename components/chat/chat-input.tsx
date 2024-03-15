@@ -1,13 +1,14 @@
 "use client";
-import { PaperPlaneIcon } from "@radix-ui/react-icons";
-import { IconButton } from "../common/icon-button";
-import { FormEventHandler, useState } from "react";
-import { useChat } from "../providers/chat/chat-context";
 import { sendMessage } from "@/db/actions/messages";
-import { useRouter } from "next/navigation";
+import { PaperPlaneIcon } from "@radix-ui/react-icons";
+import { FormEventHandler, useRef, useState } from "react";
+import { IconButton } from "../common/icon-button";
+import { InputClearButton } from "../common/input-clear-button";
+import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 
 export function ChatInput() {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
   const { interlocutor } = useChat();
@@ -32,15 +33,22 @@ export function ChatInput() {
   return interlocutor ? (
     <form className="flex gap-2 bg-background p-4" onSubmit={handleSubmit}>
       <input
+        ref={inputRef}
         className="min-w-0 grow outline-transparent"
         value={message}
         placeholder="Write a message..."
         onChange={(event) => setMessage(event.target.value)}
+        autoFocus
+      />
+      <InputClearButton
+        inputRef={inputRef}
+        value={message}
+        onValueChange={setMessage}
       />
       <IconButton
         toolTip="Send"
         variant="ghost"
-        className="h-8 w-8"
+        className="h-7 w-7"
         type="submit"
         disabled={!message || pending}
         icon={<PaperPlaneIcon />}
