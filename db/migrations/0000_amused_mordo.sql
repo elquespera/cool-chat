@@ -37,11 +37,11 @@ CREATE TABLE `chat` (
 CREATE TABLE `message` (
 	`id` text(36) PRIMARY KEY NOT NULL,
 	`content` text NOT NULL,
-	`user_id` text NOT NULL,
+	`author_id` text NOT NULL,
 	`chat_id` text NOT NULL,
 	`created_at` integer DEFAULT (strftime('%s', 'now')) NOT NULL,
 	`updated_at` integer DEFAULT (strftime('%s', 'now')) NOT NULL,
-	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`author_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`chat_id`) REFERENCES `chat`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint

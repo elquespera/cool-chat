@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "32537cb5-3f56-4530-b642-9e710f904242",
-  "prevId": "890f01d5-8437-45ca-b9e4-5d40cdcd1429",
+  "id": "44390592-975d-4797-90a3-3818b3b2b217",
+  "prevId": "0460ac71-1c0f-46c5-a76a-f7a0ec23ebd9",
   "tables": {
     "account": {
       "name": "account",
@@ -321,7 +321,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -333,8 +333,6 @@
   "_meta": {
     "schemas": {},
     "tables": {},
-    "columns": {
-      "\"message\".\"user_id\"": "\"message\".\"author_id\""
-    }
+    "columns": {}
   }
 }

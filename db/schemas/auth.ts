@@ -1,12 +1,11 @@
 import { randomUUID } from "crypto";
-import { relations, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import {
   integer,
   primaryKey,
   sqliteTable,
   text,
 } from "drizzle-orm/sqlite-core";
-import { chats } from "./chats";
 
 export const users = sqliteTable("user", {
   id: text("id", { length: 36 })
