@@ -1,28 +1,26 @@
 "use client";
 
 import { PropsWithChildren, useEffect, useState } from "react";
-import { io as ClientIO } from "socket.io-client";
-import { SocketContext } from "./socket-context";
+import { io } from "socket.io-client";
+import { IOSocket, SocketContext } from "./socket-context";
 
 export const SocketProvider = ({ children }: PropsWithChildren) => {
-  const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState<IOSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    const socketInstance = new (ClientIO as any)(
-      process.env.NEXT_PUBLIC_SITE_URL,
-      {
-        path: process.env.NEXT_PUBLIC_SOCKET_IO_URL,
-        addTrailingSlash: false,
-      },
-    );
+    const socket: IOSocket = io(process.env.NEXT_PUBLIC_SITE_URL!, {
+      path: process.env.NEXT_PUBLIC_SOCKET_IO_URL,
+      addTrailingSlash: false,
+    });
 
-    socketInstance.on("connect", () => setIsConnected(true));
-    socketInstance.on("disconnect", () => setIsConnected(false));
+    socket.on("connect", () => setIsConnected(true));
+    socket.on("disconnect", () => setIsConnected(false));
 
-    setSocket(socketInstance);
-
-    return () => socketInstance.disconnect();
+    setSocket(socket);
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   return (

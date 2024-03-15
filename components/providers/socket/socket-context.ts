@@ -1,7 +1,10 @@
 import { createContext, useContext } from "react";
+import type { Socket } from "socket.io-client";
+
+export type IOSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
 type SocketContextType = {
-  socket: any | null;
+  socket: IOSocket | null;
   isConnected: boolean;
 };
 
