@@ -5,11 +5,13 @@ import { UserSelect, users } from "./auth";
 import { chats } from "./chats";
 
 export const messages = sqliteTable("message", {
-  id: text("id", { length: 36 })
+  id: text("id")
     .notNull()
     .primaryKey()
     .$defaultFn(() => randomUUID()),
   content: text("content").notNull(),
+
+  deleted: integer("deleted", { mode: "boolean" }),
 
   authorId: text("author_id")
     .notNull()

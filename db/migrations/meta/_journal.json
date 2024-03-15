@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1710467060588,
-      "tag": "0000_amused_mordo",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1710467727279,
-      "tag": "0001_mighty_squadron_sinister",
+      "when": 1710544806895,
+      "tag": "0000_faithful_zaran",
       "breakpoints": true
     }
   ]

@@ -5,6 +5,6 @@ import { dbConfig as dbCredentials } from "./db/db-config";
 export default {
   schema: "./db/schemas",
   out: "./db/migrations",
-  driver: "turso",
+  driver: "libsql",
   dbCredentials,
 } satisfies Config;

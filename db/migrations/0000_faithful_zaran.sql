@@ -14,7 +14,7 @@ CREATE TABLE `session` (
 );
 --> statement-breakpoint
 CREATE TABLE `user` (
-	`id` text(36) PRIMARY KEY NOT NULL,
+	`id` text PRIMARY KEY NOT NULL,
 	`username` text,
 	`avatar_url` text,
 	`provider_id` text,
@@ -35,14 +35,15 @@ CREATE TABLE `chat` (
 );
 --> statement-breakpoint
 CREATE TABLE `message` (
-	`id` text(36) PRIMARY KEY NOT NULL,
+	`id` text PRIMARY KEY NOT NULL,
 	`content` text NOT NULL,
+	`deleted` integer,
 	`author_id` text NOT NULL,
 	`chat_id` text NOT NULL,
 	`created_at` integer DEFAULT (strftime('%s', 'now')) NOT NULL,
 	`updated_at` integer DEFAULT (strftime('%s', 'now')) NOT NULL,
 	FOREIGN KEY (`author_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action,
-	FOREIGN KEY (`chat_id`) REFERENCES `chat`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`chat_id`) REFERENCES `chat`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `user_email_unique` ON `user` (`email`);

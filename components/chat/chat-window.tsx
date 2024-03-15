@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { ScrollArea } from "../ui/scroll-area";
-import { MessageItem } from "./message-item";
+import { MessageItem } from "../message/message-item";
 
 type ChatWindowProps = {};
 

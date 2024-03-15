@@ -8,7 +8,7 @@ import {
 } from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable("user", {
-  id: text("id", { length: 36 })
+  id: text("id")
     .notNull()
     .primaryKey()
     .$defaultFn(() => randomUUID()),
