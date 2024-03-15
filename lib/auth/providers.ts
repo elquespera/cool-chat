@@ -32,13 +32,13 @@ type GoogleUser = {
 
 const github = new GitHub(
   process.env.GITHUB_CLIENT_ID!,
-  process.env.GITHUB_CLIENT_SECRET!
+  process.env.GITHUB_CLIENT_SECRET!,
 );
 
 const google = new Google(
   process.env.GOOGLE_CLIENT_ID!,
   process.env.GOOGLE_CLIENT_SECRET!,
-  process.env.GOOGLE_REDIRECT_URI!
+  process.env.GOOGLE_REDIRECT_URI!,
 );
 
 type AuthProvider = {
@@ -55,7 +55,7 @@ export const authProviders: Record<string, AuthProvider> = {
     fetchUser: async (accessToken) => {
       const providerResponse = await oauthFetch(
         "https://api.github.com/user",
-        accessToken
+        accessToken,
       );
 
       const user: GitHubUser = await providerResponse.json();
@@ -72,7 +72,7 @@ export const authProviders: Record<string, AuthProvider> = {
     fetchUser: async (accessToken) => {
       const providerResponse = await oauthFetch(
         "https://openidconnect.googleapis.com/v1/userinfo",
-        accessToken
+        accessToken,
       );
 
       const user: GoogleUser = await providerResponse.json();
@@ -97,7 +97,7 @@ const providerCookieKeys = {
 export function saveProviderState(
   state: string,
   codeVerifier: string,
-  redirectURI?: string | null
+  redirectURI?: string | null,
 ) {
   const cookieStore = cookies();
   const providerCookieOptions = {
@@ -112,12 +112,12 @@ export function saveProviderState(
   cookieStore.set(
     providerCookieKeys.codeVerifier,
     codeVerifier,
-    providerCookieOptions
+    providerCookieOptions,
   );
   cookieStore.set(
     providerCookieKeys.uri,
     redirectURI ?? routes.home,
-    providerCookieOptions
+    providerCookieOptions,
   );
 }
 
@@ -135,7 +135,7 @@ type ParamsWithProviderId = { params: { providerId: string } };
 
 export async function generateProviderResponse(
   request: Request,
-  { params }: ParamsWithProviderId
+  { params }: ParamsWithProviderId,
 ) {
   const providerId = params.providerId as AuthProviderId;
   if (!authProviders[providerId]) return badRequest();
@@ -164,7 +164,7 @@ export async function generateProviderResponse(
 
 export async function generateProviderCallbackResponse(
   request: Request,
-  { params }: ParamsWithProviderId
+  { params }: ParamsWithProviderId,
 ) {
   const providerId = params.providerId as AuthProviderId;
   if (!authProviders[providerId]) return badRequest();
@@ -206,24 +206,20 @@ export async function generateProviderCallbackResponse(
       return redirect();
     }
 
-    const userId = generateId(userIdLength);
-
-    await addUserAndAccount(
+    const user = await addUserAndAccount(
       {
-        id: userId,
         providerId,
         username: providerUser.username,
         email: providerUser.email,
         avatarUrl: providerUser.avatarUrl,
       },
       {
-        userId,
         providerId,
         providerUserId: providerUser.id,
-      }
+      },
     );
 
-    await createSession(userId);
+    await createSession(user.id);
     return redirect();
   } catch (e) {
     console.log(String(e));

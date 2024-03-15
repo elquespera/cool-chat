@@ -1,18 +1,18 @@
 "use server";
 
-import { emailMatcher, passwordMatcher, userIdLength } from "@/constants";
+import { emailMatcher, passwordMatcher } from "@/constants";
+import { routes } from "@/constants/routes";
 import { addUser } from "@/db/actions/users";
 import { LibsqlError } from "@libsql/client";
-import { Scrypt, generateId } from "lucia";
-import { createSession } from "./session";
-import { routes } from "@/constants/routes";
+import { Scrypt } from "lucia";
 import { redirect } from "next/navigation";
+import { createSession } from "./session";
 
 export async function signUp(
   email: string,
   password: string,
   username?: string,
-  redirectURI: string = routes.home
+  redirectURI: string = routes.home,
 ): Promise<AuthActionResult> {
   if (!emailMatcher.test(email))
     return {
@@ -27,11 +27,10 @@ export async function signUp(
   }
 
   const hashedPassword = await new Scrypt().hash(password);
-  const id = generateId(userIdLength);
 
   try {
-    await addUser({ email, id, username, hashedPassword });
-    await createSession(id);
+    const user = await addUser({ email, username, hashedPassword });
+    await createSession(user.id);
   } catch (e) {
     if (e instanceof LibsqlError && e.code === "SQLITE_CONSTRAINT_UNIQUE") {
       return {

@@ -9,17 +9,13 @@ export async function getUserByEmailOrUsername(emailOrUsername: string) {
   return db.query.users.findFirst({
     where: or(
       eq(users.email, emailOrUsername),
-      eq(users.username, emailOrUsername)
+      eq(users.username, emailOrUsername),
     ),
   });
 }
 
-export async function addUser(data: UserInsert) {
-  return db.insert(users).values(data).returning().get();
-}
-
 export async function searchUsers(
-  searchValue: string
+  searchValue: string,
 ): Promise<DBActionResult<ContactUser[]>> {
   const { user } = await getAuth();
   if (!user) return { status: "error", error: "Unauthorized access." };
@@ -31,7 +27,7 @@ export async function searchUsers(
     const data = await db.query.users.findMany({
       where: and(
         or(like(users.email, search), like(users.username, search)),
-        ne(users.id, user.id)
+        ne(users.id, user.id),
       ),
       columns: { hashedPassword: false, providerId: false },
     });
@@ -40,4 +36,17 @@ export async function searchUsers(
   } catch (error) {
     return { status: "error", error: "Unknown error" };
   }
+}
+
+export async function addUser(data: UserInsert) {
+  return db.insert(users).values(data).returning().get();
+}
+
+export async function updateUser(userId: string, data: UserInsert) {
+  return db
+    .update(users)
+    .set(data)
+    .where(eq(users.id, userId))
+    .returning()
+    .get();
 }

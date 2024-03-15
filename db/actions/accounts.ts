@@ -8,22 +8,23 @@ export async function addAccount(data: AccountInsert) {
 
 export async function addUserAndAccount(
   user: UserInsert,
-  account: AccountInsert
+  account: Omit<AccountInsert, "userId">,
 ) {
   return db.transaction(async (tx) => {
-    await tx.insert(users).values(user);
-    await tx.insert(accounts).values(account);
+    const newUser = await tx.insert(users).values(user).returning().get();
+    await tx.insert(accounts).values({ userId: newUser.id, ...account });
+    return newUser;
   });
 }
 
 export async function getAccountById(
   providerId: string,
-  providerUserId: string
+  providerUserId: string,
 ) {
   return db.query.accounts.findFirst({
     where: and(
       eq(accounts.providerId, providerId),
-      eq(accounts.providerUserId, providerUserId)
+      eq(accounts.providerUserId, providerUserId),
     ),
   });
 }

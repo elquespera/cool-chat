@@ -2,7 +2,7 @@ import { db } from "@/db/db";
 import { DrizzleSQLiteAdapter } from "@lucia-auth/adapter-drizzle";
 import { Lucia } from "lucia";
 
-import { DatabaseUser, sessions, users } from "@/db/schemas/auth";
+import { UserSelect, sessions, users } from "@/db/schemas/auth";
 
 const adapter = new DrizzleSQLiteAdapter(db, sessions, users);
 
@@ -26,6 +26,6 @@ export const lucia = new Lucia(adapter, {
 declare module "lucia" {
   interface Register {
     Lucia: typeof lucia;
-    DatabaseUserAttributes: Omit<DatabaseUser, "id">;
+    DatabaseUserAttributes: Omit<UserSelect, "id">;
   }
 }

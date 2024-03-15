@@ -1,18 +1,32 @@
+import { randomUUID } from "crypto";
+import { relations, sql } from "drizzle-orm";
 import {
-  sqliteTable,
-  text,
   integer,
   primaryKey,
+  sqliteTable,
+  text,
 } from "drizzle-orm/sqlite-core";
+import { chats } from "./chats";
 
 export const users = sqliteTable("user", {
-  id: text("id").notNull().primaryKey(),
+  id: text("id", { length: 36 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => randomUUID()),
+
   username: text("username"),
   avatarUrl: text("avatar_url"),
   providerId: text("provider_id"),
 
   email: text("email").unique(),
   hashedPassword: text("hashed_password"),
+
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`(strftime('%s', 'now'))`)
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`(strftime('%s', 'now'))`)
+    .notNull(),
 });
 
 export const accounts = sqliteTable(
@@ -27,7 +41,7 @@ export const accounts = sqliteTable(
   },
   (table) => ({
     pk: primaryKey({ columns: [table.providerId, table.providerUserId] }),
-  })
+  }),
 );
 
 export const sessions = sqliteTable("session", {
@@ -40,7 +54,7 @@ export const sessions = sqliteTable("session", {
   expiresAt: integer("expires_at").notNull(),
 });
 
+export type UserSelect = typeof users.$inferSelect;
 export type UserInsert = typeof users.$inferInsert;
-export type DatabaseUser = typeof users.$inferSelect;
-export type ContactUser = Omit<DatabaseUser, "hashedPassword" | "providerId">;
+export type ContactUser = Omit<UserSelect, "hashedPassword" | "providerId">;
 export type AccountInsert = typeof accounts.$inferInsert;

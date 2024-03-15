@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "890f01d5-8437-45ca-b9e4-5d40cdcd1429",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "32537cb5-3f56-4530-b642-9e710f904242",
+  "prevId": "890f01d5-8437-45ca-b9e4-5d40cdcd1429",
   "tables": {
     "account": {
       "name": "account",
@@ -265,8 +265,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "user_id": {
-          "name": "user_id",
+        "author_id": {
+          "name": "author_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -298,12 +298,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "message_user_id_user_id_fk": {
-          "name": "message_user_id_user_id_fk",
+        "message_author_id_user_id_fk": {
+          "name": "message_author_id_user_id_fk",
           "tableFrom": "message",
           "tableTo": "user",
           "columnsFrom": [
-            "user_id"
+            "author_id"
           ],
           "columnsTo": [
             "id"
@@ -333,6 +333,8 @@
   "_meta": {
     "schemas": {},
     "tables": {},
-    "columns": {}
+    "columns": {
+      "\"message\".\"user_id\"": "\"message\".\"author_id\""
+    }
   }
 }
