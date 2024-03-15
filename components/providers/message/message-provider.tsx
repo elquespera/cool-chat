@@ -3,15 +3,12 @@ import { getMessagesByChatId } from "@/db/actions/messages";
 import { MessageWithAuthor } from "@/db/schemas/messages";
 import { PropsWithChildren, useEffect, useState } from "react";
 import { useChat } from "../chat/chat-context";
-import { useSocket } from "../socket/socket-context";
 import { MessageContext } from "./message-context";
 
 type MessageProviderProps = PropsWithChildren;
 
 export function MessageProvider({ children }: MessageProviderProps) {
   const { chat } = useChat();
-  const { socket } = useSocket();
-
   const [messages, setMessages] = useState<MessageWithAuthor[]>([]);
   const [scrollBehavior, setScrollBehavior] =
     useState<ScrollBehavior>("smooth");
@@ -32,16 +29,16 @@ export function MessageProvider({ children }: MessageProviderProps) {
   };
 
   useEffect(() => {
+    const handleMessageModified = (event: MessageModifiedEvent) => {
+      if (chat?.id === event.detail.chatId) refetch("smooth");
+    };
+
     refetch();
+    window.addEventListener("message-modified", handleMessageModified);
+    return () =>
+      window.removeEventListener("message-modified", handleMessageModified);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chat]);
-
-  useEffect(() => {
-    socket?.on("messageModified", (chatId) => {
-      if (chat?.id === chatId) refetch("smooth");
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chat, socket]);
 
   return (
     <MessageContext.Provider

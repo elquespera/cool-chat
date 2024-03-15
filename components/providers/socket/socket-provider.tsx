@@ -3,6 +3,7 @@
 import { PropsWithChildren, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { IOSocket, SocketContext } from "./socket-context";
+import { createCustomEvent } from "@/lib/custom-event";
 
 export const SocketProvider = ({ children }: PropsWithChildren) => {
   const [socket, setSocket] = useState<IOSocket | null>(null);
@@ -16,6 +17,12 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
 
     socket.on("connect", () => setIsConnected(true));
     socket.on("disconnect", () => setIsConnected(false));
+
+    socket.on("messageModified", (chatId, messageId) => {
+      window.dispatchEvent(
+        createCustomEvent("message-modified", { chatId, messageId }),
+      );
+    });
 
     setSocket(socket);
     return () => {

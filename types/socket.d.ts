@@ -1,11 +1,13 @@
-interface ServerToClientEvents {
-  messageModified: (chatId: string, messageId: string) => void;
-}
+type MessageModifiedListener = (chatId: string, messageId: string) => void;
 
-interface ClientToServerEvents {
-  messageModified: (chatId: string, messageId: string) => void;
-}
+type ServerToClientEvents = {
+  messageModified: MessageModifiedListener;
+};
 
-interface InterServerEvents {}
+type ClientToServerEvents = {
+  messageModified: MessageModifiedListener;
+};
 
-interface SocketData {}
+type InterServerEvents = {};
+
+type SocketData = {};
