@@ -1,12 +1,14 @@
 "use client";
 
-import { searchUsers } from "@/db/actions/users";
+import { getUserContacts, searchUsers } from "@/db/actions/users";
 import type { ContactUser } from "@/db/schemas/auth";
 
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { ContactContext } from "./contact-context";
+import { useAuth } from "../auth/auth-context";
 
 export function ContactProvider({ children }: PropsWithChildren) {
+  const { user } = useAuth();
   const [searchValue, setSearchValueInternal] = useState("");
   const [contacts, setContacts] = useState<ContactUser[]>([]);
   const [foundContacts, setFoundContacts] = useState<ContactUser[]>([]);
@@ -35,6 +37,31 @@ export function ContactProvider({ children }: PropsWithChildren) {
       setPending(false);
     }
   };
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      if (user) {
+        const result = await getUserContacts();
+
+        try {
+          if (result.status === "ok") {
+            setContacts(result.data);
+            setError("");
+          } else {
+            setError(result.error);
+          }
+        } catch {
+          setError(
+            "There was an error fetching contacts. Please try again later.",
+          );
+        }
+      } else {
+        setContacts([]);
+      }
+    };
+
+    fetchContacts();
+  }, [user]);
 
   return (
     <ContactContext.Provider

@@ -4,6 +4,7 @@ import { and, eq, like, ne, or } from "drizzle-orm";
 import { db } from "../db";
 import { ContactUser, UserInsert, users } from "../schemas/auth";
 import { getAuth } from "@/lib/auth/get-auth";
+import { findChatByIds, getUserChats } from "./chats";
 
 export async function getUserByEmailOrUsername(emailOrUsername: string) {
   return db.query.users.findFirst({
@@ -31,6 +32,23 @@ export async function searchUsers(
       ),
       columns: { hashedPassword: false, providerId: false },
     });
+
+    return { status: "ok", data };
+  } catch (error) {
+    return { status: "error", error: "Unknown error" };
+  }
+}
+
+export async function getUserContacts(): Promise<
+  DBActionResult<ContactUser[]>
+> {
+  const { user } = await getAuth();
+  if (!user) return { status: "error", error: "Unauthorized access." };
+  try {
+    const chats = await getUserChats(user.id);
+    const data: ContactUser[] = chats.map(({ userOne, userTwo }) =>
+      userOne.id === user.id ? userTwo : userOne,
+    );
 
     return { status: "ok", data };
   } catch (error) {

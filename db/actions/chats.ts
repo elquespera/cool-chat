@@ -4,6 +4,13 @@ import { and, eq, or } from "drizzle-orm";
 import { db } from "../db";
 import { chats } from "../schemas/chats";
 
+export async function getUserChats(userId: string) {
+  return db.query.chats.findMany({
+    where: or(eq(chats.userOneId, userId), eq(chats.userTwoId, userId)),
+    with: { userOne: true, userTwo: true },
+  });
+}
+
 export async function findChatByIds(userOneId: string, userTwoId: string) {
   return db.query.chats.findFirst({
     where: or(
