@@ -29,12 +29,14 @@ export function LogOutButton({ className }: PropsWithClassName) {
 
   return (
     <IconButton
-      className={cn("w-8 h-8", className)}
+      className={cn(className)}
       variant="outline"
-      toolTip="Log out"
       pending={pending}
+      reverse
       onClick={handleLogOut}
       icon={<PowerOffIcon />}
-    />
+    >
+      Log out
+    </IconButton>
   );
 }
