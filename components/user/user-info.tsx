@@ -12,6 +12,7 @@ type UserInfoProps = {
   self?: boolean;
   status?: boolean;
   oneLine?: boolean;
+  avatarUrl?: string;
 } & ComponentProps<"div">;
 
 export function UserInfo({
@@ -20,6 +21,7 @@ export function UserInfo({
   oneLine,
   self,
   status,
+  avatarUrl,
   className,
   ...props
 }: UserInfoProps) {
@@ -27,7 +29,7 @@ export function UserInfo({
     <div className={cn("flex items-center gap-2", className)} {...props}>
       <div className="relative">
         <UserAvatar
-          avatarUrl={user.avatarUrl}
+          avatarUrl={avatarUrl || user.avatarUrl}
           className={cn(
             size === "sm" ? "w-8" : size === "lg" ? "w-12" : "w-10",
           )}
