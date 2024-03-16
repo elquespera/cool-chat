@@ -2,9 +2,6 @@ import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import { useEffect, useState } from "react";
 
-TimeAgo.addDefaultLocale(en);
-const timeAgo = new TimeAgo("en-US");
-
 type MessageTimestampProps = {
   createdAt: Date;
   updatedAt: Date;
@@ -16,15 +13,22 @@ export function MessageTimestamp({
   createdAt,
   updatedAt,
 }: MessageTimestampProps) {
-  const format = () =>
-    timeAgo.format(createdAt.getTime(), "twitter-minute-now");
-  const [ago, setAgo] = useState(format());
+  const [ago, setAgo] = useState(formatAgo(createdAt));
 
   useEffect(() => {
-    const interval = setInterval(() => setAgo(format()), updateInterval);
+    const interval = setInterval(
+      () => setAgo(formatAgo(createdAt)),
+      updateInterval,
+    );
 
     return () => clearInterval(interval);
-  }, []);
+  }, [createdAt]);
 
   return <p className="text-sm text-muted-foreground">{ago}</p>;
 }
+
+TimeAgo.addDefaultLocale(en);
+const timeAgo = new TimeAgo("en-US");
+
+const formatAgo = (date: Date) =>
+  timeAgo.format(date.getTime(), "twitter-minute-now");
