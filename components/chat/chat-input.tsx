@@ -1,15 +1,23 @@
 "use client";
 import { sendMessage } from "@/db/actions/messages";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
-import { FormEventHandler, useRef, useState } from "react";
+import {
+  ChangeEventHandler,
+  FormEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { IconButton } from "../common/icon-button";
 import { InputClearButton } from "../common/input-clear-button";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
 
+const maxInputRows = 5;
+
 export function ChatInput() {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
   const { socket } = useSocket();
@@ -33,11 +41,25 @@ export function ChatInput() {
     }
   };
 
+  useEffect(() => {
+    const input = inputRef?.current;
+    if (!input) return;
+    input.rows = 1;
+    input.rows = Math.max(
+      1,
+      Math.min(
+        maxInputRows,
+        Math.round(input.scrollHeight / input.offsetHeight),
+      ),
+    );
+  }, [message]);
+
   return interlocutor ? (
     <form className="flex gap-2 bg-background p-4" onSubmit={handleSubmit}>
-      <input
+      <textarea
         ref={inputRef}
-        className="min-w-0 grow outline-transparent"
+        rows={1}
+        className="min-w-0 grow resize-none outline-transparent"
         value={message}
         placeholder="Write a message..."
         onChange={(event) => setMessage(event.target.value)}
