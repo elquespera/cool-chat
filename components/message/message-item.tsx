@@ -5,6 +5,7 @@ import { useAuth } from "../providers/auth/auth-context";
 import { UserAvatar } from "../user/user-avatar";
 import { MessageDeleteButton } from "./message-delete-button";
 import { MessageTimestamp } from "./message-timestamp";
+import Markdown from "markdown-to-jsx";
 
 type MessageItemProps = { message: MessageWithAuthor; series: boolean };
 
@@ -37,7 +38,7 @@ export function MessageItem({
           <p>(deleted)</p>
         ) : (
           <>
-            <p>{content}</p>
+            <Markdown>{content}</Markdown>
 
             <div className="mt-2 flex items-end justify-between gap-2">
               <div className="flex">
