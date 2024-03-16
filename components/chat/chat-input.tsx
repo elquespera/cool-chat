@@ -18,6 +18,7 @@ const maxInputRows = 5;
 
 export function ChatInput() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
   const { socket } = useSocket();
@@ -26,7 +27,7 @@ export function ChatInput() {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    if (!interlocutor || pending) return;
+    if (!interlocutor || pending || !message) return;
 
     setPending(true);
     try {
@@ -55,14 +56,26 @@ export function ChatInput() {
   }, [message]);
 
   return interlocutor ? (
-    <form className="flex gap-2 bg-background p-4" onSubmit={handleSubmit}>
+    <form
+      ref={formRef}
+      className="flex gap-2 bg-background p-4"
+      onSubmit={handleSubmit}
+    >
       <textarea
         ref={inputRef}
         rows={1}
-        className="min-w-0 grow resize-none outline-transparent"
+        className="min-w-0 grow resize-none outline-none outline-transparent"
         value={message}
         placeholder="Write a message..."
         onChange={(event) => setMessage(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            formRef.current?.dispatchEvent(
+              new Event("submit", { bubbles: true, cancelable: true }),
+            );
+          }
+        }}
         autoFocus
       />
       <InputClearButton
