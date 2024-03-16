@@ -13,6 +13,7 @@ import { InputClearButton } from "../common/input-clear-button";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
+import { EmojiPicker } from "./emoji-picker";
 
 const maxInputRows = 5;
 
@@ -42,6 +43,26 @@ export function ChatInput() {
     }
   };
 
+  const handleInsertEmoji = (emoji: string) => {
+    const input = inputRef.current;
+    if (!input) return;
+
+    const setSelection = (at: number) =>
+      setTimeout(() => input.setSelectionRange(at, at), 20);
+
+    if (input.selectionEnd === 0) {
+      setMessage(`${emoji} ${message}`);
+    } else if (input.selectionStart === message.length) {
+      setMessage(`${message} ${emoji}`);
+    } else {
+      setMessage(
+        `${message.slice(0, input.selectionStart)} ${emoji} ${message.slice(input.selectionEnd)}`,
+      );
+    }
+    setSelection(input.selectionStart + emoji.length + 1);
+    input.focus();
+  };
+
   useEffect(() => {
     const input = inputRef?.current;
     if (!input) return;
@@ -58,9 +79,10 @@ export function ChatInput() {
   return interlocutor ? (
     <form
       ref={formRef}
-      className="flex gap-2 bg-background p-4"
+      className="flex gap-2 border-t bg-background px-2 py-3"
       onSubmit={handleSubmit}
     >
+      <EmojiPicker onEmojiChange={handleInsertEmoji} />
       <textarea
         ref={inputRef}
         rows={1}
