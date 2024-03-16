@@ -38,7 +38,9 @@ export function MessageItem({
           <p>(deleted)</p>
         ) : (
           <>
-            <Markdown>{content}</Markdown>
+            <div className="prose prose-zinc dark:prose-invert">
+              <Markdown>{content}</Markdown>
+            </div>
 
             <div className="mt-2 flex items-end justify-between gap-2">
               <div className="flex">
