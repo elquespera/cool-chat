@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "../providers/auth/auth-context";
 import { UserAvatar } from "../user/user-avatar";
 import { MessageDeleteButton } from "./message-delete-button";
+import { MessageTimestamp } from "./message-timestamp";
 
 type MessageItemProps = { message: MessageWithAuthor; series: boolean };
 
@@ -56,18 +57,5 @@ export function MessageItem({
         )}
       </div>
     </li>
-  );
-}
-
-type MessageTimestampProps = {
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-function MessageTimestamp({ createdAt, updatedAt }: MessageTimestampProps) {
-  return (
-    <p className="text-sm text-muted-foreground">
-      {createdAt.toLocaleTimeString()}
-    </p>
   );
 }
