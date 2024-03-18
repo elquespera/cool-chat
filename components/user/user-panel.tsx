@@ -14,6 +14,7 @@ import { LogOutButton } from "./log-out-button";
 import { UserInfo } from "./user-info";
 import { updateUser } from "@/db/actions/users";
 import { useRouter } from "next/navigation";
+import ThemeSwitch from "./theme-switch";
 
 export function UserPanel() {
   const router = useRouter();
@@ -46,7 +47,7 @@ export function UserPanel() {
       onOpenChange={setOpen}
       className="absolute bottom-0 w-full border-t bg-background/80 p-4 backdrop-blur-sm"
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center gap-2">
         {user ? (
           <CollapsibleTrigger asChild>
             <UserInfo
@@ -58,6 +59,8 @@ export function UserPanel() {
             />
           </CollapsibleTrigger>
         ) : null}
+
+        <ThemeSwitch className="ml-auto" />
         <CollapsibleTrigger asChild>
           <IconButton
             className="h-8 w-8"
