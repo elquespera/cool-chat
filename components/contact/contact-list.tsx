@@ -5,6 +5,7 @@ import { useChat } from "../providers/chat/chat-context";
 import { ScrollArea } from "../ui/scroll-area";
 import { UserInfo } from "../user/user-info";
 import { useContacts } from "../providers/contacts/contact-context";
+import { useChatWindow } from "../providers/chat-window/chat-window-context";
 
 export function ContactList() {
   const { contacts, foundContacts, searchValue, pending, error } =
@@ -33,7 +34,11 @@ export function ContactList() {
 
 function ContactItem({ contact }: { contact: ContactUser }) {
   const { interlocutor, setIntercolutor } = useChat();
-  const handleContactClick = () => setIntercolutor(contact);
+  const { setPage } = useChatWindow();
+  const handleContactClick = () => {
+    setIntercolutor(contact);
+    setPage("chat");
+  };
 
   return (
     <li className="bg-background">

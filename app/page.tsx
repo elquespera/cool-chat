@@ -1,15 +1,20 @@
 import { ChatPanel } from "@/components/chat/chat-panel";
+import { Spinner } from "@/components/common/spinner";
 import { ContactPanel } from "@/components/contact/contact-panel";
 import { ChatProviders } from "@/components/providers/chat-providers";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
 import { UserPanel } from "@/components/user/user-panel";
 import { routes } from "@/constants/routes";
 import { getAuth } from "@/lib/auth/get-auth";
+import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
+
+const ChatWrapper = dynamic(
+  () =>
+    import("@/components/common/chat-wrapper").then((module) => ({
+      default: module.ChatWrapper,
+    })),
+  { ssr: false, loading: () => <Loading /> },
+);
 
 export default async function HomePage() {
   const { user } = await getAuth();
@@ -18,21 +23,26 @@ export default async function HomePage() {
   return (
     <ChatProviders>
       <main className="flex grow flex-col">
-        <ResizablePanelGroup className="grow" direction="horizontal">
-          <ResizablePanel
-            className="relative flex grow flex-col"
-            defaultSize={35}
-            minSize={10}
-          >
-            <ContactPanel />
-            <UserPanel />
-          </ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={65} className="flex flex-col">
-            <ChatPanel />
-          </ResizablePanel>
-        </ResizablePanelGroup>
+        <ChatWrapper
+          leftPanel={
+            <>
+              <ContactPanel />
+              <UserPanel />
+            </>
+          }
+          rightPanel={<ChatPanel />}
+        />
       </main>
     </ChatProviders>
+  );
+}
+
+function Loading() {
+  return (
+    <div className="flex grow flex-col items-center justify-center bg-muted">
+      <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-muted-foreground">
+        <Spinner className="w-6" /> Loading...
+      </div>
+    </div>
   );
 }

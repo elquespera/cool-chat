@@ -32,7 +32,7 @@ export async function signUp(
     const user = await addUser({ email, username, hashedPassword });
     await createSession(user.id);
   } catch (e) {
-    if (e instanceof LibsqlError && e.code === "SQLITE_CONSTRAINT_UNIQUE") {
+    if ((e as LibsqlError).code === "SQLITE_CONSTRAINT_UNIQUE") {
       return {
         error:
           "Email already in use. If you already have an account, please sign in using this email.",
