@@ -24,7 +24,7 @@ export function InputClearButton({
       {...props}
       toolTip="Clear"
       type="button"
-      className="h-7 w-7"
+      className="h-7 w-7 shrink-0"
       icon={<Cross1Icon />}
       variant="ghost"
       onClick={handleClick}

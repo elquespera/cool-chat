@@ -101,7 +101,7 @@ export function ChatInput() {
         <textarea
           ref={inputRef}
           rows={1}
-          className="min-w-0 grow resize-none bg-transparent pt-0.5 outline-none outline-transparent"
+          className="w-0 min-w-0 grow resize-none bg-transparent pt-0.5 outline-none outline-transparent"
           value={message}
           placeholder="Write a message..."
           onChange={(event) => setMessage(event.target.value)}
