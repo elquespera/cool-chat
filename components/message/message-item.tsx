@@ -31,6 +31,9 @@ export function MessageItem({
       <div
         className={cn(
           "group flex max-w-[24rem] grow flex-col rounded-md border bg-background p-4",
+          ownMessage
+            ? "bg-message-own text-message-own-foreground"
+            : "bg-message text-message-foreground",
           deleted && "opacity-50",
         )}
       >

@@ -67,6 +67,20 @@
 }
 
 @layer base {
+  :root {
+    --message: var(--primary) / 0.2;
+    --message-foreground: var(--card-foreground);
+
+    --message-own: var(--card);
+    --message-own-foreground: var(--card-foreground);
+  }
+
+  .dark {
+    --message-own: 240 3.7% 18%;
+  }
+}
+
+@layer base {
   * {
     @apply border-border;
   }
