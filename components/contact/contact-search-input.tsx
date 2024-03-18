@@ -16,22 +16,24 @@ export function ContactSearchInput() {
   };
 
   return (
-    <div className="flex gap-2 border-b p-4">
-      <label className="group flex h-8 w-full items-center gap-2">
-        <MagnifyingGlassIcon className="h-4 w-4 shrink-0 text-muted-foreground opacity-50 group-focus-within:opacity-100" />
-        <input
-          ref={inputRef}
-          className="min-w-0 grow outline-transparent"
-          placeholder="Search contacts"
+    <div className="border-b px-4 py-3">
+      <div className="flex items-center gap-2 rounded-3xl bg-muted px-2 py-1">
+        <label className="group flex h-8 w-full items-center gap-2">
+          <MagnifyingGlassIcon className="h-4 w-4 shrink-0 text-muted-foreground opacity-50 group-focus-within:opacity-100" />
+          <input
+            ref={inputRef}
+            className="min-w-0 grow bg-transparent outline-none outline-transparent"
+            placeholder="Search contacts"
+            value={searchValue}
+            onChange={handleSearchValueChange}
+          />
+        </label>
+        <InputClearButton
+          inputRef={inputRef}
           value={searchValue}
-          onChange={handleSearchValueChange}
+          onValueChange={setSearchValue}
         />
-      </label>
-      <InputClearButton
-        inputRef={inputRef}
-        value={searchValue}
-        onValueChange={setSearchValue}
-      />
+      </div>
     </div>
   );
 }

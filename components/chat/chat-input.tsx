@@ -77,42 +77,44 @@ export function ChatInput() {
   }, [message]);
 
   return interlocutor ? (
-    <form
-      ref={formRef}
-      className="flex gap-2 border-t bg-background px-2 py-3"
-      onSubmit={handleSubmit}
-    >
-      <EmojiPicker onEmojiChange={handleInsertEmoji} />
-      <textarea
-        ref={inputRef}
-        rows={1}
-        className="min-w-0 grow resize-none outline-none outline-transparent"
-        value={message}
-        placeholder="Write a message..."
-        onChange={(event) => setMessage(event.target.value)}
-        onKeyDown={(event) => {
-          if (event.key === "Enter" && !event.shiftKey) {
-            event.preventDefault();
-            formRef.current?.dispatchEvent(
-              new Event("submit", { bubbles: true, cancelable: true }),
-            );
-          }
-        }}
-        autoFocus
-      />
-      <InputClearButton
-        inputRef={inputRef}
-        value={message}
-        onValueChange={setMessage}
-      />
-      <IconButton
-        toolTip="Send"
-        variant="ghost"
-        className="h-7 w-7"
-        type="submit"
-        disabled={!message || pending}
-        icon={<PaperPlaneIcon />}
-      />
-    </form>
+    <div className="gap-2 border-t bg-background px-2 py-3">
+      <form
+        ref={formRef}
+        className="flex rounded-3xl bg-muted px-2 py-1.5"
+        onSubmit={handleSubmit}
+      >
+        <EmojiPicker onEmojiChange={handleInsertEmoji} />
+        <textarea
+          ref={inputRef}
+          rows={1}
+          className="min-w-0 grow resize-none bg-transparent pt-0.5 outline-none outline-transparent"
+          value={message}
+          placeholder="Write a message..."
+          onChange={(event) => setMessage(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              formRef.current?.dispatchEvent(
+                new Event("submit", { bubbles: true, cancelable: true }),
+              );
+            }
+          }}
+          autoFocus
+        />
+        <InputClearButton
+          inputRef={inputRef}
+          value={message}
+          onValueChange={setMessage}
+        />
+        <IconButton
+          toolTip="Send"
+          variant="ghost"
+          className="h-7 w-7"
+          type="submit"
+          disabled={!message || pending}
+          icon={<PaperPlaneIcon />}
+        />
+      </form>
+    </div>
   ) : null;
 }
