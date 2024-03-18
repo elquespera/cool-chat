@@ -29,7 +29,7 @@ export function AvatarPicker({
     <div className={cn("relative rounded-md border p-4", className)} {...props}>
       <ToggleGroup
         type="single"
-        className="flex-wrap justify-start"
+        className="grid grid-cols-[repeat(auto-fit,minmax(3rem,1fr))] justify-items-center"
         value={url}
         onValueChange={onUrlChange}
       >
