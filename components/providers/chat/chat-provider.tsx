@@ -15,16 +15,23 @@ export function ChatProvider({ children }: ChatProviderProps) {
   );
   const [chat, setChat] = useState<ChatSelect | null>(null);
 
+  const refetchChat = async (interlocutor: ContactUser | null) => {
+    const result =
+      user && interlocutor
+        ? await findChatByIds(user.id, interlocutor.id)
+        : null;
+    setChat(result ?? null);
+  };
+
   const setIntercolutor = async (contact: ContactUser | null) => {
     setIntercolutorInternal(contact);
-    if (contact && user) {
-      const result = await findChatByIds(user.id, contact.id);
-      setChat(result ?? null);
-    }
+    refetchChat(contact);
   };
 
   return (
-    <ChatContext.Provider value={{ interlocutor, setIntercolutor, chat }}>
+    <ChatContext.Provider
+      value={{ interlocutor, setIntercolutor, chat, refetchChat }}
+    >
       {children}
     </ChatContext.Provider>
   );

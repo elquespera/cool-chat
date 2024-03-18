@@ -23,7 +23,7 @@ export function ChatInput() {
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
   const { socket } = useSocket();
-  const { interlocutor } = useChat();
+  const { interlocutor, chat, refetchChat } = useChat();
   const { refetch: refetchMessages } = useMessages();
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
@@ -36,7 +36,11 @@ export function ChatInput() {
       if (result.status === "ok") {
         setMessage("");
         socket?.emit("messageModified", result.data.chatId, result.data.id);
-        await refetchMessages("smooth");
+        if (chat?.id !== result.data.chatId) {
+          refetchChat(interlocutor);
+        } else {
+          await refetchMessages("smooth");
+        }
       }
     } finally {
       setPending(false);
