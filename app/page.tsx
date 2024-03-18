@@ -1,4 +1,6 @@
-import { ChatPanel } from "@/components/chat/chat-panel";
+import { ChatInput } from "@/components/chat/chat-input";
+import { ChatUser } from "@/components/chat/chat-user";
+import { ChatWindow } from "@/components/chat/chat-window";
 import { Spinner } from "@/components/common/spinner";
 import { ContactPanel } from "@/components/contact/contact-panel";
 import { ChatProviders } from "@/components/providers/chat-providers";
@@ -30,7 +32,13 @@ export default async function HomePage() {
               <UserPanel />
             </>
           }
-          rightPanel={<ChatPanel />}
+          rightPanel={
+            <>
+              <ChatWindow />
+              <ChatInput />
+              <ChatUser />
+            </>
+          }
         />
       </main>
     </ChatProviders>

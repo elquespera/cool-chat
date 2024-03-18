@@ -6,6 +6,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import { UserInfo } from "../user/user-info";
 import { useContacts } from "../providers/contacts/contact-context";
 import { useChatWindow } from "../providers/chat-window/chat-window-context";
+import { createCustomEvent } from "@/lib/custom-event";
 
 export function ContactList() {
   const { contacts, foundContacts, searchValue, pending, error } =
@@ -38,6 +39,7 @@ function ContactItem({ contact }: { contact: ContactUser }) {
   const handleContactClick = () => {
     setIntercolutor(contact);
     setPage("chat");
+    window.dispatchEvent(createCustomEvent("chatclick", {}));
   };
 
   return (

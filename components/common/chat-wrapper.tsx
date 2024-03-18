@@ -65,7 +65,7 @@ export function ChatWrapper({ leftPanel, rightPanel }: ChatWrapperProps) {
         minSize={20}
         className="flex grow flex-col"
       >
-        <div key="right-panel" className="flex grow flex-col">
+        <div key="right-panel" className="relative flex grow flex-col">
           {rightPanel}
         </div>
       </ResizablePanel>

@@ -76,6 +76,16 @@ export function ChatInput() {
     );
   }, [message]);
 
+  useEffect(() => {
+    const handleChatClick = () => {
+      inputRef?.current?.focus();
+    };
+
+    window.addEventListener("chatclick", handleChatClick);
+
+    return () => window.removeEventListener("chatclick", handleChatClick);
+  }, []);
+
   return interlocutor ? (
     <div className="gap-2 border-t bg-background px-2 py-3">
       <form
