@@ -30,15 +30,18 @@ export function MessageItem({
       />
       <div
         className={cn(
-          "group flex max-w-[24rem] grow flex-col rounded-md border bg-background p-4",
+          "group relative flex max-w-[24rem] grow flex-col overflow-hidden rounded-md border bg-background p-4",
+
           ownMessage
             ? "bg-message-own text-message-own-foreground"
-            : "bg-message text-message-foreground",
-          deleted && "opacity-50",
+            : "bg-message text-message-foreground border-primary/30",
+          deleted
+            ? "opacity-50"
+            : "before:absolute before:inset-0 before:z-[-1] before:bg-background",
         )}
       >
         {deleted ? (
-          <p>(deleted)</p>
+          <p className="select-none">(deleted)</p>
         ) : (
           <>
             <div className="prose prose-zinc dark:prose-invert">

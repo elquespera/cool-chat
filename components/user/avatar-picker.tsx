@@ -26,7 +26,18 @@ export function AvatarPicker({
   };
 
   return (
-    <div className={cn("relative rounded-md border p-4", className)} {...props}>
+    <div className={cn("relative rounded-md p-4", className)} {...props}>
+      <div className="mb-1 flex items-center justify-between">
+        <p className="text-sm font-medium text-muted-foreground">Avatar</p>
+        <IconButton
+          icon={<UpdateIcon />}
+          toolTip="Regenerate"
+          toolTipSide="left"
+          className="h-7 w-7"
+          variant="ghost"
+          onClick={handleRegenerateClick}
+        />
+      </div>
       <ToggleGroup
         type="single"
         className="grid grid-cols-[repeat(auto-fit,minmax(3rem,1fr))] justify-items-center"
@@ -35,18 +46,10 @@ export function AvatarPicker({
       >
         {avatars.map((url) => (
           <ToggleGroupItem key={url} value={url} className="h-12 w-12">
-            <UserAvatar key={url} avatarUrl={url} />
+            <UserAvatar avatarUrl={url} />
           </ToggleGroupItem>
         ))}
       </ToggleGroup>
-      <IconButton
-        icon={<UpdateIcon />}
-        toolTip="Regenerate"
-        toolTipSide="left"
-        className="absolute right-0 top-0 h-7 w-7"
-        variant="ghost"
-        onClick={handleRegenerateClick}
-      />
     </div>
   );
 }

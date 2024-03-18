@@ -5,40 +5,64 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { ThemeColor } from "@/constants";
+import { updateUser } from "@/db/actions/users";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IconButton } from "../common/icon-button";
 import { useAuth } from "../providers/auth/auth-context";
+import { useColors } from "../providers/color/color-context";
 import { AvatarPicker } from "./avatar-picker";
+import { ColorPicker } from "./color-picker";
 import { LogOutButton } from "./log-out-button";
-import { UserInfo } from "./user-info";
-import { updateUser } from "@/db/actions/users";
-import { useRouter } from "next/navigation";
 import ThemeSwitch from "./theme-switch";
+import { UserInfo } from "./user-info";
 
 export function UserPanel() {
   const router = useRouter();
   const { user } = useAuth();
+  const { color, setColor } = useColors();
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [pending, setPending] = useState(false);
+  const [savedColor, setSavedColor] = useState<ThemeColor>(color);
 
   const handleSaveClick = async () => {
-    if (!user || !avatarUrl) return;
+    if (!user) return;
     setPending(true);
     try {
-      const result = await updateUser(user.id, { avatarUrl });
-      if (result) {
-        router.refresh();
-        setOpen(false);
+      if (color !== savedColor) {
+        setSavedColor(color);
       }
+
+      if (avatarUrl) {
+        const result = await updateUser(user.id, { avatarUrl });
+        if (result) {
+          router.refresh();
+        }
+      }
+
+      setOpen(false);
     } finally {
       setPending(false);
     }
   };
 
+  const handleColorChange = (color: ThemeColor) => {
+    setColor(color);
+  };
+
   useEffect(() => {
-    if (!open) setAvatarUrl("");
+    setOpen(open);
+
+    if (open) {
+      setSavedColor(color);
+    } else {
+      setColor(savedColor);
+      setAvatarUrl("");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   return (
@@ -70,14 +94,15 @@ export function UserPanel() {
           />
         </CollapsibleTrigger>
       </div>
-      <CollapsibleContent className="flex flex-col gap-4">
-        <AvatarPicker
+      <CollapsibleContent className="flex flex-col gap-3">
+        <ColorPicker
           className="mt-4"
-          url={avatarUrl}
-          onUrlChange={setAvatarUrl}
+          color={color}
+          setColor={handleColorChange}
         />
+        <AvatarPicker url={avatarUrl} onUrlChange={setAvatarUrl} />
         <div className="flex gap-2">
-          {avatarUrl && (
+          {(avatarUrl || savedColor !== color) && (
             <>
               <IconButton
                 disabled={pending}
