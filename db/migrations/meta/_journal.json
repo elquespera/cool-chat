@@ -8,6 +8,27 @@
       "when": 1710544806895,
       "tag": "0000_faithful_zaran",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1710776454601,
+      "tag": "0001_short_peter_parker",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1710776521705,
+      "tag": "0002_striped_iron_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1710776819968,
+      "tag": "0003_eminent_vargas",
+      "breakpoints": true
     }
   ]
 }

@@ -1,7 +1,7 @@
 import { ComponentProps } from "react";
 import { IconButton } from "../common/icon-button";
 import { TrashIcon } from "@radix-ui/react-icons";
-import { markMessageDeleted } from "@/db/actions/messages";
+import { updateMessage } from "@/db/actions/messages";
 import { useSocket } from "../providers/socket/socket-context";
 import { useMessages } from "../providers/message/message-context";
 
@@ -20,7 +20,7 @@ export function MessageDeleteButton({
   const { refetch } = useMessages();
 
   const handleClick = async () => {
-    const result = await markMessageDeleted(messageId);
+    const result = await updateMessage(messageId, { status: "deleted" });
     if (result.status === "ok") {
       socket?.emit("messageModified", chatId, authorId);
       refetch();

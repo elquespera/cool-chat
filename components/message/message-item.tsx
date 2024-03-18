@@ -10,7 +10,7 @@ import Markdown from "markdown-to-jsx";
 type MessageItemProps = { message: MessageWithAuthor; series: boolean };
 
 export function MessageItem({
-  message: { content, author, deleted, id, chatId, createdAt, updatedAt },
+  message: { content, author, status, id, chatId, createdAt, updatedAt },
   series,
 }: MessageItemProps) {
   const { user } = useAuth();
@@ -35,13 +35,13 @@ export function MessageItem({
           ownMessage
             ? "bg-message-own text-message-own-foreground"
             : "bg-message text-message-foreground border-primary/30",
-          deleted
+          status === "deleted"
             ? "opacity-50"
             : "before:absolute before:inset-0 before:z-[-1] before:bg-background",
         )}
       >
-        {deleted ? (
-          <p className="select-none">(deleted)</p>
+        {status === "deleted" ? (
+          <p className="select-none italic">(deleted)</p>
         ) : (
           <>
             <div className="prose prose-zinc dark:prose-invert">
