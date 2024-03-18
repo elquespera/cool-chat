@@ -4,8 +4,8 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { UserSelect, users } from "./auth";
 import { chats } from "./chats";
 
-const MessageStates = ["deleted", "delivered", "seen"] as const;
-export type MessageState = (typeof MessageStates)[number];
+const MessageStatuses = ["deleted", "delivered", "read"] as const;
+export type MessageStatus = (typeof MessageStatuses)[number];
 
 export const messages = sqliteTable("message", {
   id: text("id")
@@ -14,7 +14,7 @@ export const messages = sqliteTable("message", {
     .$defaultFn(() => randomUUID()),
   content: text("content").notNull(),
 
-  status: text("status", { enum: MessageStates }),
+  status: text("status", { enum: MessageStatuses }),
 
   authorId: text("author_id")
     .notNull()

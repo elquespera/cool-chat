@@ -1,10 +1,16 @@
 "use server";
 
+import { getAuth } from "@/lib/auth/get-auth";
 import { and, eq, like, ne, or } from "drizzle-orm";
 import { db } from "../db";
-import { ContactUser, UserInsert, users } from "../schemas/auth";
-import { getAuth } from "@/lib/auth/get-auth";
-import { findChatByIds, getUserChats } from "./chats";
+import {
+  ContactUser,
+  ContactUserWithChat,
+  UserInsert,
+  users,
+} from "../schemas/auth";
+import { getUserChats } from "./chats";
+import { countUnreadMesages } from "./messages";
 
 export async function getUserByEmailOrUsername(emailOrUsername: string) {
   return db.query.users.findFirst({
@@ -40,14 +46,20 @@ export async function searchUsers(
 }
 
 export async function getUserContacts(): Promise<
-  DBActionResult<ContactUser[]>
+  DBActionResult<ContactUserWithChat[]>
 > {
   const { user } = await getAuth();
   if (!user) return { status: "error", error: "Unauthorized access." };
+
   try {
     const chats = await getUserChats(user.id);
-    const data: ContactUser[] = chats.map(({ userOne, userTwo }) =>
-      userOne.id === user.id ? userTwo : userOne,
+    const data = await Promise.all(
+      chats.map(async (chat) => {
+        const { userOne, userTwo } = chat;
+        const author = userOne.id === user.id ? userTwo : userOne;
+        const unseenMessages = await countUnreadMesages(chat.id);
+        return { ...author, unseenMessages };
+      }),
     );
 
     return { status: "ok", data };

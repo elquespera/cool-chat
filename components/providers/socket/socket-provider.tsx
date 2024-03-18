@@ -20,7 +20,7 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
 
     socket.on("messageModified", (chatId, messageId) => {
       window.dispatchEvent(
-        createCustomEvent("message-modified", { chatId, messageId }),
+        createCustomEvent("messagemodified", { chatId, messageId }),
       );
     });
 

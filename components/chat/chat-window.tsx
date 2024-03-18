@@ -39,8 +39,9 @@ export function ChatWindow() {
           <ChatEmpty
             message={
               <p>
-                Type something and press 'Enter' to send your first message.
-                <br /> Use 'Shift+Enter' for a new line.
+                Type something and press &apos;Enter&apos; to send your first
+                message.
+                <br /> Use &apos;Shift+Enter&apos; for a new line.
               </p>
             }
           />

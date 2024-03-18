@@ -1,12 +1,12 @@
 "use client";
-import type { ContactUser } from "@/db/schemas/auth";
+import type { ContactUserWithChat } from "@/db/schemas/auth";
+import { createCustomEvent } from "@/lib/custom-event";
 import { Spinner } from "../common/spinner";
+import { useChatWindow } from "../providers/chat-window/chat-window-context";
 import { useChat } from "../providers/chat/chat-context";
+import { useContacts } from "../providers/contacts/contact-context";
 import { ScrollArea } from "../ui/scroll-area";
 import { UserInfo } from "../user/user-info";
-import { useContacts } from "../providers/contacts/contact-context";
-import { useChatWindow } from "../providers/chat-window/chat-window-context";
-import { createCustomEvent } from "@/lib/custom-event";
 
 export function ContactList() {
   const { contacts, foundContacts, searchValue, pending, error } =
@@ -33,7 +33,7 @@ export function ContactList() {
   );
 }
 
-function ContactItem({ contact }: { contact: ContactUser }) {
+function ContactItem({ contact }: { contact: ContactUserWithChat }) {
   const { interlocutor, setIntercolutor } = useChat();
   const { setPage } = useChatWindow();
   const handleContactClick = () => {
@@ -47,10 +47,15 @@ function ContactItem({ contact }: { contact: ContactUser }) {
       <button
         role="option"
         aria-selected={interlocutor?.id === contact.id}
-        className="flex w-full items-center gap-2 p-2 py-3 hover:bg-accent hover:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground"
+        className="relative flex w-full items-center gap-2 p-2 py-3 hover:bg-accent hover:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground"
         onClick={handleContactClick}
       >
         <UserInfo user={contact} oneLine status />
+        {!!contact?.unseenMessages && (
+          <span className="absolute left-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold leading-none text-primary-foreground">
+            {contact?.unseenMessages}
+          </span>
+        )}
       </button>
     </li>
   );

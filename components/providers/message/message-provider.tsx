@@ -34,9 +34,9 @@ export function MessageProvider({ children }: MessageProviderProps) {
     };
 
     refetch();
-    window.addEventListener("message-modified", handleMessageModified);
+    window.addEventListener("messagemodified", handleMessageModified);
     return () =>
-      window.removeEventListener("message-modified", handleMessageModified);
+      window.removeEventListener("messagemodified", handleMessageModified);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chat]);
 

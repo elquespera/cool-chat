@@ -6,6 +6,7 @@ import {
   sqliteTable,
   text,
 } from "drizzle-orm/sqlite-core";
+import { ChatSelect } from "./chats";
 
 export const users = sqliteTable("user", {
   id: text("id")
@@ -56,4 +57,9 @@ export const sessions = sqliteTable("session", {
 export type UserSelect = typeof users.$inferSelect;
 export type UserInsert = typeof users.$inferInsert;
 export type ContactUser = Omit<UserSelect, "hashedPassword" | "providerId">;
+
+export type ContactUserWithChat = ContactUser & {
+  unseenMessages?: number;
+};
+
 export type AccountInsert = typeof accounts.$inferInsert;

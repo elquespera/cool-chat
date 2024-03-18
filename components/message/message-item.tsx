@@ -1,11 +1,16 @@
 "use client";
-import { MessageWithAuthor } from "@/db/schemas/messages";
+import {
+  MessageStatus as MessageStatusType,
+  MessageWithAuthor,
+} from "@/db/schemas/messages";
 import { cn } from "@/lib/utils";
 import { useAuth } from "../providers/auth/auth-context";
 import { UserAvatar } from "../user/user-avatar";
 import { MessageDeleteButton } from "./message-delete-button";
 import { MessageTimestamp } from "./message-timestamp";
 import Markdown from "markdown-to-jsx";
+import { CheckIcon } from "@radix-ui/react-icons";
+import { useEffect, useState } from "react";
 
 type MessageItemProps = { message: MessageWithAuthor; series: boolean };
 
@@ -58,13 +63,57 @@ export function MessageItem({
                   />
                 )}
               </div>
-              <div className="flex">
+              <div className="flex items-center gap-2">
                 <MessageTimestamp createdAt={createdAt} updatedAt={updatedAt} />
+                {ownMessage && <MessageStatus messageId={id} status={status} />}
               </div>
             </div>
           </>
         )}
       </div>
     </li>
+  );
+}
+
+type MessageStatusProps = {
+  messageId: string;
+  status: MessageStatusType | null;
+};
+
+function MessageStatus({ status, messageId }: MessageStatusProps) {
+  const [internalStatus, setInternalStatus] = useState(status);
+
+  useEffect(() => {
+    const handleMessageStatusChange = (event: MessageStatusUpdateEvent) => {
+      if (event.detail.messageId === messageId)
+        setInternalStatus(event.detail.status as MessageStatusType);
+    };
+
+    window.addEventListener("messagestatusupdate", handleMessageStatusChange);
+
+    return () =>
+      window.removeEventListener(
+        "messagestatusupdate",
+        handleMessageStatusChange,
+      );
+  }, [messageId]);
+
+  return (
+    <div className="relative h-4 w-5">
+      <CheckIcon
+        className={cn(
+          "absolute text-muted-foreground opacity-50",
+          internalStatus === "read" && "text-primary opacity-100",
+        )}
+      />
+      {(internalStatus === "delivered" || internalStatus === "read") && (
+        <CheckIcon
+          className={cn(
+            "absolute translate-x-1 text-muted-foreground opacity-50",
+            internalStatus === "read" && "text-primary opacity-100",
+          )}
+        />
+      )}
+    </div>
   );
 }

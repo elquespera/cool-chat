@@ -1,15 +1,10 @@
 "use server";
 
 import { getAuth } from "@/lib/auth/get-auth";
-import { findOrCreateChat } from "./chats";
+import { and, count, eq, isNull, or } from "drizzle-orm";
 import { db } from "../db";
-import {
-  MessageInsert,
-  MessageSelect,
-  MessageState,
-  messages,
-} from "../schemas/messages";
-import { and, eq } from "drizzle-orm";
+import { MessageInsert, MessageSelect, messages } from "../schemas/messages";
+import { findOrCreateChat } from "./chats";
 
 export async function getMessagesByChatId(chatId: string) {
   return db.query.messages.findMany({
@@ -33,6 +28,25 @@ export async function updateMessage(
     .get();
 
   return { status: "ok", data: result };
+}
+
+export async function countUnreadMesages(chatId: string): Promise<number> {
+  const { user } = await getAuth();
+  if (!user) return 0;
+
+  const result = await db
+    .select({ value: count() })
+    .from(messages)
+    .where(
+      and(
+        eq(messages.chatId, chatId),
+        eq(messages.authorId, user.id),
+        or(isNull(messages.status), eq(messages.status, "delivered")),
+      ),
+    )
+    .get();
+
+  return result?.value ?? 0;
 }
 
 export async function sendMessage(

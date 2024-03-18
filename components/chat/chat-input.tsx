@@ -1,13 +1,7 @@
 "use client";
 import { sendMessage } from "@/db/actions/messages";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
-import {
-  ChangeEventHandler,
-  FormEventHandler,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { FormEventHandler, useEffect, useRef, useState } from "react";
 import { IconButton } from "../common/icon-button";
 import { InputClearButton } from "../common/input-clear-button";
 import { useChat } from "../providers/chat/chat-context";
@@ -81,12 +75,9 @@ export function ChatInput() {
   }, [message]);
 
   useEffect(() => {
-    const handleChatClick = () => {
-      inputRef?.current?.focus();
-    };
+    const handleChatClick = () => inputRef?.current?.focus();
 
     window.addEventListener("chatclick", handleChatClick);
-
     return () => window.removeEventListener("chatclick", handleChatClick);
   }, []);
 

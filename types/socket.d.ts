@@ -1,9 +1,11 @@
 type MessageModifiedListener = (chatId: string, messageId: string) => void;
+type MessageStatusUpdateListener = (messageId: string, status: string) => void;
 type UserStatus = "online" | "offline" | "typing";
 type UserStatusListener = (userId: string, status: UserStatus) => void;
 
 type ServerToClientEvents = {
   messageModified: MessageModifiedListener;
+  messageStatusUpdate: MessageStatusUpdateListener;
   userStatusChange: UserStatusListener;
 };
 
