@@ -1,15 +1,13 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { ScrollArea } from "../ui/scroll-area";
 import { MessageItem } from "../message/message-item";
 
-type ChatWindowProps = {};
-
-export function ChatWindow({}: ChatWindowProps) {
+export function ChatWindow() {
   const { interlocutor } = useChat();
-  const { messages, scrollBehavior, pending } = useMessages();
+  const { messages, scrollBehavior } = useMessages();
   const messageRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
@@ -38,19 +36,34 @@ export function ChatWindow({}: ChatWindowProps) {
             </ul>
           </ScrollArea>
         ) : (
-          <ChatEmpty />
+          <ChatEmpty
+            message={
+              <p>
+                Type something and press 'Enter' to send your first message.
+                <br /> Use 'Shift+Enter' for a new line.
+              </p>
+            }
+          />
         )
       ) : (
-        <ChatEmpty />
+        <ChatEmpty
+          message={
+            <p>
+              Select a contact to start or continue a conversation.
+              <br />
+              Use search input to find new users.
+            </p>
+          }
+        />
       )}
     </div>
   );
 }
 
-function ChatEmpty() {
+function ChatEmpty({ message }: { message: ReactNode }) {
   return (
-    <div className="flex h-full flex-col justify-center text-center font-medium text-muted-foreground">
-      Select a contact to start or continue a conversation.
+    <div className="flex h-full flex-col justify-center p-4 text-center text-sm font-medium text-muted-foreground">
+      {message}
     </div>
   );
 }
