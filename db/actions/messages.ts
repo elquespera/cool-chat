@@ -4,7 +4,7 @@ import { getAuth } from "@/lib/auth/get-auth";
 import { and, count, eq, isNull, ne, or } from "drizzle-orm";
 import { db } from "../db";
 import { MessageInsert, MessageSelect, messages } from "../schemas/messages";
-import { findOrCreateChat, getUserChats } from "./chats";
+import { findOrCreateChat } from "./chats";
 
 export async function getMessagesByChatId(chatId: string) {
   return db.query.messages.findMany({

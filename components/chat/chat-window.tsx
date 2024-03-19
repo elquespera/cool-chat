@@ -11,6 +11,8 @@ export function ChatWindow() {
   const messageRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
+    if (!scrollBehavior) return;
+
     messageRef.current?.scrollIntoView({
       behavior: scrollBehavior,
       block: "end",

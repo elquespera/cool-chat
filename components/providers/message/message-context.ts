@@ -5,14 +5,13 @@ type MessageContextType = {
   messages: MessageWithAuthor[];
   pending: boolean;
   refetch: (scrollBehavior?: ScrollBehavior) => Promise<void>;
-  scrollBehavior: ScrollBehavior;
+  scrollBehavior?: ScrollBehavior;
 };
 
 export const MessageContext = createContext<MessageContextType>({
   messages: [],
   pending: false,
   refetch: () => new Promise(() => {}),
-  scrollBehavior: "smooth",
 });
 
 export const useMessages = () => useContext(MessageContext);
