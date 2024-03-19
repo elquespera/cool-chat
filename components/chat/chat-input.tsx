@@ -89,9 +89,9 @@ export function ChatInput() {
   useCustomEvent("chatclick", () => {
     const input = inputRef.current;
     if (!input) return;
-    input.readOnly = true;
+    input.inputMode = "none";
     input.focus();
-    input.readOnly = false;
+    input.inputMode = "text";
   });
 
   return interlocutor ? (
