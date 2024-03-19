@@ -1,0 +1,37 @@
+name: CoolChat Prod
+
+on:
+  push:
+    branches: ["production"]
+
+jobs:
+  build:
+    runs-on: ["self-hosted", "prod"]
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Use Next.js cache
+        uses: jongwooo/next-cache@v1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create .env file
+        run: echo "${{secrets.ENV_FILE_PROD }}" > .env
+
+      - name: Build project
+        run: npm run build --if-present
+
+      - name: Restart process with pm2
+        run: pm2 restart cool-chat-prod
