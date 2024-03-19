@@ -1,10 +1,10 @@
 "use server";
 
 import { getAuth } from "@/lib/auth/get-auth";
-import { and, count, eq, isNull, or } from "drizzle-orm";
+import { and, count, eq, isNull, ne, or } from "drizzle-orm";
 import { db } from "../db";
 import { MessageInsert, MessageSelect, messages } from "../schemas/messages";
-import { findOrCreateChat } from "./chats";
+import { findOrCreateChat, getUserChats } from "./chats";
 
 export async function getMessagesByChatId(chatId: string) {
   return db.query.messages.findMany({
@@ -23,11 +23,35 @@ export async function updateMessage(
   const result = await db
     .update(messages)
     .set(data)
-    .where(and(eq(messages.authorId, user.id), eq(messages.id, messageId)))
+    .where(eq(messages.id, messageId))
     .returning()
     .get();
 
   return { status: "ok", data: result };
+}
+
+export async function checkMessagesDelivered(
+  chatId: string,
+): Promise<DBActionResult<MessageSelect | null>> {
+  const { user } = await getAuth();
+  if (!user) return { status: "error", error: "Unauthorized access." };
+
+  const result = await db
+    .update(messages)
+    .set({ status: "delivered" })
+    .where(
+      and(
+        eq(messages.chatId, chatId),
+        ne(messages.authorId, user.id),
+        isNull(messages.status),
+      ),
+    )
+    .returning();
+
+  return {
+    status: "ok",
+    data: result.length > 0 ? result[result.length - 1] : null,
+  };
 }
 
 export async function countUnreadMesages(chatId: string): Promise<number> {
@@ -40,7 +64,7 @@ export async function countUnreadMesages(chatId: string): Promise<number> {
     .where(
       and(
         eq(messages.chatId, chatId),
-        eq(messages.authorId, user.id),
+        ne(messages.authorId, user.id),
         or(isNull(messages.status), eq(messages.status, "delivered")),
       ),
     )

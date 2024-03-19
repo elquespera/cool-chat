@@ -59,6 +59,7 @@ export type UserInsert = typeof users.$inferInsert;
 export type ContactUser = Omit<UserSelect, "hashedPassword" | "providerId">;
 
 export type ContactUserWithChat = ContactUser & {
+  chatId?: string;
   unseenMessages?: number;
 };
 

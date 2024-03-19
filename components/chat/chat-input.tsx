@@ -8,28 +8,40 @@ import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
+import { useCustomEvent } from "@/lib/hooks/use-custom-event";
+import { useAuth } from "../providers/auth/auth-context";
 
 const maxInputRows = 5;
 
 export function ChatInput() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const [message, setMessage] = useState("");
-  const [pending, setPending] = useState(false);
   const { socket } = useSocket();
+  const { user } = useAuth();
   const { interlocutor, chat, refetchChat } = useChat();
   const { refetch: refetchMessages } = useMessages();
 
+  const [message, setMessage] = useState("");
+  const [pending, setPending] = useState(false);
+
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    if (!interlocutor || pending || !message) return;
+    if (!interlocutor || !user || pending || !message) return;
 
     setPending(true);
     try {
       const result = await sendMessage(interlocutor.id, message);
       if (result.status === "ok") {
         setMessage("");
-        socket?.emit("messageModified", result.data.chatId, result.data.id);
+
+        socket?.emit("messageUpdate", {
+          chatId: result.data.chatId,
+          messageId: result.data.id,
+          authorId: user.id,
+          interlocutorId: interlocutor.id,
+          status: "created",
+        });
+
         if (chat?.id !== result.data.chatId) {
           refetchChat(interlocutor);
         } else {
@@ -74,12 +86,7 @@ export function ChatInput() {
     );
   }, [message]);
 
-  useEffect(() => {
-    const handleChatClick = () => inputRef?.current?.focus();
-
-    window.addEventListener("chatclick", handleChatClick);
-    return () => window.removeEventListener("chatclick", handleChatClick);
-  }, []);
+  useCustomEvent("chatclick", () => inputRef?.current?.focus());
 
   return interlocutor ? (
     <div className="gap-2 border-t bg-background px-2 py-3">

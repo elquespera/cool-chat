@@ -1,7 +1,7 @@
-import { Socket, Server as NetServer } from "net";
+import { Server as NetServer, Socket } from "net";
 
-import { NextApiRequest, NextApiResponse } from "next";
 import { Server as HttpServer } from "http";
+import { NextApiRequest, NextApiResponse } from "next";
 import { Server as SocketIOServer } from "socket.io";
 
 type NextApiResponseServerIO = NextApiResponse & {
@@ -46,12 +46,12 @@ export default function handler(
         );
       });
 
-      socket.on("messageModified", (...args) => {
-        socket.broadcast.emit("messageModified", ...args);
-      });
-
       socket.on("userStatusChange", (...args) => {
         socket.broadcast.emit("userStatusChange", ...args);
+      });
+
+      socket.on("messageUpdate", async (args) => {
+        socket.broadcast.emit("messageUpdate", args);
       });
     });
 

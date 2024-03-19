@@ -58,7 +58,7 @@ export async function getUserContacts(): Promise<
         const { userOne, userTwo } = chat;
         const author = userOne.id === user.id ? userTwo : userOne;
         const unseenMessages = await countUnreadMesages(chat.id);
-        return { ...author, unseenMessages };
+        return { ...author, chatId: chat.id, unseenMessages };
       }),
     );
 

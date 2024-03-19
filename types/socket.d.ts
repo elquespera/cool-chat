@@ -1,16 +1,21 @@
-type MessageModifiedListener = (chatId: string, messageId: string) => void;
-type MessageStatusUpdateListener = (messageId: string, status: string) => void;
+type MessageUpdateListener = (payload: {
+  messageId: string;
+  chatId: string;
+  authorId: string;
+  interlocutorId: string;
+  status: MessageActionType;
+}) => void;
+
 type UserStatus = "online" | "offline" | "typing";
 type UserStatusListener = (userId: string, status: UserStatus) => void;
 
 type ServerToClientEvents = {
-  messageModified: MessageModifiedListener;
-  messageStatusUpdate: MessageStatusUpdateListener;
+  messageUpdate: MessageUpdateListener;
   userStatusChange: UserStatusListener;
 };
 
 type ClientToServerEvents = {
-  messageModified: MessageModifiedListener;
+  messageUpdate: MessageUpdateListener;
   userStatusChange: UserStatusListener;
 };
 

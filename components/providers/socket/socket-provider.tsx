@@ -18,10 +18,8 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
     socket.on("connect", () => setIsConnected(true));
     socket.on("disconnect", () => setIsConnected(false));
 
-    socket.on("messageModified", (chatId, messageId) => {
-      window.dispatchEvent(
-        createCustomEvent("messagemodified", { chatId, messageId }),
-      );
+    socket.on("messageUpdate", (payload) => {
+      window.dispatchEvent(createCustomEvent("messageupdate", payload));
     });
 
     setSocket(socket);

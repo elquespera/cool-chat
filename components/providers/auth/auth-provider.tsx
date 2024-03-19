@@ -1,7 +1,7 @@
 "use client";
 import { User } from "lucia";
-import { AuthContext } from "./auth-context";
 import { PropsWithChildren } from "react";
+import { AuthContext } from "./auth-context";
 
 type AuthProviderProps = {
   user: User | null;

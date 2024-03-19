@@ -25,3 +25,10 @@ type PropsWithClassName = {
 type DBActionResult<DataType> =
   | { status: "error"; error: string }
   | { status: "ok"; data: DataType };
+
+type MessageActionType =
+  | "created"
+  | "updated"
+  | "delivered"
+  | "read"
+  | "deleted";

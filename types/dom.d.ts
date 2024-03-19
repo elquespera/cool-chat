@@ -1,14 +1,17 @@
-type MessageModifiedEvent = CustomEvent<{ chatId: string; messageId: string }>;
-
-type MessageStatusUpdateEvent = CustomEvent<{
+type MessageUpdateEvent = CustomEvent<{
+  chatId: string;
   messageId: string;
-  status: string;
+  authorId: string;
+  interlocutorId: string;
+  status: MessageActionType;
 }>;
 
 interface CustomEventHandlersMap {
   chatclick: CustomEvent;
-  messagemodified: MessageModifiedEvent;
-  messagestatusupdate: MessageStatusUpdateEvent;
+  messageupdate: MessageUpdateEvent;
 }
+
+type CustomEventPayload<T extends keyof CustomEventHandlersMap> =
+  CustomEventHandlersMap[T] extends CustomEvent<infer T> ? T : never;
 
 interface GlobalEventHandlersEventMap extends CustomEventHandlersMap {}
