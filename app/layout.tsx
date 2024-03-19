@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn("flex min-h-screen flex-col", inter.className)}>
+      <body className={cn("flex min-h-[100dvh] flex-col", inter.className)}>
         <Script id="color-script" strategy="beforeInteractive">
           {colorScript}
         </Script>

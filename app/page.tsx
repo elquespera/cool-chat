@@ -24,7 +24,7 @@ export default async function HomePage() {
 
   return (
     <ChatProviders>
-      <main className="flex grow flex-col">
+      <main className="flex max-h-[100%] grow flex-col">
         <ChatWrapper
           leftPanel={
             <>
