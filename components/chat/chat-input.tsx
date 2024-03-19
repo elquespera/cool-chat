@@ -86,7 +86,13 @@ export function ChatInput() {
     );
   }, [message]);
 
-  useCustomEvent("chatclick", () => inputRef?.current?.focus());
+  useCustomEvent("chatclick", () => {
+    const input = inputRef.current;
+    if (!input) return;
+    input.readOnly = true;
+    input.focus();
+    input.readOnly = false;
+  });
 
   return interlocutor ? (
     <div className="gap-2 border-t bg-background px-2 py-3">
