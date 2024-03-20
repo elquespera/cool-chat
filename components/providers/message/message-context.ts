@@ -1,16 +1,18 @@
 import { MessageWithAuthor } from "@/db/schemas/messages";
 import { createContext, useContext } from "react";
 
+export type ChatScroll = "none" | "smooth";
+
 type MessageContextType = {
-  messages: MessageWithAuthor[];
-  pending: boolean;
-  refetch: (scrollBehavior?: ScrollBehavior) => Promise<void>;
-  scrollBehavior?: ScrollBehavior;
+  messages?: MessageWithAuthor[];
+  isLoading: boolean;
+  refetch: (chatScroll?: ChatScroll) => Promise<void>;
+  chatScroll?: ChatScroll;
 };
 
 export const MessageContext = createContext<MessageContextType>({
   messages: [],
-  pending: false,
+  isLoading: false,
   refetch: () => new Promise(() => {}),
 });
 

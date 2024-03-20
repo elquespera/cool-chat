@@ -4,31 +4,35 @@ import { MessageWithAuthor } from "@/db/schemas/messages";
 import { useCustomEvent } from "@/lib/hooks/use-custom-event";
 import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { useChat } from "../chat/chat-context";
-import { MessageContext } from "./message-context";
+import { ChatScroll, MessageContext } from "./message-context";
 
-type MessageProviderProps = PropsWithChildren;
+import useSWRInfinite from "swr/infinite";
+import useSWR from "swr";
 
-export function MessageProvider({ children }: MessageProviderProps) {
+const getKey = (index: number, previousData: MessageWithAuthor[]) => {
+  if (previousData && !previousData.length) return null;
+  return `/users?page=${index}&limit=10`;
+};
+
+export function MessageProvider({ children }: PropsWithChildren) {
   const { chat } = useChat();
-  const [messages, setMessages] = useState<MessageWithAuthor[]>([]);
-  const [scrollBehavior, setScrollBehavior] = useState<ScrollBehavior>();
-  const [pending, setPending] = useState(false);
+  const [chatScroll, setChatScroll] = useState<ChatScroll>();
+
+  const {
+    data: messages,
+    mutate,
+    isLoading,
+  } = useSWR(
+    chat ? { chatId: chat.id, pageIndex: 0 } : null,
+    ({ chatId, pageIndex }) => getMessagesByChatId(chatId),
+  );
 
   const refetch = useMemo(
-    () => async (scroll?: ScrollBehavior) => {
-      if (!chat) {
-        setMessages([]);
-        return;
-      }
-      setPending(true);
-      try {
-        setScrollBehavior(scroll);
-        setMessages(await getMessagesByChatId(chat.id));
-      } finally {
-        setPending(false);
-      }
+    () => async (scroll?: ChatScroll) => {
+      setChatScroll(scroll);
+      await mutate();
     },
-    [chat],
+    [mutate],
   );
 
   useCustomEvent(
@@ -37,19 +41,15 @@ export function MessageProvider({ children }: MessageProviderProps) {
       if (chat?.id !== chatId) return;
 
       refetch(
-        status === "created" || status === "delivered" ? "smooth" : undefined,
+        status === "created" || status === "delivered" ? "smooth" : "none",
       );
     },
-    [chat],
+    [refetch],
   );
-
-  useEffect(() => {
-    refetch("instant");
-  }, [refetch]);
 
   return (
     <MessageContext.Provider
-      value={{ messages, pending, refetch, scrollBehavior }}
+      value={{ messages, isLoading, refetch, chatScroll }}
     >
       {children}
     </MessageContext.Provider>

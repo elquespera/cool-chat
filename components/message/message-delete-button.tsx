@@ -33,7 +33,7 @@ export function MessageDeleteButton({
         interlocutorId: interlocutor.id,
         status: "deleted",
       });
-      refetch();
+      refetch("none");
     }
   };
 

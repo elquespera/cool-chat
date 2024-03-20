@@ -1,28 +1,29 @@
 "use client";
 import { ReactNode, useEffect, useRef } from "react";
+import { Spinner } from "../common/spinner";
+import { MessageItem } from "../message/message-item";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { ScrollArea } from "../ui/scroll-area";
-import { MessageItem } from "../message/message-item";
 
 export function ChatWindow() {
   const { interlocutor } = useChat();
-  const { messages, scrollBehavior } = useMessages();
+  const { messages, chatScroll } = useMessages();
   const messageRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
-    if (!scrollBehavior) return;
+    if (chatScroll === "none") return;
 
     messageRef.current?.scrollIntoView({
-      behavior: scrollBehavior,
+      behavior: chatScroll === "smooth" ? "smooth" : "instant",
       block: "end",
     });
-  }, [messages, scrollBehavior]);
+  }, [messages, chatScroll]);
 
   return (
     <div className="relative grow bg-muted">
       {interlocutor ? (
-        messages.length ? (
+        messages?.length ? (
           <ScrollArea className="inset-0" style={{ position: "absolute" }}>
             <ul
               ref={messageRef}
