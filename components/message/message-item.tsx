@@ -5,18 +5,20 @@ import Markdown from "markdown-to-jsx";
 import { ElementRef, forwardRef } from "react";
 import { useAuth } from "../providers/auth/auth-context";
 import { UserAvatar } from "../user/user-avatar";
+import { MessageMenu } from "./message-menu";
 import { MessageStatus } from "./message-status";
 import { MessageTimestamp } from "./message-timestamp";
+import { useDeleteMessage } from "./use-delete-message";
 
 type MessageItemProps = { message: MessageWithAuthor; series: boolean };
 
 export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
-  (
-    { message: { content, author, status, createdAt, updatedAt }, series },
-    ref,
-  ) => {
+  ({ message, series }, ref) => {
+    const { content, author, authorId, status, createdAt, updatedAt } = message;
     const { user } = useAuth();
-    const ownMessage = user?.id === author.id;
+    const ownMessage = user?.id === authorId;
+
+    const handleDelete = useDeleteMessage(message, ownMessage);
 
     return (
       <li
@@ -60,6 +62,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
                 />
                 {ownMessage && <MessageStatus status={status} />}
               </div>
+              <MessageMenu ownMessage={ownMessage} onDelete={handleDelete} />
             </>
           )}
         </div>
