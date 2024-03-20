@@ -1,11 +1,15 @@
 "use client";
+import { ArrowDownIcon } from "@radix-ui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
+import { IconButton } from "../common/icon-button";
 import { Spinner } from "../common/spinner";
 import { MessageItem } from "../message/message-item";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { ScrollArea } from "../ui/scroll-area";
+
+const scrollButtonMargin = 250;
 
 export function ChatWindow() {
   const { interlocutor } = useChat();
@@ -26,15 +30,30 @@ export function ChatWindow() {
   });
 
   const [scrollHeight, setScrollHeight] = useState(0);
+  const [scrollButtonVisible, setScrollButtonVisible] = useState(false);
+
+  const updateScrollButtonVisible = () => {
+    const scrollArea = scrollAreaRef.current;
+    if (!scrollArea) return;
+    setScrollButtonVisible(
+      scrollArea.scrollHeight - scrollArea.scrollTop - scrollArea.offsetHeight >
+        scrollButtonMargin,
+    );
+  };
+
+  const scrollToBottom = (behavior: ScrollBehavior) => {
+    listRef.current?.scrollIntoView({
+      behavior,
+      block: "end",
+    });
+  };
 
   useEffect(() => {
     if (!messages) return;
+    updateScrollButtonVisible();
 
     if (scrollBehavior) {
-      listRef.current?.scrollIntoView({
-        behavior: scrollBehavior,
-        block: "end",
-      });
+      scrollToBottom(scrollBehavior);
       setTimeout(() => setScrollBehavior(undefined), 10);
     }
 
@@ -76,6 +95,7 @@ export function ChatWindow() {
             ref={scrollAreaRef}
             className="inset-0"
             style={{ position: "absolute" }}
+            onScrollCapture={() => updateScrollButtonVisible()}
           >
             <div className="absolute bottom-1 left-1 z-10 rounded-full bg-background/80 p-2 text-foreground opacity-75">
               {messages.length}
@@ -94,6 +114,15 @@ export function ChatWindow() {
 
               <li ref={loadMoreRef} />
             </ul>
+
+            {scrollButtonVisible && (
+              <IconButton
+                className="absolute bottom-8 right-8 opacity-70"
+                variant="outline"
+                icon={<ArrowDownIcon />}
+                onClick={() => scrollToBottom("smooth")}
+              />
+            )}
           </ScrollArea>
         ) : (
           <p className="p-4 text-center text-sm font-medium text-muted-foreground">
