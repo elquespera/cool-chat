@@ -1,5 +1,7 @@
 "use client";
-import { ReactNode, useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { useIntersectionObserver } from "usehooks-ts";
 import { Spinner } from "../common/spinner";
 import { MessageItem } from "../message/message-item";
 import { useChat } from "../providers/chat/chat-context";
@@ -8,34 +10,90 @@ import { ScrollArea } from "../ui/scroll-area";
 
 export function ChatWindow() {
   const { interlocutor } = useChat();
-  const { messages, chatScroll } = useMessages();
-  const messageRef = useRef<HTMLUListElement>(null);
+  const {
+    messages,
+    fetchNextPage,
+    scrollBehavior,
+    setScrollBehavior,
+    isReachingEnd,
+    isLoadingMore,
+  } = useMessages();
+  const listRef = useRef<HTMLUListElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  const { isIntersecting, ref: loadMoreRef } = useIntersectionObserver({
+    threshold: 0.5,
+  });
+
+  const [scrollHeight, setScrollHeight] = useState(0);
 
   useEffect(() => {
-    if (chatScroll === "none") return;
+    if (!messages) return;
 
-    messageRef.current?.scrollIntoView({
-      behavior: chatScroll === "smooth" ? "smooth" : "instant",
-      block: "end",
-    });
-  }, [messages, chatScroll]);
+    if (scrollBehavior) {
+      listRef.current?.scrollIntoView({
+        behavior: scrollBehavior,
+        block: "end",
+      });
+      setScrollBehavior(undefined);
+    }
+
+    const scrollArea = scrollAreaRef.current;
+    if (scrollHeight && scrollArea) {
+      scrollArea.scrollTo({ top: scrollArea.scrollHeight - scrollHeight });
+      setTimeout(() => setScrollHeight(0));
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
+
+  useEffect(() => {
+    if (!isIntersecting || isLoadingMore || isReachingEnd || scrollHeight)
+      return;
+
+    setScrollHeight(scrollAreaRef.current?.scrollHeight ?? 0);
+    fetchNextPage();
+  }, [
+    isIntersecting,
+    isLoadingMore,
+    isReachingEnd,
+    scrollHeight,
+    fetchNextPage,
+  ]);
 
   return (
     <div className="relative grow bg-muted">
       {interlocutor ? (
         messages?.length ? (
-          <ScrollArea className="inset-0" style={{ position: "absolute" }}>
+          <ScrollArea
+            ref={scrollAreaRef}
+            className="inset-0"
+            style={{ position: "absolute" }}
+          >
+            <div className="absolute bottom-1 left-1 z-10 rounded-full bg-background/80 p-2 text-foreground opacity-75">
+              {messages.length}
+            </div>
             <ul
-              ref={messageRef}
-              className="mx-auto flex max-w-[48rem] flex-col p-4 pt-24"
+              ref={listRef}
+              className="mx-auto flex max-w-[48rem] flex-col-reverse p-4 pt-24"
             >
               {messages.map((message, index) => (
                 <MessageItem
                   key={message.id}
                   message={message}
-                  series={message.authorId === messages[index + 1]?.authorId}
+                  series={message.authorId === messages[index - 1]?.authorId}
                 />
               ))}
+
+              <li
+                ref={loadMoreRef}
+                className={cn(
+                  "flex justify-center pb-4 opacity-0 transition-opacity",
+                  isLoadingMore && "opacity-100",
+                )}
+              >
+                <Spinner />
+              </li>
             </ul>
           </ScrollArea>
         ) : (

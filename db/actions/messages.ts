@@ -1,15 +1,25 @@
 "use server";
 
 import { getAuth } from "@/lib/auth/get-auth";
-import { and, count, eq, isNull, ne, or } from "drizzle-orm";
+import { and, count, desc, eq, isNull, ne, or } from "drizzle-orm";
 import { db } from "../db";
 import { MessageInsert, MessageSelect, messages } from "../schemas/messages";
 import { findOrCreateChat } from "./chats";
+import { wait } from "@/lib/utils";
 
-export async function getMessagesByChatId(chatId: string) {
+export async function getMessagesByChatId(
+  chatId: string,
+  pageIndex = 0,
+  messagesPerPage = 10,
+) {
+  await wait(500);
+
   return db.query.messages.findMany({
     where: eq(messages.chatId, chatId),
     with: { author: true },
+    offset: pageIndex * messagesPerPage,
+    limit: messagesPerPage,
+    orderBy: desc(messages.createdAt),
   });
 }
 
