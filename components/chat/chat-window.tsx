@@ -1,6 +1,5 @@
 "use client";
-import { cn } from "@/lib/utils";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
 import { Spinner } from "../common/spinner";
 import { MessageItem } from "../message/message-item";
@@ -36,7 +35,7 @@ export function ChatWindow() {
         behavior: scrollBehavior,
         block: "end",
       });
-      setScrollBehavior(undefined);
+      setTimeout(() => setScrollBehavior(undefined), 10);
     }
 
     const scrollArea = scrollAreaRef.current;
@@ -49,7 +48,13 @@ export function ChatWindow() {
   }, [messages]);
 
   useEffect(() => {
-    if (!isIntersecting || isLoadingMore || isReachingEnd || scrollHeight)
+    if (
+      !isIntersecting ||
+      isLoadingMore ||
+      isReachingEnd ||
+      scrollHeight ||
+      scrollBehavior
+    )
       return;
 
     setScrollHeight(scrollAreaRef.current?.scrollHeight ?? 0);
@@ -59,15 +64,14 @@ export function ChatWindow() {
     isLoadingMore,
     isReachingEnd,
     scrollHeight,
+    scrollBehavior,
     fetchNextPage,
   ]);
 
   return (
     <div className="relative flex grow flex-col justify-center bg-muted">
       {interlocutor ? (
-        isValidating ? (
-          <Spinner className="w-8 self-center" />
-        ) : messages?.length ? (
+        messages?.length ? (
           <ScrollArea
             ref={scrollAreaRef}
             className="inset-0"
@@ -78,7 +82,7 @@ export function ChatWindow() {
             </div>
             <ul
               ref={listRef}
-              className="mx-auto flex max-w-[48rem] flex-col-reverse p-4 pt-24"
+              className="mx-auto flex max-w-[48rem] flex-col-reverse p-4 pt-28"
             >
               {messages.map((message, index) => (
                 <MessageItem
@@ -88,47 +92,26 @@ export function ChatWindow() {
                 />
               ))}
 
-              <li
-                ref={loadMoreRef}
-                className={cn(
-                  "flex justify-center pb-4 opacity-0 transition-opacity",
-                  isLoadingMore && "opacity-100",
-                )}
-              >
-                <Spinner />
-              </li>
+              <li ref={loadMoreRef} />
             </ul>
           </ScrollArea>
         ) : (
-          <ChatEmpty
-            message={
-              <p>
-                Type something and press &apos;Enter&apos; to send your first
-                message.
-                <br /> Use &apos;Shift+Enter&apos; for a new line.
-              </p>
-            }
-          />
+          <p className="p-4 text-center text-sm font-medium text-muted-foreground">
+            Type something and press &apos;Enter&apos; to send your first
+            message.
+            <br /> Use &apos;Shift+Enter&apos; for a new line.
+          </p>
         )
       ) : (
-        <ChatEmpty
-          message={
-            <p>
-              Select a contact to start or continue a conversation.
-              <br />
-              Use search input to find new users.
-            </p>
-          }
-        />
+        <p className="p-4 text-center text-sm font-medium text-muted-foreground">
+          Select a contact to start or continue a conversation.
+          <br />
+          Use search input to find new users.
+        </p>
       )}
-    </div>
-  );
-}
-
-function ChatEmpty({ message }: { message: ReactNode }) {
-  return (
-    <div className="flex h-full flex-col justify-center p-4 text-center text-sm font-medium text-muted-foreground">
-      {message}
+      {(isValidating || isLoadingMore) && (
+        <Spinner className="absolute top-24 w-6 self-center" />
+      )}
     </div>
   );
 }

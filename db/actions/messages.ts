@@ -5,7 +5,6 @@ import { and, count, desc, eq, isNull, ne, or } from "drizzle-orm";
 import { db } from "../db";
 import { MessageInsert, MessageSelect, messages } from "../schemas/messages";
 import { findOrCreateChat } from "./chats";
-import { wait } from "@/lib/utils";
 
 export async function getMessagesByChatId(
   chatId: string,
