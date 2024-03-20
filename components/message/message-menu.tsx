@@ -14,9 +14,10 @@ import {
   Pencil1Icon,
   TrashIcon,
 } from "@radix-ui/react-icons";
-import { ComponentProps } from "react";
+import { ComponentProps, useState } from "react";
 import { useCopyMessage } from "./use-copy-message";
 import { useDeleteMessage } from "./use-delete-message";
+import ConfirmDialog from "../common/confirm-dialog";
 
 type MessageMenuProps = {
   message: MessageWithAuthor;
@@ -29,11 +30,12 @@ export function MessageMenu({
   className,
   ...props
 }: MessageMenuProps) {
+  const [open, setOpen] = useState(false);
   const handleDelete = useDeleteMessage(message, ownMessage);
   const { handleCopy, copySuccess } = useCopyMessage(message);
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <button
           className={cn(
@@ -53,13 +55,22 @@ export function MessageMenu({
               <Pencil1Icon className="mr-1 h-4 w-4" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem
-              className="text-destructive"
-              onClick={handleDelete}
+
+            <ConfirmDialog
+              onSuccess={async () => {
+                await handleDelete();
+                setOpen(false);
+              }}
             >
-              <TrashIcon className="mr-1 h-4 w-4" />
-              Delete
-            </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-destructive"
+                onSelect={(e) => e.preventDefault()}
+              >
+                <TrashIcon className="mr-1 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+            </ConfirmDialog>
+
             <DropdownMenuSeparator />
           </>
         )}
