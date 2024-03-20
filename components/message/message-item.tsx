@@ -54,10 +54,10 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
             <p className="select-none italic">(deleted)</p>
           ) : (
             <>
-              <p className="prose prose-zinc dark:prose-invert">
+              <div className="prose prose-zinc dark:prose-invert">
                 <Markdown>{content}</Markdown>
-              </p>
-              <span className="ml-auto inline-flex items-center gap-2">
+              </div>
+              <div className="ml-auto flex items-center gap-2">
                 <MessageTimestamp
                   createdAt={createdAt}
                   updatedAt={updatedAt}
@@ -66,7 +66,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
                   )}
                 />
                 {ownMessage && <MessageStatus status={status} />}
-              </span>
+              </div>
 
               {/* <div className="flex">
                   {ownMessage && (
@@ -92,7 +92,7 @@ type MessageStatusProps = {
 
 function MessageStatus({ status }: MessageStatusProps) {
   return (
-    <div className="relative h-4 w-5">
+    <span className="relative h-4 w-5">
       <CheckIcon
         className={cn(
           "absolute text-muted-foreground opacity-50",
@@ -107,6 +107,6 @@ function MessageStatus({ status }: MessageStatusProps) {
           )}
         />
       )}
-    </div>
+    </span>
   );
 }

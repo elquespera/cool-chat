@@ -19,7 +19,7 @@ export function ContactSearchInput() {
     <div className="border-b px-4 py-3">
       <div className="flex items-center gap-2 rounded-3xl bg-muted px-2 py-1">
         <label className="group flex h-8 grow items-center gap-2">
-          <MagnifyingGlassIcon className="h-4 w-4 shrink-0 text-muted-foreground opacity-50 group-focus-within:opacity-100" />
+          <MagnifyingGlassIcon className="h-5 w-5 shrink-0 text-muted-foreground opacity-50 group-focus-within:opacity-100" />
           <input
             ref={inputRef}
             className="w-0 min-w-0 grow bg-transparent outline-none outline-transparent"

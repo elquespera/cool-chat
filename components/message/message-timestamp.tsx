@@ -28,7 +28,7 @@ export function MessageTimestamp({
   }, [createdAt]);
 
   return (
-    <span className={cn("text-sm italic", className)} {...props}>
+    <span className={cn("select-none text-sm italic", className)} {...props}>
       {ago}
     </span>
   );

@@ -95,17 +95,16 @@ export function ChatInput() {
   });
 
   return interlocutor ? (
-    <div className="gap-2 border-t bg-background px-2 py-3">
+    <div className="border-t bg-background px-2 py-3">
       <form
         ref={formRef}
-        className="flex rounded-3xl bg-muted px-2 py-1.5"
+        className="flex gap-1 rounded-3xl bg-muted px-2 py-1.5"
         onSubmit={handleSubmit}
       >
-        <EmojiPicker onEmojiChange={handleInsertEmoji} />
         <textarea
           ref={inputRef}
           rows={1}
-          className="w-0 min-w-0 grow resize-none bg-transparent pt-0.5 outline-none outline-transparent"
+          className="w-0 min-w-0 grow resize-none bg-transparent pl-1 pt-1 outline-none outline-transparent"
           value={message}
           placeholder="Write a message..."
           onChange={(event) => setMessage(event.target.value)}
@@ -124,10 +123,11 @@ export function ChatInput() {
           value={message}
           onValueChange={setMessage}
         />
+        <EmojiPicker onEmojiChange={handleInsertEmoji} />
         <IconButton
           toolTip="Send"
           variant="ghost"
-          className="h-7 w-7"
+          className="h-8 w-8"
           type="submit"
           disabled={!message || pending}
           icon={<PaperPlaneIcon />}
