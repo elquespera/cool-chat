@@ -40,11 +40,11 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
         />
         <div
           className={cn(
-            "group relative flex max-w-[24rem] grow flex-col overflow-hidden rounded-md border bg-background p-4",
+            "group relative flex max-w-[24rem] flex-wrap gap-x-6 overflow-hidden rounded-lg border bg-background px-3 py-1.5",
 
             ownMessage
               ? "bg-message-own text-message-own-foreground"
-              : "border-primary/30 bg-message text-message-foreground",
+              : "border-primary/20 bg-message text-message-foreground",
             status === "deleted"
               ? "opacity-50"
               : "before:absolute before:inset-0 before:z-[-1] before:bg-background",
@@ -54,12 +54,21 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
             <p className="select-none italic">(deleted)</p>
           ) : (
             <>
-              <div className="prose prose-zinc dark:prose-invert">
+              <p className="prose prose-zinc dark:prose-invert">
                 <Markdown>{content}</Markdown>
-              </div>
+              </p>
+              <span className="ml-auto inline-flex items-center gap-2">
+                <MessageTimestamp
+                  createdAt={createdAt}
+                  updatedAt={updatedAt}
+                  className={cn(
+                    ownMessage ? "text-muted-foreground" : "text-primary/70",
+                  )}
+                />
+                {ownMessage && <MessageStatus status={status} />}
+              </span>
 
-              <div className="mt-2 flex items-end justify-between gap-2">
-                <div className="flex">
+              {/* <div className="flex">
                   {ownMessage && (
                     <MessageDeleteButton
                       messageId={id}
@@ -67,15 +76,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
                       authorId={author.id}
                     />
                   )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <MessageTimestamp
-                    createdAt={createdAt}
-                    updatedAt={updatedAt}
-                  />
-                  {ownMessage && <MessageStatus status={status} />}
-                </div>
-              </div>
+                </div> */}
             </>
           )}
         </div>
