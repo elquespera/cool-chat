@@ -12,8 +12,6 @@ export async function getMessagesByChatId(
   pageIndex = 0,
   messagesPerPage = 10,
 ) {
-  await wait(500);
-
   return db.query.messages.findMany({
     where: eq(messages.chatId, chatId),
     with: { author: true },

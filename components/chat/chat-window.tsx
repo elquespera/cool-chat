@@ -17,6 +17,7 @@ export function ChatWindow() {
     setScrollBehavior,
     isReachingEnd,
     isLoadingMore,
+    isValidating,
   } = useMessages();
   const listRef = useRef<HTMLUListElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -62,9 +63,11 @@ export function ChatWindow() {
   ]);
 
   return (
-    <div className="relative grow bg-muted">
+    <div className="relative flex grow flex-col justify-center bg-muted">
       {interlocutor ? (
-        messages?.length ? (
+        isValidating ? (
+          <Spinner className="w-8 self-center" />
+        ) : messages?.length ? (
           <ScrollArea
             ref={scrollAreaRef}
             className="inset-0"
