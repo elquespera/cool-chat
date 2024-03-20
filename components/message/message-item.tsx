@@ -1,25 +1,18 @@
 "use client";
-import {
-  MessageStatus as MessageStatusType,
-  MessageWithAuthor,
-} from "@/db/schemas/messages";
+import { MessageWithAuthor } from "@/db/schemas/messages";
 import { cn } from "@/lib/utils";
-import { CheckIcon } from "@radix-ui/react-icons";
 import Markdown from "markdown-to-jsx";
+import { ElementRef, forwardRef } from "react";
 import { useAuth } from "../providers/auth/auth-context";
 import { UserAvatar } from "../user/user-avatar";
-import { MessageDeleteButton } from "./message-delete-button";
+import { MessageStatus } from "./message-status";
 import { MessageTimestamp } from "./message-timestamp";
-import { ElementRef, forwardRef } from "react";
 
 type MessageItemProps = { message: MessageWithAuthor; series: boolean };
 
 export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
   (
-    {
-      message: { content, author, status, id, chatId, createdAt, updatedAt },
-      series,
-    },
+    { message: { content, author, status, createdAt, updatedAt }, series },
     ref,
   ) => {
     const { user } = useAuth();
@@ -67,16 +60,6 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
                 />
                 {ownMessage && <MessageStatus status={status} />}
               </div>
-
-              {/* <div className="flex">
-                  {ownMessage && (
-                    <MessageDeleteButton
-                      messageId={id}
-                      chatId={chatId}
-                      authorId={author.id}
-                    />
-                  )}
-                </div> */}
             </>
           )}
         </div>
@@ -85,28 +68,3 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
   },
 );
 MessageItem.displayName = "MessageItem";
-
-type MessageStatusProps = {
-  status: MessageStatusType | null;
-};
-
-function MessageStatus({ status }: MessageStatusProps) {
-  return (
-    <span className="relative h-4 w-5">
-      <CheckIcon
-        className={cn(
-          "absolute text-muted-foreground opacity-50",
-          status === "read" && "text-primary opacity-100",
-        )}
-      />
-      {(status === "delivered" || status === "read") && (
-        <CheckIcon
-          className={cn(
-            "absolute translate-x-1 text-muted-foreground opacity-50",
-            status === "read" && "text-primary opacity-100",
-          )}
-        />
-      )}
-    </span>
-  );
-}
