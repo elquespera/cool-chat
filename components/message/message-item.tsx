@@ -8,7 +8,6 @@ import { UserAvatar } from "../user/user-avatar";
 import { MessageMenu } from "./message-menu";
 import { MessageStatus } from "./message-status";
 import { MessageTimestamp } from "./message-timestamp";
-import { useDeleteMessage } from "./use-delete-message";
 
 type MessageItemProps = { message: MessageWithAuthor; series: boolean };
 
@@ -17,8 +16,6 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
     const { content, author, authorId, status, createdAt, updatedAt } = message;
     const { user } = useAuth();
     const ownMessage = user?.id === authorId;
-
-    const handleDelete = useDeleteMessage(message, ownMessage);
 
     return (
       <li
@@ -62,7 +59,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
                 />
                 {ownMessage && <MessageStatus status={status} />}
               </div>
-              <MessageMenu ownMessage={ownMessage} onDelete={handleDelete} />
+              <MessageMenu message={message} ownMessage={ownMessage} />
             </>
           )}
         </div>
