@@ -51,6 +51,8 @@ export function MessageEditForm({
     }
   };
 
+  const handleCancel = () => setEditingId(undefined);
+
   return (
     <form ref={formRef} className="grow" onSubmit={handleSubmit}>
       <div className="flex grow">
@@ -61,6 +63,7 @@ export function MessageEditForm({
           formRef={formRef}
           autoFocus
           autoSelectAll
+          onEscape={handleCancel}
         />
       </div>
       <div className="mt-2 flex flex-wrap justify-end gap-2">
@@ -78,7 +81,7 @@ export function MessageEditForm({
           size="sm"
           variant="secondary"
           className="h-7"
-          onClick={() => setEditingId(undefined)}
+          onClick={handleCancel}
         >
           Cancel
         </IconButton>

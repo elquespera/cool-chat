@@ -98,7 +98,7 @@ export function ChatInput() {
         <IconButton
           toolTip="Send"
           variant="ghost"
-          className="h-8 w-8"
+          className="h-8 w-8 group-focus-within:text-primary dark:group-focus-within:text-foreground"
           type="submit"
           disabled={!message || pending}
           icon={<PaperPlaneIcon />}
