@@ -4,14 +4,16 @@ import { createContext, useContext } from "react";
 
 type ChatContextType = {
   interlocutor: ContactUser | null;
-  setIntercolutor: (intercolutor: ContactUser | null) => void;
+  interlocutorId: string | null;
+  setInterlocutorId: (interlocutor: string | null) => void;
   chat: ChatSelect | null;
   refetchChat: (intercolutor: ContactUser | null) => void;
 };
 
 export const ChatContext = createContext<ChatContextType>({
   interlocutor: null,
-  setIntercolutor: () => {},
+  interlocutorId: null,
+  setInterlocutorId: () => {},
   chat: null,
   refetchChat: () => {},
 });

@@ -56,13 +56,26 @@ export function ChatInput() {
 
   const handleInsertEmoji = useInsertEmoji(inputRef, message, setMessage);
 
-  useCustomEvent("chatclick", () => {
-    const input = inputRef.current;
-    if (!input) return;
-    input.inputMode = "none";
-    input.focus();
-    input.inputMode = "text";
-  });
+  useCustomEvent(
+    "chatclick",
+    () => {
+      const input = inputRef.current;
+      if (!input) return;
+
+      if (isMobile) {
+        input.inputMode = "none";
+        input.readOnly = true;
+        setTimeout(() => {
+          input.focus();
+          input.readOnly = false;
+          input.inputMode = "text";
+        }, 500);
+      } else {
+        input.focus();
+      }
+    },
+    [isMobile],
+  );
 
   return interlocutor ? (
     <div className="border-t bg-background px-2 py-3">

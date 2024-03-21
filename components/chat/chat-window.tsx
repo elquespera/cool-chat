@@ -70,6 +70,7 @@ export function ChatWindow() {
   useEffect(() => {
     if (
       !isIntersecting ||
+      isValidating ||
       isLoadingMore ||
       isReachingEnd ||
       scrollHeight ||
@@ -82,6 +83,7 @@ export function ChatWindow() {
   }, [
     isIntersecting,
     isLoadingMore,
+    isValidating,
     isReachingEnd,
     scrollHeight,
     scrollBehavior,

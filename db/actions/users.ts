@@ -21,6 +21,20 @@ export async function getUserByEmailOrUsername(emailOrUsername: string) {
   });
 }
 
+export async function getUserById(
+  id: string,
+): Promise<DBActionResult<ContactUser>> {
+  const { user } = await getAuth();
+  if (!user) return { status: "error", error: "Unauthorized access." };
+
+  const data = await db.query.users.findFirst({
+    where: eq(users.id, id),
+  });
+
+  if (!data) return { status: "error", error: "User not found" };
+  return { status: "ok", data };
+}
+
 export async function searchUsers(
   searchValue: string,
 ): Promise<DBActionResult<ContactUser[]>> {
