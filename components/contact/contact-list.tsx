@@ -1,12 +1,22 @@
 "use client";
+import { assistantId, interlocutorKey } from "@/constants";
+import { IconButton } from "../common/icon-button";
 import { Spinner } from "../common/spinner";
 import { useContacts } from "../providers/contacts/contact-context";
 import { ScrollArea } from "../ui/scroll-area";
 import { ContactItem } from "./contact-item";
+import { AssistantIcon } from "../icons/assistant-icon";
+import { useChat } from "../providers/chat/chat-context";
+import { createCustomEvent } from "@/lib/custom-event";
 
 export function ContactList() {
   const { contacts, foundContacts, searchValue, pending, error } =
     useContacts();
+
+  const { interlocutor, setInterlocutorId } = useChat();
+  const hideAssistant =
+    interlocutor?.role === "assistant" ||
+    contacts.find(({ role }) => role === "assistant");
 
   const contactToDisplay =
     searchValue !== "" || pending ? foundContacts : contacts;
@@ -28,6 +38,19 @@ export function ContactList() {
         )}
         {pending && <Spinner className="absolute right-2 top-2 w-3" />}
       </ScrollArea>
+      {!hideAssistant && (
+        <div className="absolute bottom-0 flex h-20 w-full items-center justify-center bg-background/80 p-4 backdrop-blur-sm">
+          <IconButton
+            icon={<AssistantIcon className="h-4 w-4" />}
+            onClick={() => {
+              setInterlocutorId(assistantId);
+              window.dispatchEvent(createCustomEvent("chatclick", {}));
+            }}
+          >
+            Talk to Assistant
+          </IconButton>
+        </div>
+      )}
     </div>
   );
 }

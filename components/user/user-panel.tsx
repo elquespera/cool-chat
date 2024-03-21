@@ -69,7 +69,7 @@ export function UserPanel() {
     <Collapsible
       open={open}
       onOpenChange={setOpen}
-      className="absolute bottom-0 w-full border-t bg-background/80 p-4 backdrop-blur-sm"
+      className="border-t bg-background p-4"
     >
       <div className="flex items-center gap-2">
         {user ? (

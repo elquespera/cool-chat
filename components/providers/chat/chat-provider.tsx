@@ -8,10 +8,9 @@ import { PropsWithChildren, useCallback, useEffect, useState } from "react";
 import { useAuth } from "../auth/auth-context";
 import { useChatWindow } from "../chat-window/chat-window-context";
 import { ChatContext } from "./chat-context";
+import { interlocutorKey } from "@/constants";
 
 type ChatProviderProps = PropsWithChildren;
-
-const interlocutorKey = "user";
 
 export function ChatProvider({ children }: ChatProviderProps) {
   const { user } = useAuth();
