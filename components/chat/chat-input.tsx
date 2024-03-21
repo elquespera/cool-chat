@@ -56,13 +56,13 @@ export function ChatInput() {
 
   const handleInsertEmoji = useInsertEmoji(inputRef, message, setMessage);
 
-  useCustomEvent(
-    "chatclick",
-    () => {
-      if (!isMobile) inputRef.current?.focus();
-    },
-    [isMobile],
-  );
+  useCustomEvent("chatclick", () => {
+    const input = inputRef.current;
+    if (!input) return;
+    input.inputMode = "none";
+    input.focus();
+    input.inputMode = "text";
+  });
 
   return interlocutor ? (
     <div className="border-t bg-background px-2 py-3">
@@ -79,7 +79,6 @@ export function ChatInput() {
           className="pl-1 pt-1"
           placeholder="Write a message..."
           clearButton
-          autoFocus
         />
 
         <EmojiPicker onEmojiChange={handleInsertEmoji} />
