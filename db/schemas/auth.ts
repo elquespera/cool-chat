@@ -6,13 +6,17 @@ import {
   sqliteTable,
   text,
 } from "drizzle-orm/sqlite-core";
-import { ChatSelect } from "./chats";
+
+const UserRoles = ["user", "assistant", "admin"] as const;
+export type UserRole = (typeof UserRoles)[number];
 
 export const users = sqliteTable("user", {
   id: text("id")
     .notNull()
     .primaryKey()
     .$defaultFn(() => randomUUID()),
+
+  role: text("role", { enum: UserRoles }).default("user"),
 
   username: text("username"),
   avatarUrl: text("avatar_url"),
