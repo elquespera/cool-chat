@@ -7,17 +7,17 @@ import { useChat } from "../providers/chat/chat-context";
 import { UserInfo } from "../user/user-info";
 
 export function ChatUser() {
-  const { interlocutor } = useChat();
-  const { isMobile, setPage } = useChatWindow();
+  const { interlocutor, setInterlocutorId } = useChat();
+  const { isMobile } = useChatWindow();
 
   return interlocutor ? (
     <div className="absolute flex h-20 w-full items-center border-b bg-background/80 p-4 backdrop-blur-sm">
       {isMobile && (
         <IconButton
           variant="ghost"
-          className="h-9 w-9"
+          className="mr-2 h-9 w-9"
           icon={<ArrowLeftIcon className="h-5 w-5" />}
-          onClick={() => setPage("sidebar")}
+          onClick={() => setInterlocutorId(null)}
         />
       )}
       <UserInfo user={interlocutor} status size="lg" />
