@@ -40,7 +40,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
     const fetchInterlocutor = async () => {
       if (interlocutorId) {
         const result = await getUserById(interlocutorId);
-        if (result.status === "ok") {
+        if (result.ok) {
           setInterlocutor(result.data);
           refetchChat(result.data);
           setPage("chat");

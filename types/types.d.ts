@@ -23,8 +23,8 @@ type PropsWithClassName = {
 };
 
 type DBActionResult<DataType> =
-  | { status: "error"; error: string }
-  | { status: "ok"; data: DataType };
+  | { ok: true; data: DataType }
+  | { ok: false; error: string };
 
 type MessageActionType =
   | "created"

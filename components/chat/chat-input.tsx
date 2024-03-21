@@ -35,7 +35,7 @@ export function ChatInput() {
     setPending(true);
     try {
       const result = await sendMessage(interlocutor.id, message);
-      if (result.status === "ok") {
+      if (result.ok) {
         setMessage("");
 
         socket?.emit("messageUpdate", {

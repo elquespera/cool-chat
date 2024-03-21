@@ -26,27 +26,27 @@ export async function getUserById(
   id: string,
 ): Promise<DBActionResult<ContactUser>> {
   const { user } = await getAuth();
-  if (!user) return { status: "error", error: "Unauthorized access." };
+  if (!user) return { ok: false, error: "Unauthorized access." };
 
   const data = await db.query.users.findFirst({
     where: eq(users.id, id),
   });
 
-  if (!data) return { status: "error", error: "User not found" };
-  return { status: "ok", data };
+  if (!data) return { ok: false, error: "User not found" };
+  return { ok: true, data };
 }
 
 export async function getAssistantUser() {
   const result = await getUserById(assistantId);
-  return result.status === "ok" ? result.data : null;
+  return result.ok ? result.data : null;
 }
 
 export async function searchUsers(
   searchValue: string,
 ): Promise<DBActionResult<ContactUser[]>> {
   const { user } = await getAuth();
-  if (!user) return { status: "error", error: "Unauthorized access." };
-  if (!searchValue.length) return { status: "ok", data: [] };
+  if (!user) return { ok: false, error: "Unauthorized access." };
+  if (!searchValue.length) return { ok: true, data: [] };
 
   const search = `${searchValue}%`;
 
@@ -59,9 +59,9 @@ export async function searchUsers(
       columns: { hashedPassword: false, providerId: false },
     });
 
-    return { status: "ok", data };
+    return { ok: true, data };
   } catch (error) {
-    return { status: "error", error: "Unknown error" };
+    return { ok: false, error: "Unknown error" };
   }
 }
 
@@ -69,7 +69,7 @@ export async function getUserContacts(): Promise<
   DBActionResult<ContactUserWithChat[]>
 > {
   const { user } = await getAuth();
-  if (!user) return { status: "error", error: "Unauthorized access." };
+  if (!user) return { ok: false, error: "Unauthorized access." };
 
   try {
     const chats = await getUserChats(user.id);
@@ -82,9 +82,9 @@ export async function getUserContacts(): Promise<
       }),
     );
 
-    return { status: "ok", data };
+    return { ok: true, data };
   } catch (error) {
-    return { status: "error", error: "Unknown error" };
+    return { ok: false, error: "Unknown error" };
   }
 }
 

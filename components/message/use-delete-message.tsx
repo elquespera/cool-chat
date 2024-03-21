@@ -17,7 +17,7 @@ export function useDeleteMessage(
     if (!ownMessage || !interlocutor) return;
     const result = await updateMessage(id, { status: "deleted" });
 
-    if (result.status === "ok") {
+    if (result.ok) {
       socket?.emit("messageUpdate", {
         messageId: id,
         chatId,

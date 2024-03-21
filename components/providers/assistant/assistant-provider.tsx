@@ -63,7 +63,7 @@ export function AssistantProvider({
           content,
         });
 
-        if (result.status === "ok") {
+        if (result.ok) {
           refetchMessages("smooth");
         }
       } finally {

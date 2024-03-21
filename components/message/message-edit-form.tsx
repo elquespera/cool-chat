@@ -34,7 +34,7 @@ export function MessageEditForm({
         updatedAt: new Date(),
       });
 
-      if (result.status === "ok") {
+      if (result.ok) {
         socket?.emit("messageUpdate", {
           chatId: result.data.chatId,
           messageId: result.data.id,
