@@ -1,12 +1,12 @@
 "use client";
 import { updateMessage } from "@/db/actions/messages";
-import { MessageWithAuthor } from "@/db/schemas/messages";
+import { MessageSelect } from "@/db/schemas/messages";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
 
 export function useDeleteMessage(
-  { id, chatId, authorId }: MessageWithAuthor,
+  { id, chatId, authorId }: MessageSelect,
   ownMessage: boolean,
 ) {
   const { socket } = useSocket();
