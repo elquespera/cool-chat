@@ -49,7 +49,7 @@ function ContactItem({ contact }: { contact: ContactUserWithChat }) {
       <button
         role="option"
         aria-selected={interlocutor?.id === contact.id}
-        className="relative flex w-full items-center gap-2 p-2 py-3 hover:bg-accent hover:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground"
+        className="relative flex w-full items-center gap-2 p-2 py-3 hover:bg-accent hover:text-accent-foreground aria-selected:bg-primary/10 aria-selected:text-accent-foreground"
         onClick={handleContactClick}
       >
         <UserInfo user={contact} oneLine status />
