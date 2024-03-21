@@ -26,7 +26,10 @@ export function UserInfo({
   ...props
 }: UserInfoProps) {
   return (
-    <div className={cn("flex items-center gap-2", className)} {...props}>
+    <div
+      className={cn("flex items-center gap-2 overflow-hidden", className)}
+      {...props}
+    >
       <div className="relative">
         <UserAvatar
           avatarUrl={avatarUrl || user.avatarUrl}

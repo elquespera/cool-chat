@@ -2,34 +2,45 @@
 import { getMessagesByChatId } from "@/db/actions/messages";
 import { MessageWithAuthor } from "@/db/schemas/messages";
 import { useCustomEvent } from "@/lib/hooks/use-custom-event";
-import { PropsWithChildren, useEffect, useMemo, useState } from "react";
+import { PropsWithChildren, useMemo, useState } from "react";
+import useSWRInfinite from "swr/infinite";
 import { useChat } from "../chat/chat-context";
 import { MessageContext } from "./message-context";
 
-type MessageProviderProps = PropsWithChildren;
+const messagesPerPage = 10;
 
-export function MessageProvider({ children }: MessageProviderProps) {
+export function MessageProvider({ children }: PropsWithChildren) {
   const { chat } = useChat();
-  const [messages, setMessages] = useState<MessageWithAuthor[]>([]);
   const [scrollBehavior, setScrollBehavior] = useState<ScrollBehavior>();
-  const [pending, setPending] = useState(false);
+  const [editingId, setEditingId] = useState<string>();
+
+  const { data, mutate, isLoading, isValidating, size, setSize } =
+    useSWRInfinite(
+      (pageIndex: number, previousData: MessageWithAuthor[]) => {
+        if (!chat || (previousData && !previousData.length)) return null;
+        return { chatId: chat.id, pageIndex };
+      },
+      ({ chatId, pageIndex }) =>
+        getMessagesByChatId(chatId, pageIndex, messagesPerPage),
+    );
+  const isEmpty = data?.[0]?.length === 0;
+  const isReachingEnd =
+    isEmpty || (!!data && data[data.length - 1]?.length < messagesPerPage);
+
+  const isLoadingMore =
+    isLoading || (size > 0 && !!data && typeof data[size - 1] === "undefined");
+
+  const messages = useMemo(() => (data ? data.flat() : undefined), [data]);
 
   const refetch = useMemo(
-    () => async (scroll?: ScrollBehavior) => {
-      if (!chat) {
-        setMessages([]);
-        return;
-      }
-      setPending(true);
-      try {
-        setScrollBehavior(scroll);
-        setMessages(await getMessagesByChatId(chat.id));
-      } finally {
-        setPending(false);
-      }
+    () => async (scrollBehavior?: ScrollBehavior) => {
+      setScrollBehavior(scrollBehavior);
+      await mutate();
     },
-    [chat],
+    [mutate],
   );
+
+  const fetchNextPage = () => setSize(size + 1);
 
   useCustomEvent(
     "messageupdate",
@@ -40,16 +51,26 @@ export function MessageProvider({ children }: MessageProviderProps) {
         status === "created" || status === "delivered" ? "smooth" : undefined,
       );
     },
-    [chat],
+    [refetch],
   );
 
-  useEffect(() => {
-    refetch("instant");
-  }, [refetch]);
+  useCustomEvent("chatclick", () => setScrollBehavior("instant"));
 
   return (
     <MessageContext.Provider
-      value={{ messages, pending, refetch, scrollBehavior }}
+      value={{
+        messages,
+        isLoading,
+        isValidating,
+        isLoadingMore,
+        isReachingEnd,
+        scrollBehavior,
+        editingId,
+        setScrollBehavior,
+        refetch,
+        fetchNextPage,
+        setEditingId,
+      }}
     >
       {children}
     </MessageContext.Provider>

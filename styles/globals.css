@@ -67,15 +67,11 @@
 
 @layer base {
   :root {
-    --message: var(--primary) / 0.2;
+    --message: var(--primary) / 0.15;
     --message-foreground: var(--foreground);
 
     --message-own: var(--background);
     --message-own-foreground: var(--foreground);
-  }
-
-  .dark {
-    /* --message-own: 240 3.7% 18%; */
   }
 }
 

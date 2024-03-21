@@ -1,72 +1,156 @@
 "use client";
-import { ReactNode, useEffect, useRef } from "react";
+import { ArrowDownIcon } from "@radix-ui/react-icons";
+import { useEffect, useRef, useState } from "react";
+import { useIntersectionObserver } from "usehooks-ts";
+import { IconButton } from "../common/icon-button";
+import { Spinner } from "../common/spinner";
+import { MessageItem } from "../message/message-item";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { ScrollArea } from "../ui/scroll-area";
-import { MessageItem } from "../message/message-item";
+
+const scrollButtonMargin = 250;
+const scrollButtonTimeout = 3000;
 
 export function ChatWindow() {
   const { interlocutor } = useChat();
-  const { messages, scrollBehavior } = useMessages();
-  const messageRef = useRef<HTMLUListElement>(null);
+  const {
+    messages,
+    fetchNextPage,
+    scrollBehavior,
+    setScrollBehavior,
+    isReachingEnd,
+    isLoadingMore,
+    isValidating,
+  } = useMessages();
+  const listRef = useRef<HTMLUListElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!scrollBehavior) return;
+  const { isIntersecting, ref: loadMoreRef } = useIntersectionObserver({
+    threshold: 0.5,
+  });
 
-    messageRef.current?.scrollIntoView({
-      behavior: scrollBehavior,
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const [scrollButtonVisible, setScrollButtonVisible] = useState(false);
+
+  const updateScrollButtonVisible = () => {
+    const scrollArea = scrollAreaRef.current;
+    if (!scrollArea) return;
+    setScrollButtonVisible(
+      scrollArea.scrollHeight - scrollArea.scrollTop - scrollArea.offsetHeight >
+        scrollButtonMargin,
+    );
+  };
+
+  const scrollToBottom = (behavior: ScrollBehavior) => {
+    listRef.current?.scrollIntoView({
+      behavior,
       block: "end",
     });
-  }, [messages, scrollBehavior]);
+  };
+
+  useEffect(() => {
+    if (!messages) return;
+    updateScrollButtonVisible();
+
+    if (scrollBehavior) {
+      scrollToBottom(scrollBehavior);
+      setTimeout(() => setScrollBehavior(undefined), 10);
+    }
+
+    const scrollArea = scrollAreaRef.current;
+    if (scrollHeight && scrollArea) {
+      scrollArea.scrollTo({ top: scrollArea.scrollHeight - scrollHeight });
+      setTimeout(() => setScrollHeight(0));
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
+
+  useEffect(() => {
+    if (
+      !isIntersecting ||
+      isLoadingMore ||
+      isReachingEnd ||
+      scrollHeight ||
+      scrollBehavior
+    )
+      return;
+
+    setScrollHeight(scrollAreaRef.current?.scrollHeight ?? 0);
+    fetchNextPage();
+  }, [
+    isIntersecting,
+    isLoadingMore,
+    isReachingEnd,
+    scrollHeight,
+    scrollBehavior,
+    fetchNextPage,
+  ]);
+
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setScrollButtonVisible(false),
+      scrollButtonTimeout,
+    );
+
+    return () => clearTimeout(timer);
+  }, [scrollButtonVisible]);
 
   return (
-    <div className="relative grow bg-muted">
+    <div className="relative flex grow flex-col justify-center bg-muted">
       {interlocutor ? (
-        messages.length ? (
-          <ScrollArea className="inset-0" style={{ position: "absolute" }}>
+        messages?.length ? (
+          <ScrollArea
+            ref={scrollAreaRef}
+            className="inset-0"
+            style={{ position: "absolute" }}
+            onScrollCapture={() => updateScrollButtonVisible()}
+          >
+            <div className="absolute bottom-1 left-1 z-10 rounded-full bg-background/80 p-2 text-foreground opacity-75">
+              {messages.length}
+            </div>
             <ul
-              ref={messageRef}
-              className="mx-auto flex max-w-[48rem] flex-col p-4 pt-24"
+              ref={listRef}
+              className="mx-auto flex max-w-[48rem] flex-col-reverse p-4 pt-28"
             >
               {messages.map((message, index) => (
                 <MessageItem
                   key={message.id}
                   message={message}
-                  series={message.authorId === messages[index + 1]?.authorId}
+                  series={message.authorId === messages[index - 1]?.authorId}
                 />
               ))}
+
+              <li ref={loadMoreRef} />
             </ul>
+
+            {scrollButtonVisible && (
+              <IconButton
+                className="absolute bottom-8 right-8 opacity-70"
+                variant="outline"
+                icon={<ArrowDownIcon />}
+                onClick={() => scrollToBottom("smooth")}
+              />
+            )}
           </ScrollArea>
         ) : (
-          <ChatEmpty
-            message={
-              <p>
-                Type something and press &apos;Enter&apos; to send your first
-                message.
-                <br /> Use &apos;Shift+Enter&apos; for a new line.
-              </p>
-            }
-          />
+          <p className="p-4 text-center text-sm font-medium text-muted-foreground">
+            Type something and press &apos;Enter&apos; to send your first
+            message.
+            <br /> Use &apos;Shift+Enter&apos; for a new line.
+          </p>
         )
       ) : (
-        <ChatEmpty
-          message={
-            <p>
-              Select a contact to start or continue a conversation.
-              <br />
-              Use search input to find new users.
-            </p>
-          }
-        />
+        <p className="p-4 text-center text-sm font-medium text-muted-foreground">
+          Select a contact to start or continue a conversation.
+          <br />
+          Use search input to find new users.
+        </p>
       )}
-    </div>
-  );
-}
-
-function ChatEmpty({ message }: { message: ReactNode }) {
-  return (
-    <div className="flex h-full flex-col justify-center p-4 text-center text-sm font-medium text-muted-foreground">
-      {message}
+      {(isValidating || isLoadingMore) && (
+        <Spinner className="absolute top-24 w-6 self-center" />
+      )}
     </div>
   );
 }

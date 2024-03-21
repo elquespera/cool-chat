@@ -14,7 +14,7 @@ type AvatarPickerProps = {
 export function AvatarPicker({
   url,
   onUrlChange,
-  count = 20,
+  count = 12,
   className,
   ...props
 }: AvatarPickerProps) {
@@ -45,8 +45,8 @@ export function AvatarPicker({
         onValueChange={onUrlChange}
       >
         {avatars.map((url) => (
-          <ToggleGroupItem key={url} value={url} className="h-12 w-12">
-            <UserAvatar avatarUrl={url} />
+          <ToggleGroupItem key={url} value={url} className="h-16 w-16">
+            <UserAvatar avatarUrl={url} className="w-12" />
           </ToggleGroupItem>
         ))}
       </ToggleGroup>

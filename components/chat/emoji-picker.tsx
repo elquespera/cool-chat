@@ -25,16 +25,14 @@ export function EmojiPicker({
           type="button"
           variant="ghost"
           toolTip="Add emoji"
-          toolTipSide="right"
-          className={cn("h-7 w-7", className)}
+          className={cn("h-8 w-8", className)}
           icon={<SmileIcon className="h-4 w-4" />}
         />
       </PopoverTrigger>
       <PopoverContent
         className="min-w-auto border-none bg-transparent shadow-none"
-        align="start"
-        sideOffset={-10}
-        alignOffset={-20}
+        align="end"
+        alignOffset={50}
       >
         {open && (
           <Suspense>

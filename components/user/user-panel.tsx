@@ -87,9 +87,9 @@ export function UserPanel() {
         <ThemeSwitch className="ml-auto" />
         <CollapsibleTrigger asChild>
           <IconButton
-            className="h-8 w-8"
             toolTip="Settings"
             variant="ghost"
+            className="shrink-0"
             icon={<DotsVerticalIcon />}
           />
         </CollapsibleTrigger>

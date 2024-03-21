@@ -18,7 +18,7 @@ export default function ThemeSwitch({ className, ...props }: ThemeSwitchProps) {
     <IconButton
       {...props}
       aria-label="Theme"
-      className={cn("h-7 w-7", className)}
+      className={cn("shrink-0", className)}
       variant="ghost"
       toolTip={`Theme: ${resolvedTheme}`}
       icon={
