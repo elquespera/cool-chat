@@ -16,20 +16,22 @@ export function MessageTimestamp({
   className,
   ...props
 }: MessageTimestampProps) {
-  const [ago, setAgo] = useState(formatAgo(createdAt));
+  const [created, setCreated] = useState(formatAgo(createdAt));
+  const [updated, setUpdated] = useState(formatAgo(updatedAt));
 
   useEffect(() => {
-    const interval = setInterval(
-      () => setAgo(formatAgo(createdAt)),
-      updateInterval,
-    );
+    const interval = setInterval(() => {
+      setCreated(formatAgo(createdAt));
+      setUpdated(formatAgo(updatedAt));
+    }, updateInterval);
 
     return () => clearInterval(interval);
-  }, [createdAt]);
+  }, [createdAt, updatedAt]);
 
   return (
     <span className={cn("select-none text-sm italic", className)} {...props}>
-      {ago}
+      {created}
+      {createdAt.getTime() !== updatedAt.getTime() && `, edited ${updated}`}
     </span>
   );
 }
@@ -37,5 +39,5 @@ export function MessageTimestamp({
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
-const formatAgo = (date: Date) =>
-  timeAgo.format(date.getTime(), "twitter-minute-now");
+const formatAgo = (created: Date) =>
+  timeAgo.format(created.getTime(), "twitter-minute-now");

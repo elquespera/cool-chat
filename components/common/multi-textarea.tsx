@@ -16,6 +16,7 @@ type MultiTextAreaProps = {
   clearButton?: boolean;
   onValueChange: (value: string) => void;
   maxRows?: number;
+  autoSelectAll?: boolean;
 } & ComponentProps<"textarea">;
 
 export const MultiTextArea = forwardRef<
@@ -31,6 +32,7 @@ export const MultiTextArea = forwardRef<
       className,
       onKeyDown,
       maxRows = 5,
+      autoSelectAll,
       ...props
     },
     ref,
@@ -64,6 +66,10 @@ export const MultiTextArea = forwardRef<
         Math.min(maxRows, Math.round(input.scrollHeight / input.offsetHeight)),
       );
     }, [value]);
+
+    useEffect(() => {
+      inputRef.current?.setSelectionRange(0, inputRef.current?.value?.length);
+    }, [autoSelectAll]);
 
     return (
       <>

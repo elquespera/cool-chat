@@ -37,7 +37,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
         <div
           className={cn(
             "group relative flex max-w-[24rem] flex-wrap gap-x-6 overflow-hidden rounded-lg border bg-background px-3 py-1.5",
-
+            id === editingId && "grow",
             ownMessage
               ? "bg-message-own text-message-own-foreground"
               : "border-primary/20 bg-message text-message-foreground",
@@ -49,7 +49,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
           {status === "deleted" ? (
             <p className="select-none italic">(deleted)</p>
           ) : id === editingId ? (
-            <MessageEditForm />
+            <MessageEditForm message={message} />
           ) : (
             <>
               <div className="prose prose-zinc dark:prose-invert">

@@ -1,16 +1,15 @@
 "use client";
 import { sendMessage } from "@/db/actions/messages";
+import { useCustomEvent } from "@/lib/hooks/use-custom-event";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
-import { FormEventHandler, useEffect, useRef, useState } from "react";
+import { FormEventHandler, useRef, useState } from "react";
 import { IconButton } from "../common/icon-button";
-import { InputClearButton } from "../common/input-clear-button";
+import { MultiTextArea } from "../common/multi-textarea";
+import { useAuth } from "../providers/auth/auth-context";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
-import { useCustomEvent } from "@/lib/hooks/use-custom-event";
-import { useAuth } from "../providers/auth/auth-context";
-import { MultiTextArea } from "../common/multi-textarea";
 import { useInsertEmoji } from "./use-insert-emoji";
 
 const maxInputRows = 5;
@@ -39,7 +38,7 @@ export function ChatInput() {
         socket?.emit("messageUpdate", {
           chatId: result.data.chatId,
           messageId: result.data.id,
-          authorId: user.id,
+          authorId: result.data.authorId,
           interlocutorId: interlocutor.id,
           status: "created",
         });
