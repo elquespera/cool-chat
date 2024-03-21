@@ -1,12 +1,12 @@
 "use client";
 import type { ContactUserWithChat } from "@/db/schemas/auth";
-import { createCustomEvent } from "@/lib/custom-event";
 import { Spinner } from "../common/spinner";
 import { useChatWindow } from "../providers/chat-window/chat-window-context";
 import { useChat } from "../providers/chat/chat-context";
 import { useContacts } from "../providers/contacts/contact-context";
 import { ScrollArea } from "../ui/scroll-area";
 import { UserInfo } from "../user/user-info";
+import { createCustomEvent } from "@/lib/custom-event";
 
 export function ContactList() {
   const { contacts, foundContacts, searchValue, pending, error } =
@@ -17,11 +17,14 @@ export function ContactList() {
 
   return (
     <div className="relative grow">
-      <ScrollArea className="inset-0" style={{ position: "absolute" }}>
+      <ScrollArea
+        className="inset-0 flex flex-col"
+        style={{ position: "absolute" }}
+      >
         {!contactToDisplay.length || error ? (
           <EmptyContacts search={searchValue} error={error} />
         ) : (
-          <ul className="divide-y pb-20">
+          <ul className="grow divide-y pb-20">
             {contactToDisplay.map((contact) => (
               <ContactItem key={contact.id} contact={contact} />
             ))}
@@ -34,11 +37,10 @@ export function ContactList() {
 }
 
 function ContactItem({ contact }: { contact: ContactUserWithChat }) {
-  const { interlocutor, setIntercolutor } = useChat();
-  const { setPage } = useChatWindow();
+  const { interlocutor, setInterlocutorId } = useChat();
+
   const handleContactClick = () => {
-    setIntercolutor(contact);
-    setPage("chat");
+    setInterlocutorId(contact.id);
     window.dispatchEvent(createCustomEvent("chatclick", {}));
   };
 
