@@ -1,19 +1,17 @@
-import { ContactUser, UserSelect } from "@/db/schemas/auth";
+import { MessageWithAuthor } from "@/db/schemas/messages";
 import { createContext, useContext } from "react";
 
 type AssistantContextType = {
-  assistant: ContactUser | null;
   isAssistant: boolean;
-  response: string;
   isStreaming: boolean;
+  streamedMessage: MessageWithAuthor;
   generateResponse: (chatId: string) => void;
 };
 
 export const AssistantContext = createContext<AssistantContextType>({
   isAssistant: false,
-  response: "",
   isStreaming: false,
-  assistant: null,
+  streamedMessage: {} as MessageWithAuthor,
   generateResponse: () => {},
 });
 

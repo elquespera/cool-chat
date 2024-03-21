@@ -45,9 +45,8 @@ export function ContactProvider({ children }: PropsWithChildren) {
   const refetchContacts = useMemo(
     () => async () => {
       if (user) {
-        const result = await getUserContacts();
-
         try {
+          const result = await getUserContacts();
           if (result.ok) {
             setContacts(result.data);
             setError("");
@@ -120,6 +119,7 @@ export function ContactProvider({ children }: PropsWithChildren) {
         foundContacts,
         error,
         pending,
+        refetchContacts,
       }}
     >
       {children}

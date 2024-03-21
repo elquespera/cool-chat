@@ -8,6 +8,7 @@ type ContactContextType = {
   foundContacts: ContactUser[];
   error: string;
   pending: boolean;
+  refetchContacts: () => Promise<void>;
 };
 
 export const ContactContext = createContext<ContactContextType>({
@@ -17,6 +18,7 @@ export const ContactContext = createContext<ContactContextType>({
   foundContacts: [],
   error: "",
   pending: false,
+  refetchContacts: () => Promise.resolve(),
 });
 
 export const useContacts = () => useContext(ContactContext);

@@ -12,6 +12,7 @@ import { EmojiPicker } from "./emoji-picker";
 import { useInputFocus } from "./use-input-focus";
 import { useInsertEmoji } from "./use-insert-emoji";
 import { useAssistant } from "../providers/assistant/assistant-context";
+import { useContacts } from "../providers/contacts/contact-context";
 
 export function ChatInput() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -21,6 +22,7 @@ export function ChatInput() {
   const { interlocutor, chat, refetchChat } = useChat();
   const { isStreaming } = useAssistant();
   const { refetch: refetchMessages } = useMessages();
+  const { refetchContacts } = useContacts();
   const { generateResponse } = useAssistant();
 
   const [message, setMessage] = useState("");
@@ -48,6 +50,7 @@ export function ChatInput() {
 
         if (chat?.id !== result.data.chatId) {
           await refetchChat(interlocutor);
+          await refetchContacts();
         } else {
           await refetchMessages("smooth");
         }

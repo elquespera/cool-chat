@@ -10,6 +10,7 @@ import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { ScrollArea } from "../ui/scroll-area";
 import { AssistantResponse } from "./assistant-response";
+import { useAssistant } from "../providers/assistant/assistant-context";
 
 const scrollButtonMargin = 250;
 const scrollButtonTimeout = 3000;
@@ -25,6 +26,8 @@ export function ChatWindow() {
     isLoadingMore,
     isValidating,
   } = useMessages();
+  const { isStreaming, streamedMessage } = useAssistant();
+
   const listRef = useRef<HTMLUListElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -119,6 +122,17 @@ export function ChatWindow() {
               className="mx-auto flex max-w-[48rem] flex-col-reverse p-4 pt-28"
             >
               <AssistantResponse />
+              {isStreaming &&
+                streamedMessage &&
+                streamedMessage.id !== messages[0]?.id && (
+                  <MessageItem
+                    key={streamedMessage.id}
+                    message={streamedMessage}
+                    series={streamedMessage.authorId === messages[0]?.authorId}
+                    streaming
+                  />
+                )}
+
               {messages.map((message, index) => (
                 <MessageItem
                   key={message.id}
