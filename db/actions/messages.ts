@@ -20,6 +20,17 @@ export async function getMessagesByChatId(
   });
 }
 
+export async function createMessage(
+  data: MessageInsert,
+): Promise<DBActionResult<MessageSelect>> {
+  const { user } = await getAuth();
+  if (!user) return { status: "error", error: "Unauthorized access." };
+
+  const result = await db.insert(messages).values(data).returning().get();
+
+  return { status: "ok", data: result };
+}
+
 export async function updateMessage(
   messageId: string,
   data: Partial<MessageInsert>,

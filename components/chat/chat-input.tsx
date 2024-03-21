@@ -1,7 +1,7 @@
 "use client";
 import { sendMessage } from "@/db/actions/messages";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
-import { FormEventHandler, useRef, useState } from "react";
+import { FormEventHandler, useEffect, useRef, useState } from "react";
 import { IconButton } from "../common/icon-button";
 import { MultiTextArea } from "../common/multi-textarea";
 import { useAuth } from "../providers/auth/auth-context";
@@ -18,7 +18,8 @@ export function ChatInput() {
   const formRef = useRef<HTMLFormElement>(null);
   const { socket } = useSocket();
   const { user } = useAuth();
-  const { interlocutor, chat, refetchChat, isStreaming } = useChat();
+  const { interlocutor, chat, refetchChat } = useChat();
+  const { isStreaming } = useAssistant();
   const { refetch: refetchMessages } = useMessages();
   const { generateResponse } = useAssistant();
 

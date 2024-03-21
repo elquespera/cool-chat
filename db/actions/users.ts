@@ -11,6 +11,7 @@ import {
 } from "../schemas/auth";
 import { getUserChats } from "./chats";
 import { countUnreadMesages } from "./messages";
+import { assistantId } from "@/constants";
 
 export async function getUserByEmailOrUsername(emailOrUsername: string) {
   return db.query.users.findFirst({
@@ -33,6 +34,11 @@ export async function getUserById(
 
   if (!data) return { status: "error", error: "User not found" };
   return { status: "ok", data };
+}
+
+export async function getAssistantUser() {
+  const result = await getUserById(assistantId);
+  return result.status === "ok" ? result.data : null;
 }
 
 export async function searchUsers(

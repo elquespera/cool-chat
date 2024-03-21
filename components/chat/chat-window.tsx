@@ -9,6 +9,7 @@ import { MessageItem } from "../message/message-item";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { ScrollArea } from "../ui/scroll-area";
+import { AssistantResponse } from "./assistant-response";
 
 const scrollButtonMargin = 250;
 const scrollButtonTimeout = 3000;
@@ -117,6 +118,7 @@ export function ChatWindow() {
               ref={listRef}
               className="mx-auto flex max-w-[48rem] flex-col-reverse p-4 pt-28"
             >
+              <AssistantResponse />
               {messages.map((message, index) => (
                 <MessageItem
                   key={message.id}

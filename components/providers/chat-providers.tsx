@@ -8,9 +8,11 @@ import { ContactProvider } from "./contacts/contact-provider";
 import { ChatWindowProvider } from "./chat-window/chat-window-provider";
 import { ColorProvider } from "./color/color-provider";
 import { AssistantProvider } from "./assistant/assistant-provider";
+import { getAssistantUser } from "@/db/actions/users";
 
 export async function ChatProviders({ children }: PropsWithChildren) {
   const { user } = await getAuth();
+  const assistant = await getAssistantUser();
 
   return (
     <AuthProvider user={user}>
@@ -19,7 +21,7 @@ export async function ChatProviders({ children }: PropsWithChildren) {
           <SocketProvider>
             <ChatProvider>
               <MessageProvider>
-                <AssistantProvider>
+                <AssistantProvider assistant={assistant}>
                   <ContactProvider>{children}</ContactProvider>
                 </AssistantProvider>
               </MessageProvider>

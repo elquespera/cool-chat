@@ -60,8 +60,6 @@ export function ChatProvider({ children }: ChatProviderProps) {
       interlocutor,
       interlocutorId,
       chat,
-      isAssistant: interlocutor?.role === "assistant",
-      isStreaming: false,
       setChat,
       setInterlocutorId,
       refetchChat,

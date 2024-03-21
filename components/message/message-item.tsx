@@ -10,11 +10,16 @@ import { MessageStatus } from "./message-status";
 import { MessageTimestamp } from "./message-timestamp";
 import { useMessages } from "../providers/message/message-context";
 import { MessageEditForm } from "./message-edit-form";
+import { Spinner } from "../common/spinner";
 
-type MessageItemProps = { message: MessageWithAuthor; series: boolean };
+type MessageItemProps = {
+  message: MessageWithAuthor;
+  series: boolean;
+  streaming?: boolean;
+};
 
 export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
-  ({ message, series }, ref) => {
+  ({ message, series, streaming }, ref) => {
     const { editingId } = useMessages();
     const { id, content, author, authorId, status, createdAt, updatedAt } =
       message;
@@ -33,6 +38,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
         <UserAvatar
           className={cn(series && "opacity-0")}
           avatarUrl={author.avatarUrl}
+          role={author.role}
         />
         <div
           className={cn(
@@ -53,6 +59,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
           ) : (
             <>
               <div className="prose prose-zinc dark:prose-invert">
+                {streaming && <Spinner className="mr-2 w-4" />}
                 <Markdown>{content}</Markdown>
               </div>
               <div className="ml-auto flex items-center gap-2">
