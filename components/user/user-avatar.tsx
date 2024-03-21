@@ -1,15 +1,21 @@
 "use client";
 
+import { UserRole } from "@/db/schemas/auth";
 import { cn } from "@/lib/utils";
 import { PersonIcon } from "@radix-ui/react-icons";
 import { ComponentProps, useEffect, useState } from "react";
+import { UserIcon } from "../icons/user-icon";
+import { AdminIcon } from "../icons/admin-icon";
+import { AssistantIcon } from "../icons/assistant-icon";
 
 type UserAvatarProps = {
   avatarUrl: string | null;
+  role?: UserRole;
 } & ComponentProps<"div">;
 
 export function UserAvatar({
   avatarUrl,
+  role = "user",
   className,
   ...props
 }: UserAvatarProps) {
@@ -17,10 +23,17 @@ export function UserAvatar({
 
   useEffect(() => setSrc(avatarUrl), [avatarUrl]);
 
+  const Icon =
+    role === "admin"
+      ? AdminIcon
+      : role === "assistant"
+        ? AssistantIcon
+        : UserIcon;
+
   return (
     <div
       className={cn(
-        "relative flex aspect-square w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted",
+        "relative flex aspect-square w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-accent",
         className,
       )}
       {...props}
@@ -29,11 +42,11 @@ export function UserAvatar({
         <img
           alt="Avatar"
           src={src}
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute left-[10%] top-[10%] h-[80%] w-[80%] overflow-hidden object-cover"
           onError={() => setSrc(null)}
         />
       ) : (
-        <PersonIcon className="h-[75%] w-[75%] text-muted-foreground" />
+        <Icon className="h-[75%] w-[75%] text-muted-foreground" />
       )}
     </div>
   );

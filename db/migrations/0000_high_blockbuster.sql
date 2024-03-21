@@ -15,6 +15,7 @@ CREATE TABLE `session` (
 --> statement-breakpoint
 CREATE TABLE `user` (
 	`id` text PRIMARY KEY NOT NULL,
+	`role` text DEFAULT 'user' NOT NULL,
 	`username` text,
 	`avatar_url` text,
 	`provider_id` text,
@@ -37,7 +38,7 @@ CREATE TABLE `chat` (
 CREATE TABLE `message` (
 	`id` text PRIMARY KEY NOT NULL,
 	`content` text NOT NULL,
-	`deleted` integer,
+	`status` text,
 	`author_id` text NOT NULL,
 	`chat_id` text NOT NULL,
 	`created_at` integer DEFAULT (strftime('%s', 'now')) NOT NULL,

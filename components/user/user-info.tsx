@@ -33,6 +33,7 @@ export function UserInfo({
       <div className="relative">
         <UserAvatar
           avatarUrl={avatarUrl || user.avatarUrl}
+          role={user?.role}
           className={cn(
             size === "sm" ? "w-8" : size === "lg" ? "w-12" : "w-10",
           )}

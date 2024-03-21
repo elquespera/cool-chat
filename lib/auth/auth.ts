@@ -13,11 +13,12 @@ export const lucia = new Lucia(adapter, {
     },
   },
 
-  getUserAttributes: ({ email, username, avatarUrl, providerId }) => {
+  getUserAttributes: ({ email, username, avatarUrl, role, providerId }) => {
     return {
       email,
       username,
       avatarUrl,
+      role,
       providerId,
     };
   },

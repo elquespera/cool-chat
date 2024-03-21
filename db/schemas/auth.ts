@@ -16,7 +16,7 @@ export const users = sqliteTable("user", {
     .primaryKey()
     .$defaultFn(() => randomUUID()),
 
-  role: text("role", { enum: UserRoles }).default("user"),
+  role: text("role", { enum: UserRoles }).default("user").notNull(),
 
   username: text("username"),
   avatarUrl: text("avatar_url"),
