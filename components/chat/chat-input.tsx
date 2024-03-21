@@ -11,8 +11,7 @@ import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
 import { useInsertEmoji } from "./use-insert-emoji";
-
-const maxInputRows = 5;
+import { useChatWindow } from "../providers/chat-window/chat-window-context";
 
 export function ChatInput() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -21,6 +20,7 @@ export function ChatInput() {
   const { user } = useAuth();
   const { interlocutor, chat, refetchChat } = useChat();
   const { refetch: refetchMessages } = useMessages();
+  const { isMobile } = useChatWindow();
 
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
@@ -56,7 +56,13 @@ export function ChatInput() {
 
   const handleInsertEmoji = useInsertEmoji(inputRef, message, setMessage);
 
-  useCustomEvent("chatclick", () => inputRef.current?.focus());
+  useCustomEvent(
+    "chatclick",
+    () => {
+      if (!isMobile) inputRef.current?.focus();
+    },
+    [isMobile],
+  );
 
   return interlocutor ? (
     <div className="border-t bg-background px-2 py-3">
