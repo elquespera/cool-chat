@@ -68,7 +68,7 @@ export const MultiTextArea = forwardRef<
     }, [value]);
 
     useEffect(() => {
-      inputRef.current?.setSelectionRange(0, inputRef.current?.value?.length);
+      inputRef.current?.select();
     }, [autoSelectAll]);
 
     return (
