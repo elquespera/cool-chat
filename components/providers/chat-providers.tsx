@@ -7,6 +7,7 @@ import { MessageProvider } from "./message/message-provider";
 import { ContactProvider } from "./contacts/contact-provider";
 import { ChatWindowProvider } from "./chat-window/chat-window-provider";
 import { ColorProvider } from "./color/color-provider";
+import { AssistantProvider } from "./assistant/assistant-provider";
 
 export async function ChatProviders({ children }: PropsWithChildren) {
   const { user } = await getAuth();
@@ -18,7 +19,9 @@ export async function ChatProviders({ children }: PropsWithChildren) {
           <SocketProvider>
             <ChatProvider>
               <MessageProvider>
-                <ContactProvider>{children}</ContactProvider>
+                <AssistantProvider>
+                  <ContactProvider>{children}</ContactProvider>
+                </AssistantProvider>
               </MessageProvider>
             </ChatProvider>
           </SocketProvider>

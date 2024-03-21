@@ -1,6 +1,5 @@
 "use client";
 import { sendMessage } from "@/db/actions/messages";
-import { useCustomEvent } from "@/lib/hooks/use-custom-event";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { FormEventHandler, useRef, useState } from "react";
 import { IconButton } from "../common/icon-button";
@@ -10,24 +9,27 @@ import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
+import { useInputFocus } from "./use-input-focus";
 import { useInsertEmoji } from "./use-insert-emoji";
-import { useChatWindow } from "../providers/chat-window/chat-window-context";
+import { useAssistant } from "../providers/assistant/assistant-context";
 
 export function ChatInput() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const { socket } = useSocket();
   const { user } = useAuth();
-  const { interlocutor, chat, refetchChat } = useChat();
+  const { interlocutor, chat, refetchChat, isStreaming } = useChat();
   const { refetch: refetchMessages } = useMessages();
-  const { isMobile } = useChatWindow();
+  const { generateResponse } = useAssistant();
 
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
 
+  const isValid = interlocutor && user && message && !pending && !isStreaming;
+
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    if (!interlocutor || !user || pending || !message) return;
+    if (!isValid) return;
 
     setPending(true);
     try {
@@ -44,10 +46,12 @@ export function ChatInput() {
         });
 
         if (chat?.id !== result.data.chatId) {
-          refetchChat(interlocutor);
+          await refetchChat(interlocutor);
         } else {
           await refetchMessages("smooth");
         }
+
+        generateResponse(result.data.chatId);
       }
     } finally {
       setPending(false);
@@ -55,27 +59,7 @@ export function ChatInput() {
   };
 
   const handleInsertEmoji = useInsertEmoji(inputRef, message, setMessage);
-
-  useCustomEvent(
-    "chatclick",
-    () => {
-      const input = inputRef.current;
-      if (!input) return;
-
-      if (isMobile) {
-        input.inputMode = "none";
-        input.readOnly = true;
-        setTimeout(() => {
-          input.focus();
-          input.readOnly = false;
-          input.inputMode = "text";
-        }, 500);
-      } else {
-        input.focus();
-      }
-    },
-    [isMobile],
-  );
+  useInputFocus(inputRef);
 
   return interlocutor ? (
     <div className="border-t bg-background px-2 py-3">
@@ -100,7 +84,7 @@ export function ChatInput() {
           variant="ghost"
           className="h-8 w-8 group-focus-within:text-primary dark:group-focus-within:text-foreground"
           type="submit"
-          disabled={!message || pending}
+          disabled={!isValid}
           icon={<PaperPlaneIcon />}
         />
       </form>

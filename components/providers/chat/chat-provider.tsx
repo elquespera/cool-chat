@@ -4,7 +4,13 @@ import { getUserById } from "@/db/actions/users";
 import type { ContactUser } from "@/db/schemas/auth";
 import { ChatSelect } from "@/db/schemas/chats";
 import { useQueryParam } from "@/lib/hooks/use-query-param";
-import { PropsWithChildren, useCallback, useEffect, useState } from "react";
+import {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useAuth } from "../auth/auth-context";
 import { useChatWindow } from "../chat-window/chat-window-context";
 import { ChatContext } from "./chat-context";
@@ -17,7 +23,6 @@ export function ChatProvider({ children }: ChatProviderProps) {
   const { setPage } = useChatWindow();
   const [interlocutor, setInterlocutor] = useState<ContactUser | null>(null);
   const [interlocutorId, setInterlocutorId] = useQueryParam(interlocutorKey);
-
   const [chat, setChat] = useState<ChatSelect | null>(null);
 
   const refetchChat = useCallback(
@@ -50,17 +55,19 @@ export function ChatProvider({ children }: ChatProviderProps) {
     fetchInterlocutor();
   }, [interlocutorId, setPage, refetchChat]);
 
-  return (
-    <ChatContext.Provider
-      value={{
-        interlocutor,
-        interlocutorId,
-        setInterlocutorId,
-        chat,
-        refetchChat,
-      }}
-    >
-      {children}
-    </ChatContext.Provider>
+  const value = useMemo(
+    () => ({
+      interlocutor,
+      interlocutorId,
+      chat,
+      isAssistant: interlocutor?.role === "assistant",
+      isStreaming: false,
+      setChat,
+      setInterlocutorId,
+      refetchChat,
+    }),
+    [interlocutor, interlocutorId, setInterlocutorId, chat, refetchChat],
   );
+
+  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 }
