@@ -1,15 +1,13 @@
 "use client";
 import { findChatByIds } from "@/db/actions/chats";
+import { getUserById } from "@/db/actions/users";
 import type { ContactUser } from "@/db/schemas/auth";
 import { ChatSelect } from "@/db/schemas/chats";
+import { useQueryParam } from "@/lib/hooks/use-query-param";
 import { PropsWithChildren, useCallback, useEffect, useState } from "react";
 import { useAuth } from "../auth/auth-context";
-import { ChatContext } from "./chat-context";
-import { useSearchParams } from "next/navigation";
-import { useQueryParam } from "@/lib/hooks/use-query-param";
-import { getUserById } from "@/db/actions/users";
-import { createCustomEvent } from "@/lib/custom-event";
 import { useChatWindow } from "../chat-window/chat-window-context";
+import { ChatContext } from "./chat-context";
 
 type ChatProviderProps = PropsWithChildren;
 

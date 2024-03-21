@@ -81,7 +81,7 @@ export function ChatInput() {
     <div className="border-t bg-background px-2 py-3">
       <form
         ref={formRef}
-        className="flex gap-1 rounded-3xl bg-muted px-2 py-1.5"
+        className="group flex gap-1 rounded-3xl bg-accent px-2 py-1.5 text-accent-foreground transition-colors focus-within:bg-primary/10 dark:focus-within:bg-primary/30"
         onSubmit={handleSubmit}
       >
         <MultiTextArea
@@ -89,7 +89,7 @@ export function ChatInput() {
           formRef={formRef}
           value={message}
           onValueChange={setMessage}
-          className="pl-1 pt-1"
+          className="pl-1 pt-1 group-focus-within:placeholder:text-primary/70 dark:group-focus-within:placeholder:text-foreground/50"
           placeholder="Write a message..."
           clearButton
         />

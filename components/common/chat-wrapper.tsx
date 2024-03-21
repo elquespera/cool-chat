@@ -20,7 +20,7 @@ export function ChatWrapper({ leftPanel, rightPanel }: ChatWrapperProps) {
     <div className="relative flex w-[100vw] grow flex-col overflow-clip">
       <div
         className={cn(
-          "absolute inset-0 transition-transform duration-500",
+          "absolute inset-0 transition-transform duration-300",
           page === "chat" && "translate-x-[-100vw]",
         )}
       >

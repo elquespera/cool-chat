@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 import { ArrowDownIcon } from "@radix-ui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
@@ -127,14 +128,15 @@ export function ChatWindow() {
               <li ref={loadMoreRef} />
             </ul>
 
-            {scrollButtonVisible && (
-              <IconButton
-                className="absolute bottom-8 right-8 opacity-70"
-                variant="outline"
-                icon={<ArrowDownIcon />}
-                onClick={() => scrollToBottom("smooth")}
-              />
-            )}
+            <IconButton
+              className={cn(
+                "absolute bottom-8 left-[50%] h-10 w-10 translate-x-[-50%] opacity-70 transition-opacity",
+                !scrollButtonVisible && "sclae-0 opacity-0",
+              )}
+              variant="outline"
+              icon={<ArrowDownIcon className="h-4 w-4" />}
+              onClick={() => scrollToBottom("smooth")}
+            />
           </ScrollArea>
         ) : (
           <p className="p-4 text-center text-sm font-medium text-muted-foreground">
