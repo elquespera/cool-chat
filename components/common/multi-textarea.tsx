@@ -65,7 +65,7 @@ export const MultiTextArea = forwardRef<
         1,
         Math.min(maxRows, Math.round(input.scrollHeight / input.offsetHeight)),
       );
-    }, [value]);
+    }, [value, maxRows]);
 
     useEffect(() => {
       inputRef.current?.select();
@@ -96,3 +96,4 @@ export const MultiTextArea = forwardRef<
     );
   },
 );
+MultiTextArea.displayName = "MultiTextArea";
