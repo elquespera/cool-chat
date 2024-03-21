@@ -11,6 +11,8 @@ type MessageContextType = {
   fetchNextPage: () => void;
   scrollBehavior?: ScrollBehavior;
   setScrollBehavior: (scrollBehavior?: ScrollBehavior) => void;
+  editingId?: string;
+  setEditingId: (id?: string) => void;
 };
 
 export const MessageContext = createContext<MessageContextType>({
@@ -22,6 +24,7 @@ export const MessageContext = createContext<MessageContextType>({
   refetch: () => new Promise(() => {}),
   fetchNextPage: () => {},
   setScrollBehavior: () => {},
+  setEditingId: () => {},
 });
 
 export const useMessages = () => useContext(MessageContext);

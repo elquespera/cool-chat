@@ -18,6 +18,7 @@ import { ComponentProps, useState } from "react";
 import { useCopyMessage } from "./use-copy-message";
 import { useDeleteMessage } from "./use-delete-message";
 import ConfirmDialog from "../common/confirm-dialog";
+import { useMessages } from "../providers/message/message-context";
 
 type MessageMenuProps = {
   message: MessageWithAuthor;
@@ -31,6 +32,7 @@ export function MessageMenu({
   ...props
 }: MessageMenuProps) {
   const [open, setOpen] = useState(false);
+  const { setEditingId } = useMessages();
   const handleDelete = useDeleteMessage(message, ownMessage);
   const { handleCopy, copySuccess } = useCopyMessage(message);
 
@@ -51,7 +53,7 @@ export function MessageMenu({
       <DropdownMenuContent align="end">
         {ownMessage && (
           <>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setEditingId(message.id)}>
               <Pencil1Icon className="mr-1 h-4 w-4" />
               Edit
             </DropdownMenuItem>

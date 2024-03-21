@@ -12,6 +12,7 @@ const messagesPerPage = 10;
 export function MessageProvider({ children }: PropsWithChildren) {
   const { chat } = useChat();
   const [scrollBehavior, setScrollBehavior] = useState<ScrollBehavior>();
+  const [editingId, setEditingId] = useState<string>();
 
   const { data, mutate, isLoading, isValidating, size, setSize } =
     useSWRInfinite(
@@ -64,9 +65,11 @@ export function MessageProvider({ children }: PropsWithChildren) {
         isLoadingMore,
         isReachingEnd,
         scrollBehavior,
+        editingId,
         setScrollBehavior,
         refetch,
         fetchNextPage,
+        setEditingId,
       }}
     >
       {children}

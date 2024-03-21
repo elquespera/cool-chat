@@ -8,12 +8,16 @@ import { UserAvatar } from "../user/user-avatar";
 import { MessageMenu } from "./message-menu";
 import { MessageStatus } from "./message-status";
 import { MessageTimestamp } from "./message-timestamp";
+import { useMessages } from "../providers/message/message-context";
+import { MessageEditForm } from "./message-edit-form";
 
 type MessageItemProps = { message: MessageWithAuthor; series: boolean };
 
 export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
   ({ message, series }, ref) => {
-    const { content, author, authorId, status, createdAt, updatedAt } = message;
+    const { editingId } = useMessages();
+    const { id, content, author, authorId, status, createdAt, updatedAt } =
+      message;
     const { user } = useAuth();
     const ownMessage = user?.id === authorId;
 
@@ -44,6 +48,8 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
         >
           {status === "deleted" ? (
             <p className="select-none italic">(deleted)</p>
+          ) : id === editingId ? (
+            <MessageEditForm />
           ) : (
             <>
               <div className="prose prose-zinc dark:prose-invert">

@@ -10,6 +10,8 @@ import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
 import { useCustomEvent } from "@/lib/hooks/use-custom-event";
 import { useAuth } from "../providers/auth/auth-context";
+import { MultiTextArea } from "../common/multi-textarea";
+import { useInsertEmoji } from "./use-insert-emoji";
 
 const maxInputRows = 5;
 
@@ -53,46 +55,9 @@ export function ChatInput() {
     }
   };
 
-  const handleInsertEmoji = (emoji: string) => {
-    const input = inputRef.current;
-    if (!input) return;
+  const handleInsertEmoji = useInsertEmoji(inputRef, message, setMessage);
 
-    const setSelection = (at: number) =>
-      setTimeout(() => input.setSelectionRange(at, at), 20);
-
-    if (input.selectionEnd === 0) {
-      setMessage(`${emoji} ${message}`);
-    } else if (input.selectionStart === message.length) {
-      setMessage(`${message} ${emoji}`);
-    } else {
-      setMessage(
-        `${message.slice(0, input.selectionStart)} ${emoji} ${message.slice(input.selectionEnd)}`,
-      );
-    }
-    setSelection(input.selectionStart + emoji.length + 1);
-    input.focus();
-  };
-
-  useEffect(() => {
-    const input = inputRef?.current;
-    if (!input) return;
-    input.rows = 1;
-    input.rows = Math.max(
-      1,
-      Math.min(
-        maxInputRows,
-        Math.round(input.scrollHeight / input.offsetHeight),
-      ),
-    );
-  }, [message]);
-
-  useCustomEvent("chatclick", () => {
-    const input = inputRef.current;
-    if (!input) return;
-    input.inputMode = "none";
-    input.focus();
-    input.inputMode = "text";
-  });
+  useCustomEvent("chatclick", () => inputRef.current?.focus());
 
   return interlocutor ? (
     <div className="border-t bg-background px-2 py-3">
@@ -101,28 +66,17 @@ export function ChatInput() {
         className="flex gap-1 rounded-3xl bg-muted px-2 py-1.5"
         onSubmit={handleSubmit}
       >
-        <textarea
+        <MultiTextArea
           ref={inputRef}
-          rows={1}
-          className="w-0 min-w-0 grow resize-none bg-transparent pl-1 pt-1 outline-none outline-transparent"
-          value={message}
-          placeholder="Write a message..."
-          onChange={(event) => setMessage(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === "Enter" && !event.shiftKey) {
-              event.preventDefault();
-              formRef.current?.dispatchEvent(
-                new Event("submit", { bubbles: true, cancelable: true }),
-              );
-            }
-          }}
-          autoFocus
-        />
-        <InputClearButton
-          inputRef={inputRef}
+          formRef={formRef}
           value={message}
           onValueChange={setMessage}
+          className="pl-1 pt-1"
+          placeholder="Write a message..."
+          clearButton
+          autoFocus
         />
+
         <EmojiPicker onEmojiChange={handleInsertEmoji} />
         <IconButton
           toolTip="Send"
