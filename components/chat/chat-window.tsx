@@ -10,6 +10,7 @@ import { useMessages } from "../providers/message/message-context";
 import { ScrollArea } from "../ui/scroll-area";
 
 const scrollButtonMargin = 250;
+const scrollButtonTimeout = 3000;
 
 export function ChatWindow() {
   const { interlocutor } = useChat();
@@ -86,6 +87,15 @@ export function ChatWindow() {
     scrollBehavior,
     fetchNextPage,
   ]);
+
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setScrollButtonVisible(false),
+      scrollButtonTimeout,
+    );
+
+    return () => clearTimeout(timer);
+  }, [scrollButtonVisible]);
 
   return (
     <div className="relative flex grow flex-col justify-center bg-muted">
