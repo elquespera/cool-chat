@@ -56,18 +56,18 @@ export function AssistantProvider({
           content += part.message.content;
           setResponse(content);
         }
+
+        const result = await createMessage({
+          chatId,
+          authorId: assistant.id,
+          content,
+        });
+
+        if (result.status === "ok") {
+          refetchMessages("smooth");
+        }
       } finally {
         setIsStreaming(false);
-      }
-
-      const result = await createMessage({
-        chatId,
-        authorId: assistant.id,
-        content,
-      });
-
-      if (result.status === "ok") {
-        refetchMessages("smooth");
       }
     },
     [isStreaming, isAssistant],
