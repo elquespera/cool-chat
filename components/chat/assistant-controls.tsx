@@ -1,6 +1,6 @@
 import { deleteChat } from "@/db/actions/chats";
 import { dispatchCustomEvent } from "@/lib/custom-event";
-import { MagicWandIcon, ReloadIcon, StopIcon } from "@radix-ui/react-icons";
+import { MagicWandIcon, ResetIcon, StopIcon } from "@radix-ui/react-icons";
 import ConfirmDialog from "../common/confirm-dialog";
 import { IconButton } from "../common/icon-button";
 import { useAssistant } from "../providers/assistant/assistant-context";
@@ -39,13 +39,13 @@ export function AssistantControls() {
           </IconButton>
         ) : (
           <IconButton
-            size="sm"
             reverse
+            toolTip="Regenerate response"
+            toolTipOffset={10}
+            variant="ghost"
             onClick={handleRegenerate}
-            icon={<MagicWandIcon className="ml-1" />}
-          >
-            Regenerate
-          </IconButton>
+            icon={<MagicWandIcon />}
+          />
         )}
 
         <ConfirmDialog
@@ -53,9 +53,12 @@ export function AssistantControls() {
           description="Are you sure you want to reset your conversation with Assistant by deleting its contents? This action cannot be undone."
           onSuccess={handleResetChat}
         >
-          <IconButton variant="outline" size="sm">
-            Reset
-          </IconButton>
+          <IconButton
+            variant="ghost"
+            toolTip="Reset chat"
+            toolTipOffset={10}
+            icon={<ResetIcon />}
+          />
         </ConfirmDialog>
       </div>
     )

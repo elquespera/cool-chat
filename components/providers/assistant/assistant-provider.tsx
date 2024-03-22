@@ -1,5 +1,6 @@
 "use client";
 
+import { routes } from "@/constants/routes";
 import { ContactUser, UserSelect } from "@/db/schemas/auth";
 import { MessageWithAuthor } from "@/db/schemas/messages";
 import { dispatchCustomEvent } from "@/lib/custom-event";
@@ -9,7 +10,6 @@ import { useChat } from "../chat/chat-context";
 import { useContacts } from "../contacts/contact-context";
 import { useMessages } from "../message/message-context";
 import { AssistantContext } from "./assistant-context";
-import { routes } from "@/constants/routes";
 
 const maxMessages = 10;
 
@@ -121,55 +121,3 @@ export function AssistantProvider({
     </AssistantContext.Provider>
   );
 }
-
-// useCustomEvent(
-//   "assistantresponse",
-//   async ({ chatId, regenerate }) => {
-//     if (isStreaming || !isAssistant || !assistant) return;
-//     const rawMessages = await getMessagesByChatId(chatId, 0, maxMessages);
-
-//     if (regenerate && rawMessages[0]?.authorId === assistant.id) {
-//       await deleteMessage(rawMessages[0].id);
-//       await refetchMessages();
-//     }
-
-//     if (!rawMessages.length) return;
-
-//     let content = "";
-//     const id = crypto.randomUUID();
-//     setResponse("");
-//     setMessageId(id);
-//     setIsStreaming(true);
-//     try {
-//       const messages: OllamaMessage[] = rawMessages
-//         .map(({ content, author }) => ({
-//           content,
-//           role: author.role === "assistant" ? "assistant" : "user",
-//         }))
-//         .toReversed();
-
-//       const responseStream = await ollama.chat({
-//         model,
-//         messages,
-//         stream: true,
-//       });
-
-//       setAi(ollama);
-
-//       // const responseStream = mockAssistantResponse();
-
-//       for await (const part of responseStream) {
-//         content += part.message.content;
-//         setResponse(content);
-//       }
-//     } catch (e) {
-//       console.log(String(e));
-//     } finally {
-//       await createMessage({ id, chatId, authorId: assistant.id, content });
-//       await refetchMessages("smooth");
-//       await refetchContacts();
-//       setIsStreaming(false);
-//     }
-//   },
-//   [isStreaming, isAssistant, assistant, refetchMessages, refetchContacts],
-// );

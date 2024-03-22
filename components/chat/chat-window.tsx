@@ -142,7 +142,7 @@ export function ChatWindow() {
 
             <IconButton
               className={cn(
-                "absolute bottom-8 left-[50%] h-10 w-10 translate-x-[-50%] opacity-70 transition-opacity",
+                "absolute bottom-4 right-8 h-12 w-12 opacity-70 transition-opacity",
                 !scrollButtonVisible && "scale-0 opacity-0",
               )}
               variant="outline"
