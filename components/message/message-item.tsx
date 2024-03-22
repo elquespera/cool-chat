@@ -43,7 +43,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
         />
         <div
           className={cn(
-            "group relative flex max-w-[24rem] flex-wrap gap-x-6 overflow-hidden rounded-lg border bg-background px-3 py-1.5",
+            "group relative flex max-w-[32rem] flex-wrap gap-x-6 overflow-hidden rounded-lg border bg-background px-3 py-1.5",
             id === editingId && "grow",
             ownMessage
               ? "bg-message-own text-message-own-foreground"

@@ -58,12 +58,12 @@ export function AssistantProvider({
       setMessageId(id);
       setIsStreaming(true);
       try {
-        const messages: OllamaMessage[] = rawMessages.map(
-          ({ content, author }) => ({
+        const messages: OllamaMessage[] = rawMessages
+          .map(({ content, author }) => ({
             content,
             role: author.role === "assistant" ? "assistant" : "user",
-          }),
-        );
+          }))
+          .toReversed();
 
         const responseStream = await ollama.chat({
           model,

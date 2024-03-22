@@ -1,6 +1,6 @@
 import { deleteChat } from "@/db/actions/chats";
 import { dispatchCustomEvent } from "@/lib/custom-event";
-import { MagicWandIcon, ReloadIcon } from "@radix-ui/react-icons";
+import { MagicWandIcon, ReloadIcon, StopIcon } from "@radix-ui/react-icons";
 import ConfirmDialog from "../common/confirm-dialog";
 import { IconButton } from "../common/icon-button";
 import { useAssistant } from "../providers/assistant/assistant-context";
@@ -27,8 +27,14 @@ export function AssistantControls() {
   return (
     isAssistant && (
       <div className="ml-auto flex justify-center gap-3">
-        {isStreaming ? (
-          <IconButton size="sm" variant="destructive" onClick={abortResponse}>
+        {!isStreaming ? (
+          <IconButton
+            size="sm"
+            variant="destructive"
+            reverse
+            icon={<StopIcon />}
+            onClick={abortResponse}
+          >
             Stop
           </IconButton>
         ) : (
