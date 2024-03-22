@@ -26,7 +26,7 @@ export function ChatWindow() {
     isLoadingMore,
     isValidating,
   } = useMessages();
-  const { isStreaming, streamedMessage } = useAssistant();
+  const { isAssistant, isStreaming, streamedMessage } = useAssistant();
 
   const listRef = useRef<HTMLUListElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -122,7 +122,8 @@ export function ChatWindow() {
               className="mx-auto flex max-w-[48rem] flex-col-reverse p-4 pt-28"
             >
               <AssistantResponse />
-              {isStreaming &&
+              {isAssistant &&
+                isStreaming &&
                 streamedMessage &&
                 streamedMessage.id !== messages[0]?.id && (
                   <MessageItem
