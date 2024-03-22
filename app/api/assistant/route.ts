@@ -93,6 +93,8 @@ export const POST = async (request: Request) => {
     { highWaterMark: 10 },
   );
 
+  request.signal.addEventListener("abort", () => reader.cancel());
+
   return new Response(stream);
 };
 

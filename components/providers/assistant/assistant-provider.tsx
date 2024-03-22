@@ -30,6 +30,8 @@ export function AssistantProvider({
   const [isStreaming, setIsStreaming] = useState(false);
   const [response, setResponse] = useState("");
   const [messageId, setMessageId] = useState("");
+  const [reader, setReader] =
+    useState<ReadableStreamDefaultReader<Uint8Array>>();
 
   const isAssistant = interlocutor?.role === "assistant";
 
@@ -37,23 +39,24 @@ export function AssistantProvider({
     "assistantresponse",
     async ({ chatId, regenerate }) => {
       if (isStreaming || !isAssistant || !assistant) return;
-
-      const response = await fetch(routes.assistant, {
-        method: "POST",
-        body: JSON.stringify({
-          chatId,
-          regenerate,
-          maxMessages,
-        }),
-      });
-
-      await refetchMessages();
-
       let content = "";
       setResponse("");
       setIsStreaming(true);
+
       try {
+        const response = await fetch(routes.assistant, {
+          method: "POST",
+          body: JSON.stringify({
+            chatId,
+            regenerate,
+            maxMessages,
+          }),
+        });
+
+        await refetchMessages();
+
         const reader = response.body?.getReader();
+        setReader(reader);
         if (!reader) return;
         const decoder = new TextDecoder("utf-8");
 
@@ -79,6 +82,7 @@ export function AssistantProvider({
         await refetchMessages("smooth");
         await refetchContacts();
       } finally {
+        setReader(undefined);
         setIsStreaming(false);
       }
     },
@@ -106,9 +110,9 @@ export function AssistantProvider({
       streamedMessage,
       generateResponse: (chatId: string, regenerate = false) =>
         dispatchCustomEvent("assistantresponse", { chatId, regenerate }),
-      abortResponse: () => {},
+      abortResponse: () => reader?.cancel(),
     }),
-    [isAssistant, isStreaming, streamedMessage],
+    [isAssistant, isStreaming, streamedMessage, reader],
   );
 
   return (
