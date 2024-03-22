@@ -66,11 +66,7 @@ export function UserPanel() {
   }, [open]);
 
   return (
-    <Collapsible
-      open={open}
-      onOpenChange={setOpen}
-      className="border-t bg-background p-4"
-    >
+    <Collapsible open={open} onOpenChange={setOpen} className="p-4">
       <div className="flex items-center gap-2">
         {user ? (
           <CollapsibleTrigger asChild>

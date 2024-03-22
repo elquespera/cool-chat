@@ -12,7 +12,7 @@ export function ChatUser() {
   const { isMobile } = useChatWindow();
 
   return interlocutor ? (
-    <div className="absolute flex h-20 w-full items-center gap-2 border-b bg-background/80 p-4 backdrop-blur-sm">
+    <div className="absolute flex h-20 w-full items-center gap-2 bg-background/80 p-4 backdrop-blur-sm">
       {isMobile && (
         <IconButton
           variant="ghost"

@@ -104,7 +104,7 @@ export function ChatWindow() {
   }, [scrollButtonVisible]);
 
   return (
-    <div className="relative flex grow flex-col justify-center bg-muted">
+    <div className="relative flex grow flex-col justify-center">
       {interlocutor ? (
         messages?.length ? (
           <ScrollArea
@@ -113,9 +113,6 @@ export function ChatWindow() {
             style={{ position: "absolute" }}
             onScrollCapture={() => updateScrollButtonVisible()}
           >
-            <div className="absolute bottom-1 left-1 z-10 rounded-full bg-background/80 p-2 text-foreground opacity-75">
-              {messages.length}
-            </div>
             <ul
               ref={listRef}
               className="mx-auto flex max-w-[48rem] flex-col-reverse p-4 pt-28"
@@ -146,7 +143,7 @@ export function ChatWindow() {
             <IconButton
               className={cn(
                 "absolute bottom-8 left-[50%] h-10 w-10 translate-x-[-50%] opacity-70 transition-opacity",
-                !scrollButtonVisible && "sclae-0 opacity-0",
+                !scrollButtonVisible && "scale-0 opacity-0",
               )}
               variant="outline"
               icon={<ArrowDownIcon className="h-4 w-4" />}

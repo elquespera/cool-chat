@@ -22,7 +22,7 @@ export function ContactList() {
     searchValue !== "" || pending ? foundContacts : contacts;
 
   return (
-    <div className="relative grow">
+    <div className="relative mt-4 grow">
       <ScrollArea
         className="inset-0 flex flex-col"
         style={{ position: "absolute" }}
@@ -30,7 +30,7 @@ export function ContactList() {
         {!contactToDisplay.length || error ? (
           <EmptyContacts search={searchValue} error={error} />
         ) : (
-          <ul className="grow divide-y pb-20">
+          <ul className="grow pb-20">
             {contactToDisplay.map((contact) => (
               <ContactItem key={contact.id} contact={contact} />
             ))}

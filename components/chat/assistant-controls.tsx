@@ -27,7 +27,7 @@ export function AssistantControls() {
   return (
     isAssistant && (
       <div className="ml-auto flex justify-center gap-3">
-        {!isStreaming ? (
+        {isStreaming ? (
           <IconButton
             size="sm"
             variant="destructive"
