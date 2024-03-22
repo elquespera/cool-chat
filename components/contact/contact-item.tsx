@@ -1,6 +1,6 @@
-import { createCustomEvent } from "@/lib/custom-event";
-import { useChat } from "../providers/chat/chat-context";
 import { ContactUserWithChat } from "@/db/schemas/auth";
+import { dispatchCustomEvent } from "@/lib/custom-event";
+import { useChat } from "../providers/chat/chat-context";
 import { UserInfo } from "../user/user-info";
 
 type ContactItemProps = { contact: ContactUserWithChat };
@@ -10,7 +10,7 @@ export function ContactItem({ contact }: ContactItemProps) {
 
   const handleContactClick = () => {
     setInterlocutorId(contact.id);
-    window.dispatchEvent(createCustomEvent("chatclick", {}));
+    dispatchCustomEvent("chatclick");
   };
 
   return (

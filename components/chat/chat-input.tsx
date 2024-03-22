@@ -1,6 +1,6 @@
 "use client";
 import { sendMessage } from "@/db/actions/messages";
-import { createCustomEvent } from "@/lib/custom-event";
+import { createCustomEvent, dispatchCustomEvent } from "@/lib/custom-event";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { FormEventHandler, useRef, useState } from "react";
 import { IconButton } from "../common/icon-button";
@@ -55,11 +55,9 @@ export function ChatInput() {
           await refetchMessages("smooth");
         }
 
-        window.dispatchEvent(
-          createCustomEvent("assistantresponse", {
-            chatId: result.data.chatId,
-          }),
-        );
+        dispatchCustomEvent("assistantresponse", {
+          chatId: result.data.chatId,
+        });
       }
     } finally {
       setPending(false);
