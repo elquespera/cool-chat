@@ -6,11 +6,10 @@ import { useIntersectionObserver } from "usehooks-ts";
 import { IconButton } from "../common/icon-button";
 import { Spinner } from "../common/spinner";
 import { MessageItem } from "../message/message-item";
+import { useAssistant } from "../providers/assistant/assistant-context";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { ScrollArea } from "../ui/scroll-area";
-import { AssistantResponse } from "./assistant-response";
-import { useAssistant } from "../providers/assistant/assistant-context";
 
 const scrollButtonMargin = 250;
 const scrollButtonTimeout = 3000;
@@ -121,7 +120,6 @@ export function ChatWindow() {
               ref={listRef}
               className="mx-auto flex max-w-[48rem] flex-col-reverse p-4 pt-28"
             >
-              <AssistantResponse />
               {isAssistant &&
                 isStreaming &&
                 streamedMessage &&
