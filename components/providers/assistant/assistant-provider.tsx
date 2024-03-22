@@ -8,13 +8,14 @@ import {
   deleteMessage,
   getMessagesByChatId,
 } from "@/db/actions/messages";
-import ollama, { Message as OllamaMessage } from "ollama/browser";
+import ollama, { Message as OllamaMessage, Ollama } from "ollama/browser";
 import { ContactUser, UserSelect } from "@/db/schemas/auth";
 import { useMessages } from "../message/message-context";
 import { MessageWithAuthor } from "@/db/schemas/messages";
 import { mockAssistantResponse } from "@/lib/mock-assistant";
 import { useContacts } from "../contacts/contact-context";
 import { useCustomEvent } from "@/lib/hooks/use-custom-event";
+import { dispatchCustomEvent } from "@/lib/custom-event";
 
 const model = "stablelm2";
 const maxMessages = 10;
@@ -34,6 +35,7 @@ export function AssistantProvider({
   const [isStreaming, setIsStreaming] = useState(false);
   const [response, setResponse] = useState("");
   const [messageId, setMessageId] = useState("");
+  const [ai, setAi] = useState<Ollama>();
 
   const isAssistant = interlocutor?.role === "assistant";
 
@@ -63,24 +65,26 @@ export function AssistantProvider({
           }),
         );
 
-        // const responseStream = await ollama.chat({
-        //   model,
-        //   messages,
-        //   stream: true,
-        // });
+        const responseStream = await ollama.chat({
+          model,
+          messages,
+          stream: true,
+        });
 
-        const responseStream = mockAssistantResponse();
+        setAi(ollama);
+
+        // const responseStream = mockAssistantResponse();
 
         for await (const part of responseStream) {
           content += part.message.content;
           setResponse(content);
         }
-
+      } catch (e) {
+        console.log(String(e));
+      } finally {
         await createMessage({ id, chatId, authorId: assistant.id, content });
-
         await refetchMessages("smooth");
         await refetchContacts();
-      } finally {
         setIsStreaming(false);
       }
     },
@@ -106,8 +110,11 @@ export function AssistantProvider({
       isAssistant,
       isStreaming,
       streamedMessage,
+      generateResponse: (chatId: string, regenerate = false) =>
+        dispatchCustomEvent("assistantresponse", { chatId, regenerate }),
+      abortResponse: () => ai?.abort(),
     }),
-    [isAssistant, isStreaming, streamedMessage],
+    [isAssistant, isStreaming, streamedMessage, ai],
   );
 
   return (

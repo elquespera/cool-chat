@@ -1,6 +1,5 @@
 "use client";
 import { sendMessage } from "@/db/actions/messages";
-import { createCustomEvent, dispatchCustomEvent } from "@/lib/custom-event";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { FormEventHandler, useRef, useState } from "react";
 import { IconButton } from "../common/icon-button";
@@ -21,7 +20,7 @@ export function ChatInput() {
   const { socket } = useSocket();
   const { user } = useAuth();
   const { interlocutor, chat, refetchChat } = useChat();
-  const { isStreaming } = useAssistant();
+  const { isStreaming, generateResponse } = useAssistant();
   const { refetchMessages } = useMessages();
   const { refetchContacts } = useContacts();
 
@@ -55,9 +54,7 @@ export function ChatInput() {
           await refetchMessages("smooth");
         }
 
-        dispatchCustomEvent("assistantresponse", {
-          chatId: result.data.chatId,
-        });
+        generateResponse(result.data.chatId);
       }
     } finally {
       setPending(false);

@@ -6,7 +6,7 @@ import { dispatchCustomEvent } from "@/lib/custom-event";
 
 export function AssistantResponse() {
   const { chat } = useChat();
-  const { isAssistant, isStreaming } = useAssistant();
+  const { isAssistant, isStreaming, abortResponse } = useAssistant();
 
   const handleRegenerate = () => {
     if (!chat) return;
@@ -20,7 +20,11 @@ export function AssistantResponse() {
     isAssistant && (
       <div className="flex justify-center gap-3">
         {isStreaming ? (
-          <IconButton size="sm" variant="destructive">
+          <IconButton
+            size="sm"
+            variant="destructive"
+            onClick={() => abortResponse()}
+          >
             Stop
           </IconButton>
         ) : (
