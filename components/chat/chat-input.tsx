@@ -1,18 +1,19 @@
 "use client";
 import { sendMessage } from "@/db/actions/messages";
+import { createCustomEvent } from "@/lib/custom-event";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
-import { FormEventHandler, useEffect, useRef, useState } from "react";
+import { FormEventHandler, useRef, useState } from "react";
 import { IconButton } from "../common/icon-button";
 import { MultiTextArea } from "../common/multi-textarea";
+import { useAssistant } from "../providers/assistant/assistant-context";
 import { useAuth } from "../providers/auth/auth-context";
 import { useChat } from "../providers/chat/chat-context";
+import { useContacts } from "../providers/contacts/contact-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
 import { useInputFocus } from "./use-input-focus";
 import { useInsertEmoji } from "./use-insert-emoji";
-import { useAssistant } from "../providers/assistant/assistant-context";
-import { useContacts } from "../providers/contacts/contact-context";
 
 export function ChatInput() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -21,9 +22,8 @@ export function ChatInput() {
   const { user } = useAuth();
   const { interlocutor, chat, refetchChat } = useChat();
   const { isStreaming } = useAssistant();
-  const { refetch: refetchMessages } = useMessages();
+  const { refetchMessages } = useMessages();
   const { refetchContacts } = useContacts();
-  const { generateResponse } = useAssistant();
 
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
@@ -55,7 +55,11 @@ export function ChatInput() {
           await refetchMessages("smooth");
         }
 
-        generateResponse(result.data.chatId);
+        window.dispatchEvent(
+          createCustomEvent("assistantresponse", {
+            chatId: result.data.chatId,
+          }),
+        );
       }
     } finally {
       setPending(false);

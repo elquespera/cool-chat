@@ -6,9 +6,14 @@ type MessageUpdateEvent = CustomEvent<{
   status: MessageActionType;
 }>;
 
+type AssistantResponseEvent = CustomEvent<{
+  chatId: string;
+}>;
+
 interface CustomEventHandlersMap {
   chatclick: CustomEvent;
   messageupdate: MessageUpdateEvent;
+  assistantresponse: AssistantResponseEvent;
 }
 
 type CustomEventPayload<T extends keyof CustomEventHandlersMap> =

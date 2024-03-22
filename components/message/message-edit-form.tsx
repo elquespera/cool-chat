@@ -16,7 +16,7 @@ export function MessageEditForm({
 }: MessageEditFormProps) {
   const [value, setValue] = useState(content);
   const [pending, setPending] = useState(false);
-  const { setEditingId, refetch } = useMessages();
+  const { setEditingId, refetchMessages } = useMessages();
   const { socket } = useSocket();
   const { interlocutor } = useChat();
   const formRef = useRef<HTMLFormElement>(null);
@@ -43,7 +43,7 @@ export function MessageEditForm({
           status: "updated",
         });
 
-        await refetch();
+        await refetchMessages();
         setEditingId(undefined);
       }
     } finally {

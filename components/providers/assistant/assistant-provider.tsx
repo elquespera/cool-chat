@@ -8,9 +8,9 @@ import ollama, { Message as OllamaMessage } from "ollama/browser";
 import { ContactUser, UserSelect } from "@/db/schemas/auth";
 import { useMessages } from "../message/message-context";
 import { MessageWithAuthor } from "@/db/schemas/messages";
-import { wait } from "@/lib/utils";
 import { mockAssistantResponse } from "@/lib/mock-assistant";
 import { useContacts } from "../contacts/contact-context";
+import { useCustomEvent } from "@/lib/hooks/use-custom-event";
 
 const model = "stablelm2";
 const maxMessages = 10;
@@ -23,8 +23,8 @@ export function AssistantProvider({
   assistant,
   children,
 }: AssistantProviderProps) {
-  const { interlocutor, chat, refetchChat } = useChat();
-  const { refetch: refetchMessages } = useMessages();
+  const { interlocutor, chat } = useChat();
+  const { refetchMessages } = useMessages();
   const { refetchContacts } = useContacts();
 
   const [isStreaming, setIsStreaming] = useState(false);
@@ -33,8 +33,9 @@ export function AssistantProvider({
 
   const isAssistant = interlocutor?.role === "assistant";
 
-  const generateResponse = useCallback(
-    async (chatId: string) => {
+  useCustomEvent(
+    "assistantresponse",
+    async ({ chatId }) => {
       if (isStreaming || !isAssistant || !assistant) return;
       const rawMessages = await getMessagesByChatId(chatId, 0, maxMessages);
       if (rawMessages.length < 1) return;
@@ -65,12 +66,7 @@ export function AssistantProvider({
           setResponse(content);
         }
 
-        await createMessage({
-          id,
-          chatId,
-          authorId: assistant.id,
-          content,
-        });
+        await createMessage({ id, chatId, authorId: assistant.id, content });
 
         await refetchMessages("smooth");
         await refetchContacts();
@@ -100,9 +96,8 @@ export function AssistantProvider({
       isAssistant,
       isStreaming,
       streamedMessage,
-      generateResponse,
     }),
-    [isAssistant, isStreaming, generateResponse, streamedMessage],
+    [isAssistant, isStreaming, streamedMessage],
   );
 
   return (

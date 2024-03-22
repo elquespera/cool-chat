@@ -32,7 +32,7 @@ export function MessageProvider({ children }: PropsWithChildren) {
 
   const messages = useMemo(() => (data ? data.flat() : undefined), [data]);
 
-  const refetch = useMemo(
+  const refetchMessages = useMemo(
     () => async (scrollBehavior?: ScrollBehavior) => {
       setScrollBehavior(scrollBehavior);
       await mutate();
@@ -47,11 +47,11 @@ export function MessageProvider({ children }: PropsWithChildren) {
     async ({ chatId, status }) => {
       if (chat?.id !== chatId) return;
 
-      refetch(
+      refetchMessages(
         status === "created" || status === "delivered" ? "smooth" : undefined,
       );
     },
-    [refetch],
+    [refetchMessages],
   );
 
   useCustomEvent("chatclick", () => setScrollBehavior("instant"));
@@ -67,7 +67,7 @@ export function MessageProvider({ children }: PropsWithChildren) {
         scrollBehavior,
         editingId,
         setScrollBehavior,
-        refetch,
+        refetchMessages,
         fetchNextPage,
         setEditingId,
       }}

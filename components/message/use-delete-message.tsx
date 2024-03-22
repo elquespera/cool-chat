@@ -11,7 +11,7 @@ export function useDeleteMessage(
 ) {
   const { socket } = useSocket();
   const { interlocutor } = useChat();
-  const { refetch } = useMessages();
+  const { refetchMessages } = useMessages();
 
   return async () => {
     if (!ownMessage || !interlocutor) return;
@@ -25,7 +25,7 @@ export function useDeleteMessage(
         interlocutorId: interlocutor.id,
         status: "deleted",
       });
-      refetch();
+      refetchMessages();
     }
   };
 }
