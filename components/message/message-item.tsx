@@ -10,46 +10,93 @@ import { MessageEditForm } from "./message-edit-form";
 import { MessageMenu } from "./message-menu";
 import { MessageStatus } from "./message-status";
 import { MessageTimestamp } from "./message-timestamp";
+import { UserText } from "../user/user-text";
 
 type MessageItemProps = {
   message: MessageWithAuthor;
-  series: boolean;
+  type: "only" | "first" | "middle" | "last";
   streaming?: boolean;
 };
 
+const radius = "12px";
+
 export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
-  ({ message, series, streaming }, ref) => {
+  ({ message, type, streaming }, ref) => {
     const { editingId } = useMessages();
     const { id, content, author, authorId, status, createdAt, updatedAt } =
       message;
     const { user } = useAuth();
     const ownMessage = user?.id === authorId;
 
+    const isLast = type === "last" || type === "only";
+    const isFirst = type === "first" || type === "only";
+
     return (
       <li
         ref={ref}
         className={cn(
-          "flex items-end gap-2",
-          ownMessage && "flex-row-reverse",
-          series ? "mb-2" : "mb-8",
+          "flex flex-col",
+          ownMessage ? "items-end" : "items-start",
+          isLast ? "mb-12" : "mb-2",
         )}
       >
-        <UserAvatar
-          className={cn(series && "opacity-0")}
-          avatarUrl={author.avatarUrl}
-          role={author.role}
-        />
+        {isFirst && (
+          <div
+            className={cn(
+              "mb-1 flex select-none items-center gap-4",
+              ownMessage && "flex-row-reverse",
+            )}
+          >
+            <UserAvatar
+              className={cn(
+                "w-8 lg:w-10",
+                ownMessage ? "bg-message-own" : "bg-message",
+              )}
+              avatarUrl={author.avatarUrl}
+              role={author.role}
+            />
+            <UserText
+              className="text-sm lg:text-base"
+              username={author.username}
+              email={author.email}
+              oneLine
+            />
+            <MessageTimestamp
+              createdAt={createdAt}
+              updatedAt={updatedAt}
+              className={cn(
+                "text-sm text-muted-foreground opacity-70 lg:text-base",
+              )}
+            />
+          </div>
+        )}
+
         <div
           className={cn(
-            "group relative flex flex-wrap gap-x-6 overflow-hidden rounded-lg bg-background px-3 py-1.5",
+            "group relative flex flex-wrap gap-x-6 overflow-hidden bg-background px-4 py-3",
             id === editingId && "grow",
+            type !== "only" && "w-[calc(100%-1.5em)] lg:w-[calc(100%-2em)]",
             ownMessage
-              ? "bg-message-own text-message-own-foreground"
-              : "bg-message text-message-foreground",
+              ? "mr-[1.5rem] bg-message-own text-message-own-foreground lg:mr-[2rem]"
+              : "ml-[1.5rem] bg-message text-message-foreground lg:ml-[2rem]",
             status === "deleted"
               ? "opacity-50"
               : "before:absolute before:inset-0 before:z-[-1] before:bg-background",
           )}
+          style={{
+            borderRadius:
+              type === "first"
+                ? ownMessage
+                  ? `${radius} 0 0 0`
+                  : `0 ${radius} 0 0`
+                : type === "last"
+                  ? `0 0 ${radius} ${radius}`
+                  : type === "middle"
+                    ? "0 0 0 0"
+                    : ownMessage
+                      ? `${radius} 0 ${radius} ${radius}`
+                      : `0 ${radius} ${radius} ${radius}`,
+          }}
         >
           {status === "deleted" ? (
             <p className="select-none italic">(deleted)</p>
@@ -57,29 +104,19 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
             <MessageEditForm message={message} />
           ) : (
             <>
-              <div className="prose:max-w-0 prose prose-zinc dark:prose-invert">
+              <div className="prose:max-w-0 prose prose-sm prose-zinc dark:prose-invert lg:prose-base">
                 {streaming && !content && (
                   <span className="italic text-muted-foreground">{`waiting for response...`}</span>
                 )}
                 <Markdown>{`${content}${streaming ? " •" : ""}`}</Markdown>
               </div>
               <div className="ml-auto flex items-center gap-2">
-                <MessageTimestamp
-                  createdAt={createdAt}
-                  updatedAt={updatedAt}
-                  className={cn(
-                    ownMessage
-                      ? "text-message-own-accent"
-                      : "text-message-accent",
-                  )}
-                />
                 {ownMessage && <MessageStatus status={status} />}
               </div>
               <MessageMenu message={message} ownMessage={ownMessage} />
             </>
           )}
         </div>
-        <div className="w-8" />
       </li>
     );
   },

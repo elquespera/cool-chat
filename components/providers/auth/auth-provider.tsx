@@ -1,6 +1,6 @@
 "use client";
 import { User } from "lucia";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useMemo } from "react";
 import { AuthContext } from "./auth-context";
 
 type AuthProviderProps = {
@@ -8,11 +8,14 @@ type AuthProviderProps = {
 } & PropsWithChildren;
 
 export function AuthProvider({ user, children }: AuthProviderProps) {
-  const isAuth = !!user;
-
-  return (
-    <AuthContext.Provider value={{ user, isAuth }}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      isAuth: !!user,
+      isAdmin: user?.role === "admin",
+    }),
+    [user],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

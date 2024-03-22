@@ -25,6 +25,7 @@ type IconButtonProps = {
   pendingIcon?: ReactNode;
   toolTip?: ReactNode;
   toolTipSide?: "top" | "right" | "bottom" | "left";
+  toolTipOffset?: number;
   navTransition?: boolean;
 } & ComponentPropsWithoutRef<typeof Button>;
 
@@ -43,11 +44,12 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       size,
       toolTip,
       toolTipSide,
+      toolTipOffset,
       navTransition = true,
       onClick,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
@@ -76,7 +78,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
           <span
             className={cn(
               "inline-flex",
-              actualIcon && (reverse ? "pr-1" : "pl-1")
+              actualIcon && (reverse ? "pr-1" : "pl-1"),
             )}
           >
             {children}
@@ -86,14 +88,14 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
     );
 
     return (
-      <Hint value={toolTip} side={toolTipSide}>
+      <Hint value={toolTip} side={toolTipSide} sideOffset={toolTipOffset}>
         <Button
           ref={ref}
           size={size ?? (icon && !children ? "icon" : "default")}
           className={cn(
             "inline-flex items-center",
             reverse && "flex-row-reverse",
-            className
+            className,
           )}
           asChild={!!href}
           onClick={handleClick}
@@ -114,6 +116,6 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         </Button>
       </Hint>
     );
-  }
+  },
 );
 IconButton.displayName = "IconButton";

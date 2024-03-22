@@ -65,7 +65,7 @@ export function ChatInput() {
   useInputFocus(inputRef);
 
   return interlocutor ? (
-    <div className="bg-background px-2 py-3">
+    <div className="bg-background px-4 py-3">
       <form
         ref={formRef}
         className="group flex gap-1 rounded-3xl bg-accent px-2 py-1.5 text-accent-foreground transition-colors focus-within:bg-primary/10 dark:focus-within:bg-primary/30"
