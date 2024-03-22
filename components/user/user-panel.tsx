@@ -18,10 +18,11 @@ import { ColorPicker } from "./color-picker";
 import { LogOutButton } from "./log-out-button";
 import ThemeSwitch from "./theme-switch";
 import { UserInfo } from "./user-info";
+import { createMockConversation } from "@/db/actions/mock";
 
 export function UserPanel() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { color, setColor } = useColors();
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
@@ -49,9 +50,13 @@ export function UserPanel() {
     }
   };
 
-  const handleColorChange = (color: ThemeColor) => {
-    setColor(color);
+  const handleMockConversationClick = async () => {
+    await createMockConversation();
+    router.refresh();
+    setOpen(false);
   };
+
+  const handleColorChange = (color: ThemeColor) => setColor(color);
 
   useEffect(() => {
     setOpen(open);
@@ -97,10 +102,18 @@ export function UserPanel() {
           setColor={handleColorChange}
         />
         <AvatarPicker url={avatarUrl} onUrlChange={setAvatarUrl} />
+        {isAdmin && (
+          <div className="flex justify-end">
+            <IconButton size="sm" onClick={handleMockConversationClick}>
+              Generate mock conversation
+            </IconButton>
+          </div>
+        )}
         <div className="flex gap-2">
           {(avatarUrl || savedColor !== color) && (
             <>
               <IconButton
+                size="sm"
                 disabled={pending}
                 pending={pending}
                 onClick={handleSaveClick}

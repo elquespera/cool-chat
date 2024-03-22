@@ -2,7 +2,7 @@
 
 import { and, eq, or } from "drizzle-orm";
 import { db } from "../db";
-import { chats } from "../schemas/chats";
+import { ChatInsert, chats } from "../schemas/chats";
 
 export async function getUserChats(userId: string) {
   return db.query.chats.findMany({
@@ -24,6 +24,10 @@ export async function findOrCreateChat(userOneId: string, userTwoId: string) {
   const result = await findChatByIds(userOneId, userTwoId);
   if (result) return result;
   return db.insert(chats).values({ userOneId, userTwoId }).returning().get();
+}
+
+export async function addChat(data: ChatInsert) {
+  return db.insert(chats).values(data).returning().get();
 }
 
 export async function deleteChat(chatId: string) {
