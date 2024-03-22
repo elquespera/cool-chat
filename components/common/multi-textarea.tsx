@@ -14,9 +14,10 @@ import { InputClearButton } from "./input-clear-button";
 type MultiTextAreaProps = {
   formRef?: RefObject<HTMLFormElement>;
   clearButton?: boolean;
-  onValueChange: (value: string) => void;
   maxRows?: number;
   autoSelectAll?: boolean;
+  onValueChange: (value: string) => void;
+  onEscape?: () => void;
 } & ComponentProps<"textarea">;
 
 export const MultiTextArea = forwardRef<
@@ -33,6 +34,7 @@ export const MultiTextArea = forwardRef<
       onKeyDown,
       maxRows = 5,
       autoSelectAll,
+      onEscape,
       ...props
     },
     ref,
@@ -54,6 +56,7 @@ export const MultiTextArea = forwardRef<
           new Event("submit", { bubbles: true, cancelable: true }),
         );
       }
+      if (event.key === "Escape" && onEscape) onEscape();
       if (onKeyDown) onKeyDown(event);
     };
 

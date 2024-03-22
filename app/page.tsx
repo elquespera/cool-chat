@@ -2,7 +2,8 @@ import { ChatInput } from "@/components/chat/chat-input";
 import { ChatUser } from "@/components/chat/chat-user";
 import { ChatWindow } from "@/components/chat/chat-window";
 import { Spinner } from "@/components/common/spinner";
-import { ContactPanel } from "@/components/contact/contact-panel";
+import { ContactList } from "@/components/contact/contact-list";
+import { ContactSearchInput } from "@/components/contact/contact-search-input";
 import { ChatProviders } from "@/components/providers/chat-providers";
 import { UserPanel } from "@/components/user/user-panel";
 import { routes } from "@/constants/routes";
@@ -28,7 +29,8 @@ export default async function HomePage() {
         <ChatWrapper
           leftPanel={
             <>
-              <ContactPanel />
+              <ContactSearchInput />
+              <ContactList />
               <UserPanel />
             </>
           }

@@ -1,22 +1,28 @@
 "use client";
-import type { ContactUserWithChat } from "@/db/schemas/auth";
+import { assistantId, interlocutorKey } from "@/constants";
+import { IconButton } from "../common/icon-button";
 import { Spinner } from "../common/spinner";
-import { useChatWindow } from "../providers/chat-window/chat-window-context";
-import { useChat } from "../providers/chat/chat-context";
 import { useContacts } from "../providers/contacts/contact-context";
 import { ScrollArea } from "../ui/scroll-area";
-import { UserInfo } from "../user/user-info";
+import { ContactItem } from "./contact-item";
+import { AssistantIcon } from "../icons/assistant-icon";
+import { useChat } from "../providers/chat/chat-context";
 import { createCustomEvent } from "@/lib/custom-event";
 
 export function ContactList() {
   const { contacts, foundContacts, searchValue, pending, error } =
     useContacts();
 
+  const { interlocutor, setInterlocutorId } = useChat();
+  const hideAssistant =
+    interlocutor?.role === "assistant" ||
+    contacts.find(({ role }) => role === "assistant");
+
   const contactToDisplay =
     searchValue !== "" || pending ? foundContacts : contacts;
 
   return (
-    <div className="relative grow">
+    <div className="relative mt-4 grow">
       <ScrollArea
         className="inset-0 flex flex-col"
         style={{ position: "absolute" }}
@@ -24,7 +30,7 @@ export function ContactList() {
         {!contactToDisplay.length || error ? (
           <EmptyContacts search={searchValue} error={error} />
         ) : (
-          <ul className="grow divide-y pb-20">
+          <ul className="grow pb-20">
             {contactToDisplay.map((contact) => (
               <ContactItem key={contact.id} contact={contact} />
             ))}
@@ -32,34 +38,20 @@ export function ContactList() {
         )}
         {pending && <Spinner className="absolute right-2 top-2 w-3" />}
       </ScrollArea>
+      {!hideAssistant && (
+        <div className="absolute bottom-0 flex h-20 w-full items-center justify-center bg-background/80 p-4 backdrop-blur-sm">
+          <IconButton
+            icon={<AssistantIcon className="h-4 w-4" />}
+            onClick={() => {
+              setInterlocutorId(assistantId);
+              window.dispatchEvent(createCustomEvent("chatclick", {}));
+            }}
+          >
+            Talk to Assistant
+          </IconButton>
+        </div>
+      )}
     </div>
-  );
-}
-
-function ContactItem({ contact }: { contact: ContactUserWithChat }) {
-  const { interlocutor, setInterlocutorId } = useChat();
-
-  const handleContactClick = () => {
-    setInterlocutorId(contact.id);
-    window.dispatchEvent(createCustomEvent("chatclick", {}));
-  };
-
-  return (
-    <li className="bg-background">
-      <button
-        role="option"
-        aria-selected={interlocutor?.id === contact.id}
-        className="relative flex w-full items-center gap-2 p-2 py-3 hover:bg-accent hover:text-accent-foreground aria-selected:bg-primary/10 aria-selected:text-accent-foreground"
-        onClick={handleContactClick}
-      >
-        <UserInfo user={contact} oneLine status />
-        {!!contact?.unseenMessages && (
-          <span className="absolute left-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold leading-none text-primary-foreground">
-            {contact?.unseenMessages}
-          </span>
-        )}
-      </button>
-    </li>
   );
 }
 

@@ -19,3 +19,6 @@ export type ThemeColor = (keyof typeof themeColors)[number];
 
 export const colorKey = "theme-color";
 export const defaultColor = "blue";
+
+export const interlocutorKey = "user";
+export const assistantId = "assistant";

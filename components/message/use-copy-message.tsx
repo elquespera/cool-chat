@@ -1,10 +1,10 @@
 "use client";
-import { MessageWithAuthor } from "@/db/schemas/messages";
+import { MessageSelect } from "@/db/schemas/messages";
 import { useEffect, useState } from "react";
 
 const copyDelay = 1000;
 
-export function useCopyMessage({ content }: MessageWithAuthor) {
+export function useCopyMessage({ content }: MessageSelect) {
   const [copySuccess, setCopySuccess] = useState(false);
 
   const handleCopy = async () => {

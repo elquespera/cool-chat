@@ -67,11 +67,13 @@
 
 @layer base {
   :root {
-    --message: var(--primary) / 0.15;
-    --message-foreground: var(--foreground);
+    --message: var(--accent) / 0.7;
+    --message-foreground: var(--accent-foreground);
+    --message-accent: var(--accent-foreground) / 0.5;
 
-    --message-own: var(--background);
+    --message-own: var(--primary) / 0.15;
     --message-own-foreground: var(--foreground);
+    --message-own-accent: var(--primary) / 0.7;
   }
 }
 

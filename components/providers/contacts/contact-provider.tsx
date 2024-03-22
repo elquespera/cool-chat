@@ -26,7 +26,7 @@ export function ContactProvider({ children }: PropsWithChildren) {
       try {
         const result = await searchUsers(value);
 
-        if (result.status === "ok") {
+        if (result.ok) {
           setFoundContacts(result.data);
           setError("");
         } else {
@@ -45,10 +45,9 @@ export function ContactProvider({ children }: PropsWithChildren) {
   const refetchContacts = useMemo(
     () => async () => {
       if (user) {
-        const result = await getUserContacts();
-
         try {
-          if (result.status === "ok") {
+          const result = await getUserContacts();
+          if (result.ok) {
             setContacts(result.data);
             setError("");
           } else {
@@ -72,7 +71,7 @@ export function ContactProvider({ children }: PropsWithChildren) {
     contacts.forEach(async ({ chatId }) => {
       if (!chatId) return;
       const result = await checkMessagesDelivered(chatId);
-      if (result.status === "ok" && result.data) {
+      if (result.ok && result.data) {
         const { authorId, chatId, id } = result.data;
         socket?.emit("messageUpdate", {
           messageId: id,
@@ -95,7 +94,7 @@ export function ContactProvider({ children }: PropsWithChildren) {
       if (interlocutorId === user?.id && status === "created") {
         const result = await updateMessage(messageId, { status: "delivered" });
 
-        if (result.status === "ok") {
+        if (result.ok) {
           socket?.emit("messageUpdate", {
             chatId: chatId,
             messageId,
@@ -120,6 +119,7 @@ export function ContactProvider({ children }: PropsWithChildren) {
         foundContacts,
         error,
         pending,
+        refetchContacts,
       }}
     >
       {children}

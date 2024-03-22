@@ -5,7 +5,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MessageWithAuthor } from "@/db/schemas/messages";
+import { MessageSelect } from "@/db/schemas/messages";
 import { cn } from "@/lib/utils";
 import {
   CheckCircledIcon,
@@ -15,13 +15,13 @@ import {
   TrashIcon,
 } from "@radix-ui/react-icons";
 import { ComponentProps, useState } from "react";
-import { useCopyMessage } from "./use-copy-message";
-import { useDeleteMessage } from "./use-delete-message";
 import ConfirmDialog from "../common/confirm-dialog";
 import { useMessages } from "../providers/message/message-context";
+import { useCopyMessage } from "./use-copy-message";
+import { useDeleteMessage } from "./use-delete-message";
 
 type MessageMenuProps = {
-  message: MessageWithAuthor;
+  message: MessageSelect;
   ownMessage: boolean;
 } & ComponentProps<"button">;
 

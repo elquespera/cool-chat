@@ -55,10 +55,12 @@ const config = {
         message: {
           DEFAULT: "hsl(var(--message))",
           foreground: "hsl(var(--message-foreground))",
+          accent: "hsl(var(--message-accent))",
         },
         "message-own": {
           DEFAULT: "hsl(var(--message-own))",
           foreground: "hsl(var(--message-own-foreground))",
+          accent: "hsl(var(--message-own-accent))",
         },
       },
       borderRadius: {

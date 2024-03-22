@@ -16,7 +16,7 @@ export function MessageEditForm({
 }: MessageEditFormProps) {
   const [value, setValue] = useState(content);
   const [pending, setPending] = useState(false);
-  const { setEditingId, refetch } = useMessages();
+  const { setEditingId, refetchMessages } = useMessages();
   const { socket } = useSocket();
   const { interlocutor } = useChat();
   const formRef = useRef<HTMLFormElement>(null);
@@ -34,7 +34,7 @@ export function MessageEditForm({
         updatedAt: new Date(),
       });
 
-      if (result.status === "ok") {
+      if (result.ok) {
         socket?.emit("messageUpdate", {
           chatId: result.data.chatId,
           messageId: result.data.id,
@@ -43,13 +43,15 @@ export function MessageEditForm({
           status: "updated",
         });
 
-        await refetch();
+        await refetchMessages();
         setEditingId(undefined);
       }
     } finally {
       setPending(false);
     }
   };
+
+  const handleCancel = () => setEditingId(undefined);
 
   return (
     <form ref={formRef} className="grow" onSubmit={handleSubmit}>
@@ -61,6 +63,7 @@ export function MessageEditForm({
           formRef={formRef}
           autoFocus
           autoSelectAll
+          onEscape={handleCancel}
         />
       </div>
       <div className="mt-2 flex flex-wrap justify-end gap-2">
@@ -78,7 +81,7 @@ export function MessageEditForm({
           size="sm"
           variant="secondary"
           className="h-7"
-          onClick={() => setEditingId(undefined)}
+          onClick={handleCancel}
         >
           Cancel
         </IconButton>

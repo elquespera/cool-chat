@@ -25,3 +25,7 @@ export async function findOrCreateChat(userOneId: string, userTwoId: string) {
   if (result) return result;
   return db.insert(chats).values({ userOneId, userTwoId }).returning().get();
 }
+
+export async function deleteChat(chatId: string) {
+  return db.delete(chats).where(eq(chats.id, chatId)).returning().get();
+}

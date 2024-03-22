@@ -20,12 +20,23 @@ export async function getMessagesByChatId(
   });
 }
 
+export async function createMessage(
+  data: MessageInsert,
+): Promise<DBActionResult<MessageSelect>> {
+  const { user } = await getAuth();
+  if (!user) return { ok: false, error: "Unauthorized access." };
+
+  const result = await db.insert(messages).values(data).returning().get();
+
+  return { ok: true, data: result };
+}
+
 export async function updateMessage(
   messageId: string,
   data: Partial<MessageInsert>,
 ): Promise<DBActionResult<MessageSelect>> {
   const { user } = await getAuth();
-  if (!user) return { status: "error", error: "Unauthorized access." };
+  if (!user) return { ok: false, error: "Unauthorized access." };
 
   const result = await db
     .update(messages)
@@ -34,14 +45,29 @@ export async function updateMessage(
     .returning()
     .get();
 
-  return { status: "ok", data: result };
+  return { ok: true, data: result };
+}
+
+export async function deleteMessage(
+  messageId: string,
+): Promise<DBActionResult<MessageSelect | undefined>> {
+  const { user } = await getAuth();
+  if (!user) return { ok: false, error: "Unauthorized access." };
+
+  const result = await db
+    .delete(messages)
+    .where(eq(messages.id, messageId))
+    .returning()
+    .get();
+
+  return { ok: true, data: result };
 }
 
 export async function checkMessagesDelivered(
   chatId: string,
 ): Promise<DBActionResult<MessageSelect | null>> {
   const { user } = await getAuth();
-  if (!user) return { status: "error", error: "Unauthorized access." };
+  if (!user) return { ok: false, error: "Unauthorized access." };
 
   const result = await db
     .update(messages)
@@ -56,7 +82,7 @@ export async function checkMessagesDelivered(
     .returning();
 
   return {
-    status: "ok",
+    ok: true,
     data: result.length > 0 ? result[result.length - 1] : null,
   };
 }
@@ -85,11 +111,11 @@ export async function sendMessage(
   message: string,
 ): Promise<DBActionResult<MessageSelect>> {
   const { user } = await getAuth();
-  if (!user) return { status: "error", error: "Unauthorized access." };
+  if (!user) return { ok: false, error: "Unauthorized access." };
 
   const chat = await findOrCreateChat(user.id, contactId);
 
-  if (!chat) return { status: "error", error: "Failed to create chat." };
+  if (!chat) return { ok: false, error: "Failed to create chat." };
 
   const data = await db
     .insert(messages)
@@ -97,5 +123,5 @@ export async function sendMessage(
     .returning()
     .get();
 
-  return { status: "ok", data };
+  return { ok: true, data };
 }

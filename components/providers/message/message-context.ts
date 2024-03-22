@@ -7,7 +7,7 @@ type MessageContextType = {
   isValidating: boolean;
   isLoadingMore: boolean;
   isReachingEnd: boolean;
-  refetch: (scrollBehavior?: ScrollBehavior) => Promise<void>;
+  refetchMessages: (scrollBehavior?: ScrollBehavior) => Promise<void>;
   fetchNextPage: () => void;
   scrollBehavior?: ScrollBehavior;
   setScrollBehavior: (scrollBehavior?: ScrollBehavior) => void;
@@ -21,7 +21,7 @@ export const MessageContext = createContext<MessageContextType>({
   isValidating: false,
   isLoadingMore: false,
   isReachingEnd: false,
-  refetch: () => new Promise(() => {}),
+  refetchMessages: () => new Promise(() => {}),
   fetchNextPage: () => {},
   setScrollBehavior: () => {},
   setEditingId: () => {},

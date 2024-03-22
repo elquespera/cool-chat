@@ -7,7 +7,7 @@ type ChatContextType = {
   interlocutorId: string | null;
   setInterlocutorId: (interlocutor: string | null) => void;
   chat: ChatSelect | null;
-  refetchChat: (intercolutor: ContactUser | null) => void;
+  refetchChat: (intercolutor: ContactUser | null) => Promise<void>;
 };
 
 export const ChatContext = createContext<ChatContextType>({
@@ -15,7 +15,7 @@ export const ChatContext = createContext<ChatContextType>({
   interlocutorId: null,
   setInterlocutorId: () => {},
   chat: null,
-  refetchChat: () => {},
+  refetchChat: () => new Promise((resolve) => resolve()),
 });
 
 export const useChat = () => useContext(ChatContext);

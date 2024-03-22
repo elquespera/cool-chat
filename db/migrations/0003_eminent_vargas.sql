@@ -1,1 +1,0 @@
-ALTER TABLE `message` RENAME COLUMN `state` TO `status`;
