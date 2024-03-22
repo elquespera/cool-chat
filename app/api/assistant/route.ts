@@ -51,8 +51,6 @@ export const POST = async (request: Request) => {
     }))
     .toReversed();
 
-  console.log("start request");
-
   const response = await fetch(ollamaURL, {
     method: "POST",
     body: JSON.stringify({ model, messages }),
@@ -80,6 +78,7 @@ export const POST = async (request: Request) => {
             content: message,
           });
           controller.close();
+          request.signal.dispatchEvent(new Event("abort"));
         } else {
           const parsed = decodeChunk<AssistantReply>(value);
           const content = parsed?.message?.content;
