@@ -3,7 +3,11 @@
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { AssistantContext } from "./assistant-context";
 import { useChat } from "../chat/chat-context";
-import { createMessage, getMessagesByChatId } from "@/db/actions/messages";
+import {
+  createMessage,
+  deleteMessage,
+  getMessagesByChatId,
+} from "@/db/actions/messages";
 import ollama, { Message as OllamaMessage } from "ollama/browser";
 import { ContactUser, UserSelect } from "@/db/schemas/auth";
 import { useMessages } from "../message/message-context";
@@ -35,10 +39,16 @@ export function AssistantProvider({
 
   useCustomEvent(
     "assistantresponse",
-    async ({ chatId }) => {
+    async ({ chatId, regenerate }) => {
       if (isStreaming || !isAssistant || !assistant) return;
       const rawMessages = await getMessagesByChatId(chatId, 0, maxMessages);
-      if (rawMessages.length < 1) return;
+
+      if (regenerate && rawMessages[0]?.authorId === assistant.id) {
+        await deleteMessage(rawMessages[0].id);
+        await refetchMessages();
+      }
+
+      if (!rawMessages.length) return;
 
       let content = "";
       const id = crypto.randomUUID();

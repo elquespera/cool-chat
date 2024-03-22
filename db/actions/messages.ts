@@ -48,6 +48,21 @@ export async function updateMessage(
   return { ok: true, data: result };
 }
 
+export async function deleteMessage(
+  messageId: string,
+): Promise<DBActionResult<MessageSelect | undefined>> {
+  const { user } = await getAuth();
+  if (!user) return { ok: false, error: "Unauthorized access." };
+
+  const result = await db
+    .delete(messages)
+    .where(eq(messages.id, messageId))
+    .returning()
+    .get();
+
+  return { ok: true, data: result };
+}
+
 export async function checkMessagesDelivered(
   chatId: string,
 ): Promise<DBActionResult<MessageSelect | null>> {

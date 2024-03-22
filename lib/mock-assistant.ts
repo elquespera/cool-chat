@@ -1,5 +1,7 @@
 export async function* mockAssistantResponse() {
-  for (let content of mockArray.slice(0, 70)) {
+  const start = rand(0, mockArray.length / 2);
+  const length = rand(mockArray.length / 2, mockArray.length);
+  for (let content of mockArray.slice(start, start + length)) {
     yield await new Promise<{ message: { content: string } }>((resolve) =>
       setTimeout(
         () => resolve({ message: { content } }),
@@ -8,6 +10,9 @@ export async function* mockAssistantResponse() {
     );
   }
 }
+
+const rand = (start: number, end: number) =>
+  Math.round(start + Math.random() * (end - start));
 
 const mockArray = [
   "Lo",

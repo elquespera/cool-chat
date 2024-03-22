@@ -8,6 +8,7 @@ type MessageUpdateEvent = CustomEvent<{
 
 type AssistantResponseEvent = CustomEvent<{
   chatId: string;
+  regenerate?: boolean;
 }>;
 
 interface CustomEventHandlersMap {
