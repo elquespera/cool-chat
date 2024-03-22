@@ -124,7 +124,11 @@ export function ChatWindow() {
                   <MessageItem
                     key={streamedMessage.id}
                     message={streamedMessage}
-                    series={streamedMessage.authorId === messages[0]?.authorId}
+                    type={
+                      streamedMessage.authorId === messages[0]?.authorId
+                        ? "first"
+                        : "only"
+                    }
                     streaming
                   />
                 )}
@@ -133,7 +137,16 @@ export function ChatWindow() {
                 <MessageItem
                   key={message.id}
                   message={message}
-                  series={message.authorId === messages[index - 1]?.authorId}
+                  type={
+                    message.authorId === messages[index - 1]?.authorId &&
+                    message.authorId === messages[index + 1]?.authorId
+                      ? "middle"
+                      : message.authorId === messages[index - 1]?.authorId
+                        ? "first"
+                        : message.authorId === messages[index + 1]?.authorId
+                          ? "last"
+                          : "only"
+                  }
                 />
               ))}
 

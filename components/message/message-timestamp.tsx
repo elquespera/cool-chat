@@ -29,7 +29,7 @@ export function MessageTimestamp({
   }, [createdAt, updatedAt]);
 
   return (
-    <span className={cn("select-none text-sm italic", className)} {...props}>
+    <span className={cn("select-none text-sm", className)} {...props}>
       {created}
       {createdAt.getTime() !== updatedAt.getTime() && `, edited ${updated}`}
     </span>
@@ -40,4 +40,4 @@ TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
 const formatAgo = (created: Date) =>
-  timeAgo.format(created.getTime(), "twitter-minute-now");
+  timeAgo.format(created.getTime(), "round-minute");
