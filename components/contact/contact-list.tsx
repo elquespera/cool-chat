@@ -1,13 +1,13 @@
 "use client";
-import { assistantId, interlocutorKey } from "@/constants";
+import { assistantId } from "@/constants";
+import { createCustomEvent } from "@/lib/custom-event";
 import { IconButton } from "../common/icon-button";
 import { Spinner } from "../common/spinner";
+import { AssistantIcon } from "../icons/assistant-icon";
+import { useChat } from "../providers/chat/chat-context";
 import { useContacts } from "../providers/contacts/contact-context";
 import { ScrollArea } from "../ui/scroll-area";
 import { ContactItem } from "./contact-item";
-import { AssistantIcon } from "../icons/assistant-icon";
-import { useChat } from "../providers/chat/chat-context";
-import { createCustomEvent } from "@/lib/custom-event";
 
 export function ContactList() {
   const { contacts, foundContacts, searchValue, pending, error } =
@@ -22,7 +22,7 @@ export function ContactList() {
     searchValue !== "" || pending ? foundContacts : contacts;
 
   return (
-    <div className="relative mt-4 grow">
+    <div className="relative grow">
       <ScrollArea
         className="inset-0 flex flex-col"
         style={{ position: "absolute" }}
@@ -30,7 +30,7 @@ export function ContactList() {
         {!contactToDisplay.length || error ? (
           <EmptyContacts search={searchValue} error={error} />
         ) : (
-          <ul className="grow pb-20">
+          <ul className="grow pt-40">
             {contactToDisplay.map((contact) => (
               <ContactItem key={contact.id} contact={contact} />
             ))}

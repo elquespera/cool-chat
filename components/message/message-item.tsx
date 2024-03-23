@@ -43,7 +43,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
         {isFirst && (
           <div
             className={cn(
-              "mb-1 flex select-none items-center gap-4",
+              "mb-1 flex select-none items-center gap-2",
               ownMessage && "flex-row-reverse",
             )}
           >
@@ -65,7 +65,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
               createdAt={createdAt}
               updatedAt={updatedAt}
               className={cn(
-                "text-sm text-muted-foreground opacity-70 lg:text-base",
+                "mx-2 text-sm text-muted-foreground opacity-70 lg:text-base",
               )}
             />
           </div>
