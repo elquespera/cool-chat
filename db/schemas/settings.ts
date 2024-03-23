@@ -4,16 +4,12 @@ import { users } from "./auth";
 import { defaultColor, themeColors } from "@/constants";
 
 export const settings = sqliteTable("settings", {
-  id: text("id")
-    .notNull()
-    .primaryKey()
-    .$defaultFn(() => randomUUID()),
-
-  color: text("color", { enum: themeColors }).default(defaultColor).notNull(),
-
   userId: text("user_id")
     .notNull()
+    .primaryKey()
     .references(() => users.id),
+
+  color: text("color", { enum: themeColors }).default(defaultColor).notNull(),
 });
 
 export type SettingsSelect = typeof settings.$inferSelect;

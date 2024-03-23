@@ -13,17 +13,18 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IconButton } from "../common/icon-button";
 import { useAuth } from "../providers/auth/auth-context";
-import { useColors } from "../providers/color/color-context";
+import { useSettings } from "../providers/settings/settings-context";
 import { AvatarPicker } from "./avatar-picker";
 import { ColorPicker } from "./color-picker";
 import { LogOutButton } from "./log-out-button";
 import ThemeSwitch from "./theme-switch";
 import { UserInfo } from "./user-info";
+import { updateSettings } from "@/db/actions/settings";
 
 export function UserPanel() {
   const router = useRouter();
   const { user } = useAuth();
-  const { color, setColor } = useColors();
+  const { color, setColor } = useSettings();
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [pending, setPending] = useState(false);
@@ -34,7 +35,8 @@ export function UserPanel() {
     setPending(true);
     try {
       if (color !== savedColor) {
-        setSavedColor(color);
+        const result = await updateSettings({ color });
+        setSavedColor(result.ok ? result.data.color : savedColor);
       }
 
       if (avatarUrl) {
@@ -55,8 +57,6 @@ export function UserPanel() {
     router.refresh();
     setOpen(false);
   };
-
-  const handleColorChange = (color: ThemeColor) => setColor(color);
 
   useEffect(() => {
     setOpen(open);
@@ -86,11 +86,7 @@ export function UserPanel() {
         <ChevronDownIcon className="-z-10 mx-2 h-4 w-4 shrink-0 text-muted-foreground transition-transform delay-300 duration-200 peer-data-[state=open]:rotate-180" />
       </div>
       <CollapsibleContent className="flex flex-col gap-3">
-        <ColorPicker
-          className="mt-4"
-          color={color}
-          setColor={handleColorChange}
-        />
+        <ColorPicker className="mt-4" color={color} setColor={setColor} />
         <AvatarPicker url={avatarUrl} onUrlChange={setAvatarUrl} />
         <div className="mb-2 flex">
           <IconButton
