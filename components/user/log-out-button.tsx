@@ -1,12 +1,11 @@
 "use client";
 
 import { signOut } from "@/lib/auth/sign-out";
-import { IconButton } from "../common/icon-button";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { PowerOffIcon } from "../icons/power-off-icon";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { IconButton } from "../common/icon-button";
+import { PowerOffIcon } from "../icons/power-off-icon";
 
 export function LogOutButton({ className }: PropsWithClassName) {
   const [pending, setPending] = useState(false);
@@ -16,12 +15,7 @@ export function LogOutButton({ className }: PropsWithClassName) {
     setPending(true);
     try {
       const result = await signOut();
-      if (result?.error) {
-        toast.error("There was an error logging out.");
-      } else {
-        toast.success("You have been successfully logged out.");
-        router.refresh();
-      }
+      router.refresh();
     } finally {
       setPending(false);
     }
