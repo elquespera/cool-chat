@@ -14,13 +14,15 @@ export default function ThemeSwitch({ className, ...props }: ThemeSwitchProps) {
 
   useEffect(() => setLoaded(true), []);
 
+  const hint = resolvedTheme === "dark" ? "Dark theme" : "Light theme";
+
   return (
     <IconButton
       {...props}
-      aria-label="Theme"
       className={cn("shrink-0", className)}
       variant="ghost"
-      toolTip={`Theme: ${resolvedTheme}`}
+      aria-label={hint}
+      toolTip={hint}
       icon={
         <>
           <MoonIcon

@@ -6,8 +6,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ThemeColor } from "@/constants";
+import { createMockConversation } from "@/db/actions/mock";
 import { updateUser } from "@/db/actions/users";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IconButton } from "../common/icon-button";
@@ -18,7 +18,8 @@ import { ColorPicker } from "./color-picker";
 import { LogOutButton } from "./log-out-button";
 import ThemeSwitch from "./theme-switch";
 import { UserInfo } from "./user-info";
-import { createMockConversation } from "@/db/actions/mock";
+import { GlassPanel } from "../common/glass-panel";
+import { ChevronDownIcon } from "@radix-ui/react-icons";
 
 export function UserPanel() {
   const router = useRouter();
@@ -70,69 +71,63 @@ export function UserPanel() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
+  if (!user) return null;
+
   return (
-    <Collapsible open={open} onOpenChange={setOpen} className="p-4">
-      <div className="flex items-center gap-2">
-        {user ? (
+    <Collapsible open={open} onOpenChange={setOpen} asChild>
+      <GlassPanel position="bottom" className="shadow-top">
+        <div className="relative flex h-10 items-center gap-2">
           <CollapsibleTrigger asChild>
             <UserInfo
-              className="cursor-pointer select-none"
+              className="peer cursor-pointer select-none before:absolute before:inset-0"
               user={user}
               avatarUrl={avatarUrl}
               status
               self
             />
           </CollapsibleTrigger>
-        ) : null}
-
-        <ThemeSwitch className="ml-auto" />
-        <CollapsibleTrigger asChild>
-          <IconButton
-            aria-label="Settings"
-            toolTip="Settings"
-            variant="ghost"
-            className="shrink-0"
-            icon={<DotsVerticalIcon />}
-          />
-        </CollapsibleTrigger>
-      </div>
-      <CollapsibleContent className="flex flex-col gap-3">
-        <ColorPicker
-          className="mt-4"
-          color={color}
-          setColor={handleColorChange}
-        />
-        <AvatarPicker url={avatarUrl} onUrlChange={setAvatarUrl} />
-        {isAdmin && (
-          <div className="flex justify-end">
-            <IconButton size="sm" onClick={handleMockConversationClick}>
-              Generate mock conversation
-            </IconButton>
-          </div>
-        )}
-        <div className="flex gap-2">
-          {(avatarUrl || savedColor !== color) && (
-            <>
-              <IconButton
-                size="sm"
-                disabled={pending}
-                pending={pending}
-                onClick={handleSaveClick}
-              >
-                Save
-              </IconButton>
-              <IconButton
-                disabled={pending}
-                variant="secondary"
-                onClick={() => setOpen(false)}
-              >
-                Cancel
-              </IconButton>
-            </>
-          )}
-          <LogOutButton className="ml-auto" />
+          <ThemeSwitch className="ml-auto" />
+          <ChevronDownIcon className="-z-10 mx-2 h-4 w-4 shrink-0 text-muted-foreground transition-transform delay-300 duration-200 peer-data-[state=open]:rotate-180" />
         </div>
-      </CollapsibleContent>
+        <CollapsibleContent className="flex flex-col gap-3">
+          <ColorPicker
+            className="mt-4"
+            color={color}
+            setColor={handleColorChange}
+          />
+          <AvatarPicker url={avatarUrl} onUrlChange={setAvatarUrl} />
+          {isAdmin && (
+            <div className="mb-2 flex justify-end">
+              <IconButton size="sm" onClick={handleMockConversationClick}>
+                Generate mock conversation
+              </IconButton>
+            </div>
+          )}
+          <div className="flex gap-2">
+            {(avatarUrl || savedColor !== color) && (
+              <>
+                <IconButton
+                  size="sm"
+                  disabled={pending}
+                  pending={pending}
+                  onClick={handleSaveClick}
+                >
+                  Save
+                </IconButton>
+                <IconButton
+                  disabled={pending}
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setOpen(false)}
+                >
+                  Cancel
+                </IconButton>
+              </>
+            )}
+            <LogOutButton className="ml-auto" />
+          </div>
+        </CollapsibleContent>
+      </GlassPanel>
     </Collapsible>
   );
 }

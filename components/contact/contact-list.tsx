@@ -10,8 +10,10 @@ import { ScrollArea } from "../ui/scroll-area";
 import { ContactItem } from "./contact-item";
 import { GlassPanel } from "../common/glass-panel";
 import { cn } from "@/lib/utils";
+import { useContactScroll } from "./contact-scroll-context";
 
 export function ContactList() {
+  const { setScrollTop } = useContactScroll();
   const { contacts, foundContacts, searchValue, pending, error } =
     useContacts();
 
@@ -28,6 +30,9 @@ export function ContactList() {
       <ScrollArea
         className="inset-0 flex flex-col"
         style={{ position: "absolute" }}
+        onScrollCapture={(e) =>
+          setScrollTop((e.target as HTMLElement).scrollTop)
+        }
       >
         {!contactToDisplay.length || error ? (
           <EmptyContacts search={searchValue} error={error} />
@@ -35,7 +40,7 @@ export function ContactList() {
           <div
             role="listbox"
             aria-label="Contacts"
-            className={cn("grow pb-2 pt-48", !hideAssistant && "pb-20")}
+            className={cn("grow pb-2 pt-48", hideAssistant ? "pb-20" : "pb-40")}
           >
             {contactToDisplay.map((contact) => (
               <ContactItem key={contact.id} contact={contact} />
@@ -47,7 +52,7 @@ export function ContactList() {
       {!hideAssistant && (
         <GlassPanel
           position="bottom"
-          className="flex h-20 items-center justify-center"
+          className="bottom-[4.5rem] flex h-20 items-center justify-center"
         >
           <IconButton
             icon={<AssistantIcon className="h-4 w-4" />}

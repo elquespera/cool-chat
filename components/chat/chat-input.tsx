@@ -67,7 +67,7 @@ export function ChatInput() {
   useInputFocus(inputRef);
 
   return interlocutor ? (
-    <GlassPanel position="bottom">
+    <GlassPanel position="bottom" className="shadow-top">
       <form ref={formRef} onSubmit={handleSubmit}>
         <InputWrapper>
           <MultiTextArea

@@ -68,6 +68,9 @@ const config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        top: "0 -1px 2px 0 rgba(0, 0, 0, 0.05)",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -75,6 +78,14 @@ const config = {
         },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "collapsible-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-collapsible-content-height)" },
+        },
+        "collapsible-up": {
+          from: { height: "var(--radix-collapsible-content-height)" },
           to: { height: "0" },
         },
         "theme-icon": {
@@ -85,6 +96,8 @@ const config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "collapsible-down": "collapsible-down 0.2s ease-out",
+        "collapsible-up": "collapsible-up 0.2s ease-out",
         "theme-icon": "theme-icon 0.5s cubic-bezier(.47,1.64,.41,.8)",
       },
     },

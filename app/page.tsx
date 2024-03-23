@@ -3,6 +3,7 @@ import { ChatUser } from "@/components/chat/chat-user";
 import { ChatWindow } from "@/components/chat/chat-window";
 import { Spinner } from "@/components/common/spinner";
 import { ContactList } from "@/components/contact/contact-list";
+import { ContactScrollProvider } from "@/components/contact/contact-scroll-context";
 import { ContactSearchInput } from "@/components/contact/contact-search-input";
 import { ChatProviders } from "@/components/providers/chat-providers";
 import { UserPanel } from "@/components/user/user-panel";
@@ -28,11 +29,11 @@ export default async function HomePage() {
       <main className="flex max-h-[100%] grow flex-col">
         <ChatWrapper
           leftPanel={
-            <>
+            <ContactScrollProvider>
               <ContactList />
               <ContactSearchInput />
               <UserPanel />
-            </>
+            </ContactScrollProvider>
           }
           rightPanel={
             <>
@@ -49,10 +50,8 @@ export default async function HomePage() {
 
 function Loading() {
   return (
-    <div className="flex grow flex-col items-center justify-center bg-muted">
-      <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-muted-foreground">
-        <Spinner className="w-6" /> Loading...
-      </div>
+    <div className="flex grow flex-col items-center justify-center">
+      <Spinner className="w-6" />
     </div>
   );
 }

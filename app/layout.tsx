@@ -9,8 +9,8 @@ import { colorScript } from "@/constants/color-script";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Cool Chat",
-  description: "Cool Chat",
+  title: "CoolChat",
+  description: "CoolChat - your ultimate chat messenger.",
 };
 
 export default function RootLayout({
