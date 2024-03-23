@@ -13,19 +13,6 @@ export default async function WelcomePage() {
 
   return (
     <>
-      <header className="sticky top-0 flex gap-4 bg-background/80 p-4 backdrop-blur-sm">
-        <h1 className="mr-auto flex items-center gap-2 text-xl font-bold tracking-tight">
-          <ChatDuoIcon className="shrink-0 text-primary" />
-          CoolChat
-        </h1>
-        <IconButton variant="ghost" href={routes.signIn} reverse>
-          Log In
-        </IconButton>
-
-        <IconButton href={routes.signUp} reverse>
-          Sign Up
-        </IconButton>
-      </header>
       <main className="mx-auto flex max-w-[800px] flex-col items-center px-4 py-8">
         <h1 className="mb-12 text-center text-4xl font-bold leading-tight tracking-tighter">
           <span className="text-primary">Connect</span> with your{" "}
@@ -51,25 +38,6 @@ export default async function WelcomePage() {
           height={6961}
         />
       </main>
-      <footer className="mt-8 p-4">
-        <IconButton
-          variant="link"
-          target="_blank"
-          href="https://pavelgrinkevich.com"
-          navTransition={false}
-        >
-          Build by elquespera
-        </IconButton>
-        {`/`}
-        <IconButton
-          variant="link"
-          target="_blank"
-          href="https://github.com/elquespera/cool-chat"
-          navTransition={false}
-        >
-          Github
-        </IconButton>
-      </footer>
     </>
   );
 }
