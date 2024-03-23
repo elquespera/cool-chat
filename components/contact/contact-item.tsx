@@ -54,7 +54,7 @@ export function ContactItem({ contact }: ContactItemProps) {
             )
           }
         />
-        {(lastTimestamp || unreadCount) && (
+        {!!(lastTimestamp || unreadCount) && (
           <div className="flex flex-col items-end justify-between gap-1">
             <Timestamp
               className="text-nowrap text-sm font-normal text-muted-foreground"
