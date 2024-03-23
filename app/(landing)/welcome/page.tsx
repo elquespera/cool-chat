@@ -1,11 +1,10 @@
+import peopleChat from "@/assets/images/people-chat.svg";
 import { IconButton } from "@/components/common/icon-button";
-import { ChatDuoIcon } from "@/components/icons/chat-icon";
 import { routes } from "@/constants/routes";
 import { getAuth } from "@/lib/auth/get-auth";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
-import { redirect } from "next/navigation";
-import peopleChat from "@/assets/images/people-chat.svg";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 export default async function WelcomePage() {
   const { user } = await getAuth();
@@ -31,6 +30,7 @@ export default async function WelcomePage() {
           Sign Up
         </IconButton>
         <Image
+          priority
           src={peopleChat}
           alt="People chatting"
           className="mt-16 w-auto max-w-sm"

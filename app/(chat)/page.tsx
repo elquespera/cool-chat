@@ -5,7 +5,6 @@ import { Spinner } from "@/components/common/spinner";
 import { ContactList } from "@/components/contact/contact-list";
 import { ContactScrollProvider } from "@/components/contact/contact-scroll-context";
 import { ContactSearchInput } from "@/components/contact/contact-search-input";
-import { ChatProviders } from "@/components/providers/chat-providers";
 import { UserPanel } from "@/components/user/user-panel";
 import { routes } from "@/constants/routes";
 import { getAuth } from "@/lib/auth/get-auth";
@@ -25,26 +24,22 @@ export default async function HomePage() {
   if (!user) redirect(routes.welcome);
 
   return (
-    <ChatProviders>
-      <main className="flex max-h-[100%] grow flex-col">
-        <ChatWrapper
-          leftPanel={
-            <ContactScrollProvider>
-              <ContactList />
-              <ContactSearchInput />
-              <UserPanel />
-            </ContactScrollProvider>
-          }
-          rightPanel={
-            <>
-              <ChatWindow />
-              <ChatInput />
-              <ChatUser />
-            </>
-          }
-        />
-      </main>
-    </ChatProviders>
+    <ChatWrapper
+      leftPanel={
+        <ContactScrollProvider>
+          <ContactList />
+          <ContactSearchInput />
+          <UserPanel />
+        </ContactScrollProvider>
+      }
+      rightPanel={
+        <>
+          <ChatWindow />
+          <ChatInput />
+          <ChatUser />
+        </>
+      }
+    />
   );
 }
 

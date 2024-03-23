@@ -10,7 +10,7 @@ export default function LandingLayout({
 }>) {
   return (
     <>
-      <header className="sticky top-0 flex gap-4 bg-background/80 p-4 backdrop-blur-sm">
+      <header className="sticky top-0 flex items-center gap-4 bg-background/80 p-6 backdrop-blur-sm">
         <Link href={routes.home} className="mr-auto">
           <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight">
             <ChatDuoIcon className="shrink-0 text-primary" />

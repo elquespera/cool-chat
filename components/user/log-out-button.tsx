@@ -6,16 +6,20 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { IconButton } from "../common/icon-button";
 import { PowerOffIcon } from "../icons/power-off-icon";
+import { useColors } from "../providers/color/color-context";
+import { defaultColor } from "@/constants";
 
 export function LogOutButton({ className }: PropsWithClassName) {
+  const { setColor } = useColors();
   const [pending, setPending] = useState(false);
   const router = useRouter();
 
   const handleLogOut = async () => {
     setPending(true);
     try {
-      const result = await signOut();
+      await signOut();
       router.refresh();
+      setColor(defaultColor);
     } finally {
       setPending(false);
     }
