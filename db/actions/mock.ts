@@ -28,18 +28,18 @@ export async function createMockConversation() {
   await db
     .insert(messages)
     .values(
-      (Math.random() > 0.5 ? mockMessages : mockMessages2)
-        .toReversed()
-        .map((message) => {
-          now -= randomInt(10000, 120000);
-          return {
-            authorId: message.user === "one" ? user.id : mockUser.id,
-            chatId: mockChat.id,
-            content: message.message,
-            createdAt: new Date(now),
-            updatedAt: new Date(now),
-          };
-        }),
+      Array.from({
+        length: randomInt(allMockMessages.length / 3, allMockMessages.length),
+      }).map(() => {
+        now -= randomInt(10000, 120000);
+        return {
+          authorId: Math.random() > 0.5 ? user.id : mockUser.id,
+          chatId: mockChat.id,
+          content: allMockMessages[randomInt(0, allMockMessages.length - 1)],
+          createdAt: new Date(now),
+          updatedAt: new Date(now),
+        };
+      }),
     )
     .returning()
     .get();
@@ -324,3 +324,7 @@ const mockMessages2 = [
     message: "Absolutely! It'll be a night to remember for sure. 😄",
   },
 ];
+
+const allMockMessages = [...mockMessages, ...mockMessages2].map(
+  ({ message }) => message,
+);

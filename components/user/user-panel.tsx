@@ -20,11 +20,13 @@ import { LogOutButton } from "./log-out-button";
 import ThemeSwitch from "./theme-switch";
 import { UserInfo } from "./user-info";
 import { updateSettings } from "@/db/actions/settings";
+import { useMessages } from "../providers/message/message-context";
 
 export function UserPanel() {
   const router = useRouter();
   const { user } = useAuth();
   const { color, setColor } = useSettings();
+  const { refetchMessages } = useMessages();
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [pending, setPending] = useState(false);
@@ -42,7 +44,7 @@ export function UserPanel() {
       if (avatarUrl) {
         const result = await updateUser(user.id, { avatarUrl });
         if (result) {
-          router.refresh();
+          refetchMessages();
         }
       }
 
@@ -88,7 +90,7 @@ export function UserPanel() {
       <CollapsibleContent className="flex flex-col gap-3">
         <ColorPicker className="mt-4" color={color} setColor={setColor} />
         <AvatarPicker url={avatarUrl} onUrlChange={setAvatarUrl} />
-        <div className="mb-2 flex">
+        <div className="mb-2 flex justify-end">
           <IconButton
             size="sm"
             onClick={handleMockConversationClick}
