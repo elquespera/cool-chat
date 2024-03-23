@@ -10,8 +10,10 @@ import { ScrollArea } from "../ui/scroll-area";
 import { ContactItem } from "./contact-item";
 import { GlassPanel } from "../common/glass-panel";
 import { cn } from "@/lib/utils";
+import { useContactScroll } from "./contact-scroll-context";
 
 export function ContactList() {
+  const { setScrollTop } = useContactScroll();
   const { contacts, foundContacts, searchValue, pending, error } =
     useContacts();
 
@@ -28,6 +30,9 @@ export function ContactList() {
       <ScrollArea
         className="inset-0 flex flex-col"
         style={{ position: "absolute" }}
+        onScrollCapture={(e) =>
+          setScrollTop((e.target as HTMLElement).scrollTop)
+        }
       >
         {!contactToDisplay.length || error ? (
           <EmptyContacts search={searchValue} error={error} />
