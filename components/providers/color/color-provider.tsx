@@ -7,14 +7,16 @@ import { ColorContext } from "./color-context";
 export function ColorProvider({ children }: PropsWithChildren) {
   const [color, setColorInternal] = useState<ThemeColor>(defaultColor);
 
-  const setColor = (color: ThemeColor) => {
-    setColorInternal(color);
-    localStorage.setItem(colorKey, color);
+  const setColor = (value: ThemeColor) => {
+    const newValue = value || color || defaultColor;
+
+    setColorInternal(newValue || defaultColor);
+    localStorage.setItem(colorKey, newValue);
 
     Object.keys(themeColors).forEach((themeColor) =>
       document.documentElement.classList.toggle(
         themeColor,
-        color === themeColor,
+        newValue === themeColor,
       ),
     );
   };

@@ -8,6 +8,7 @@ export const passwordMatcher =
 
 /*** THEME COLORS ***/
 export const themeColors = {
+  monochrome: { name: "Monochrome", color: "hsl(240 5.9% 10%)" },
   red: { name: "Red", color: "hsl(346.8 77.2% 49.8%)" },
   orange: { name: "Orange", color: "hsl(24.6 95% 53.1%)" },
   green: { name: "Green", color: "hsl(142.1 76.2% 36.3%)" },

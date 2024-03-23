@@ -3,6 +3,7 @@ import { ThemeColor, themeColors } from "@/constants";
 import { cn } from "@/lib/utils";
 import { CheckIcon } from "@radix-ui/react-icons";
 import { ComponentProps } from "react";
+import { Hint } from "../common/hint";
 
 type ColorPickerProps = {
   color: ThemeColor;
@@ -31,24 +32,31 @@ export function ColorPicker({
         onValueChange={setColor}
       >
         {Object.entries(themeColors).map(([key, { color, name }]) => (
-          <ToggleGroupItem
+          <Hint
             key={key}
-            value={key}
-            aria-label={name}
-            className="group h-5 w-5 overflow-auto rounded-full p-0 outline-2 outline-offset-4 aria-checked:outline"
-            style={{ outlineColor: color }}
+            value={name}
+            sideOffset={10}
+            side="top"
+            style={{ background: color }}
           >
-            <div
-              className="flex h-5 w-5 items-center justify-center rounded-full"
-              style={{ backgroundColor: color }}
+            <ToggleGroupItem
+              value={key}
+              aria-label={name}
+              className="group h-5 w-5 overflow-auto rounded-full p-0 outline-2 outline-offset-4 aria-checked:outline"
+              style={{ outlineColor: color }}
             >
-              <CheckIcon
-                className={cn(
-                  "hidden text-background group-aria-checked:block",
-                )}
-              />
-            </div>
-          </ToggleGroupItem>
+              <div
+                className="flex h-5 w-5 items-center justify-center rounded-full"
+                style={{ backgroundColor: color }}
+              >
+                <CheckIcon
+                  className={cn(
+                    "hidden text-background group-aria-checked:block",
+                  )}
+                />
+              </div>
+            </ToggleGroupItem>
+          </Hint>
         ))}
       </ToggleGroup>
     </div>
