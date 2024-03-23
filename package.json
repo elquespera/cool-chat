@@ -34,7 +34,6 @@
     "clsx": "^2.1.0",
     "drizzle-orm": "^0.30.4",
     "emoji-mart": "^5.5.2",
-    "javascript-time-ago": "^2.5.9",
     "lucia": "^3.1.1",
     "markdown-to-jsx": "^7.4.5",
     "next": "^14.1.4",

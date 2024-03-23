@@ -3,14 +3,14 @@ import { MessageWithAuthor } from "@/db/schemas/messages";
 import { cn } from "@/lib/utils";
 import Markdown from "markdown-to-jsx";
 import { ElementRef, forwardRef } from "react";
+import { Timestamp } from "../common/timestamp";
 import { useAuth } from "../providers/auth/auth-context";
 import { useMessages } from "../providers/message/message-context";
 import { UserAvatar } from "../user/user-avatar";
+import { UserText } from "../user/user-text";
 import { MessageEditForm } from "./message-edit-form";
 import { MessageMenu } from "./message-menu";
 import { MessageStatus } from "./message-status";
-import { MessageTimestamp } from "./message-timestamp";
-import { UserText } from "../user/user-text";
 
 type MessageItemProps = {
   message: MessageWithAuthor;
@@ -30,6 +30,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
 
     const isLast = type === "last" || type === "only";
     const isFirst = type === "first" || type === "only";
+    const isEdited = Math.abs(createdAt.getTime() - updatedAt.getTime()) > 1000;
 
     return (
       <li
@@ -61,13 +62,15 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
               email={author.email}
               oneLine
             />
-            <MessageTimestamp
-              createdAt={createdAt}
-              updatedAt={updatedAt}
-              className={cn(
-                "mx-2 text-sm text-muted-foreground opacity-70 lg:text-base",
+            <span className="mx-2 text-xs tracking-tight text-muted-foreground opacity-70 lg:text-sm">
+              <Timestamp time={createdAt} style={isEdited ? "short" : "long"} />
+              {isEdited && (
+                <>
+                  {", edited "}
+                  <Timestamp time={updatedAt} />
+                </>
               )}
-            />
+            </span>
           </div>
         )}
 

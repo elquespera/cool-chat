@@ -3,6 +3,7 @@ import { dispatchCustomEvent } from "@/lib/custom-event";
 import { useChat } from "../providers/chat/chat-context";
 import { UserInfo } from "../user/user-info";
 import { useEffect, useRef } from "react";
+import { Timestamp } from "../common/timestamp";
 
 type ContactItemProps = { contact: ContactUserWithChat };
 
@@ -50,11 +51,10 @@ export function ContactItem({ contact }: ContactItemProps) {
         />
         {(lastTimestamp || unreadCount) && (
           <div className="flex flex-col items-end justify-between gap-1">
-            {lastTimestamp && (
-              <span className="text-sm font-normal text-muted-foreground opacity-70 group-hover:opacity-100">
-                {lastTimestamp.toLocaleTimeString()}
-              </span>
-            )}
+            <Timestamp
+              className="text-sm font-normal text-muted-foreground opacity-70 group-hover:opacity-100"
+              time={lastTimestamp}
+            />
 
             {!!unreadCount && (
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold leading-none text-primary-foreground">
