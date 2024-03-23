@@ -288,3 +288,7 @@
   --border: 240 3.7% 15.9%;
   --input: 240 3.7% 15.9%;
 }
+
+div[data-radix-scroll-area-viewport] > div {
+  display: block !important;
+}

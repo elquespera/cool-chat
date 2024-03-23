@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { User } from "lucia";
-import { ComponentProps } from "react";
+import { ComponentProps, ReactNode } from "react";
 import { SocketIndicator } from "../common/socket-indicator";
 import { UserAvatar } from "./user-avatar";
 import { UserText } from "./user-text";
@@ -11,8 +11,9 @@ type UserInfoProps = {
   size?: "sm" | "md" | "lg";
   self?: boolean;
   status?: boolean;
-  oneLine?: boolean;
   avatarUrl?: string;
+  oneLine?: boolean;
+  secondLine?: ReactNode;
 } & ComponentProps<"div">;
 
 export function UserInfo({
@@ -20,8 +21,9 @@ export function UserInfo({
   size = "md",
   oneLine,
   self,
-  status,
   avatarUrl,
+  status,
+  secondLine,
   className,
   ...props
 }: UserInfoProps) {
@@ -41,7 +43,7 @@ export function UserInfo({
         {status && self && (
           <SocketIndicator
             className={cn(
-              "absolute right-0 top-0",
+              "absolute bottom-0 right-0",
               size === "sm" ? "w-2" : size === "lg" ? "w-3" : "w-2.5",
             )}
           />
@@ -51,6 +53,7 @@ export function UserInfo({
         email={user.email}
         username={user.username}
         oneLine={oneLine}
+        secondLine={secondLine}
         className={cn(
           size === "sm" ? "text-sm" : size === "md" ? "text-sm" : "text-base",
         )}

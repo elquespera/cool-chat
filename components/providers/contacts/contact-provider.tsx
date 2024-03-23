@@ -7,7 +7,7 @@ import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { ContactContext } from "./contact-context";
 import { useAuth } from "../auth/auth-context";
 import { useCustomEvent } from "@/lib/hooks/use-custom-event";
-import { checkMessagesDelivered, updateMessage } from "@/db/actions/messages";
+import { markMessagesDelivered, updateMessage } from "@/db/actions/messages";
 import { useSocket } from "../socket/socket-context";
 
 export function ContactProvider({ children }: PropsWithChildren) {
@@ -70,7 +70,7 @@ export function ContactProvider({ children }: PropsWithChildren) {
 
     contacts.forEach(async ({ chatId }) => {
       if (!chatId) return;
-      const result = await checkMessagesDelivered(chatId);
+      const result = await markMessagesDelivered(chatId);
       if (result.ok && result.data) {
         const { authorId, chatId, id } = result.data;
         socket?.emit("messageUpdate", {

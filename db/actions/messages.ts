@@ -20,6 +20,23 @@ export async function getMessagesByChatId(
   });
 }
 
+export async function getLastMessage(
+  chatId: string,
+): Promise<DBActionResult<MessageSelect | null>> {
+  const { user } = await getAuth();
+  if (!user) return { ok: false, error: "Unauthorized access." };
+
+  const result = await db.query.messages.findMany({
+    where: eq(messages.chatId, chatId),
+    limit: 1,
+    orderBy: desc(messages.createdAt),
+  });
+
+  return result[0]
+    ? { ok: true, data: result[0] }
+    : { ok: false, error: "Message not found." };
+}
+
 export async function createMessage(
   data: MessageInsert,
 ): Promise<DBActionResult<MessageSelect>> {
@@ -63,7 +80,7 @@ export async function deleteMessage(
   return { ok: true, data: result };
 }
 
-export async function checkMessagesDelivered(
+export async function markMessagesDelivered(
   chatId: string,
 ): Promise<DBActionResult<MessageSelect | null>> {
   const { user } = await getAuth();

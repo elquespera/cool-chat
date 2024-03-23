@@ -1,36 +1,39 @@
 import { cn } from "@/lib/utils";
-import { ComponentProps } from "react";
+import { ComponentProps, ReactNode } from "react";
 
 type UserTextProps = {
   username: string | null;
   email: string | null;
   oneLine?: boolean;
+  secondLine?: ReactNode;
 } & ComponentProps<"div">;
 
 export function UserText({
   username,
   email,
   oneLine,
+  secondLine,
   className,
   ...props
 }: UserTextProps) {
   return (
     <div
-      className={cn("flex flex-col items-start font-medium", className)}
+      className={cn("overflow-hidden text-start font-medium", className)}
       {...props}
     >
-      {username && <span className="truncate">{username}</span>}
+      {username && <div className="truncate">{username}</div>}
       {email &&
-        (oneLine && username ? null : (
-          <span
+        (username && (oneLine || secondLine) ? null : (
+          <div
             className={cn(
               "truncate",
               username && "text-[0.875em] font-normal opacity-70",
             )}
           >
             {email}
-          </span>
+          </div>
         ))}
+      {secondLine}
     </div>
   );
 }

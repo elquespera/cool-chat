@@ -35,7 +35,7 @@ export function ContactList() {
           <div
             role="listbox"
             aria-label="Contacts"
-            className={cn("grow pt-48", !hideAssistant && "pb-20")}
+            className={cn("grow pb-2 pt-48", !hideAssistant && "pb-20")}
           >
             {contactToDisplay.map((contact) => (
               <ContactItem key={contact.id} contact={contact} />

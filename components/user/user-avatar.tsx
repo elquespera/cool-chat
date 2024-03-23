@@ -2,11 +2,10 @@
 
 import { UserRole } from "@/db/schemas/auth";
 import { cn } from "@/lib/utils";
-import { PersonIcon } from "@radix-ui/react-icons";
 import { ComponentProps, useEffect, useState } from "react";
-import { UserIcon } from "../icons/user-icon";
 import { AdminIcon } from "../icons/admin-icon";
 import { AssistantIcon } from "../icons/assistant-icon";
+import { UserIcon } from "../icons/user-icon";
 
 type UserAvatarProps = {
   avatarUrl: string | null;
