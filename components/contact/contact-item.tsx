@@ -34,7 +34,7 @@ export function ContactItem({ contact }: ContactItemProps) {
       ref={ref}
       role="option"
       aria-selected={selected}
-      className="group w-full px-4 py-1"
+      className="group w-full px-3 py-1 sm:px-5 sm:transition-transform sm:aria-selected:scale-105"
       onClick={handleContactClick}
     >
       <div className="relative flex items-center justify-between gap-8 rounded-lg bg-message px-4 py-3 transition-colors group-hover:bg-accent group-hover:text-accent-foreground group-aria-selected:bg-message-own group-aria-selected:text-message-own-foreground">

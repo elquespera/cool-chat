@@ -97,6 +97,12 @@ export async function getUserContacts(): Promise<
       }),
     );
 
+    data.sort((a, b) =>
+      a.lastTimestamp && b.lastTimestamp
+        ? b.lastTimestamp.getTime() - a.lastTimestamp.getTime()
+        : 0,
+    );
+
     return { ok: true, data };
   } catch (error) {
     return { ok: false, error: "Unknown error" };
