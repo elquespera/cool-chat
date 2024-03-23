@@ -7,6 +7,7 @@ import { useChat } from "../providers/chat/chat-context";
 import { UserInfo } from "../user/user-info";
 import { AssistantControls } from "./assistant-controls";
 import { GlassPanel } from "../common/glass-panel";
+import { UserControls } from "./user-controls";
 
 export function ChatUser() {
   const { interlocutor, setInterlocutorId } = useChat();
@@ -23,7 +24,10 @@ export function ChatUser() {
         />
       )}
       <UserInfo user={interlocutor} status size="lg" />
-      <AssistantControls />
+      <div className="ml-auto flex justify-center gap-3">
+        <UserControls />
+        <AssistantControls />
+      </div>
     </GlassPanel>
   ) : null;
 }
