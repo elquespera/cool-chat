@@ -19,6 +19,7 @@ export function ChatUser() {
         <IconButton
           variant="ghost"
           className="h-9 w-9"
+          aria-label="Back to contacts"
           icon={<ArrowLeftIcon className="h-5 w-5" />}
           onClick={() => setInterlocutorId(null)}
         />

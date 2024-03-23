@@ -45,7 +45,7 @@ export function ContactItem({ contact }: ContactItemProps) {
           status
           secondLine={
             lastMessage && (
-              <p className="max-w-48 truncate text-sm font-normal text-muted-foreground opacity-70 group-hover:opacity-100">
+              <p className="max-w-48 truncate text-sm font-normal text-muted-foreground">
                 {lastAuthor === user?.id && (
                   <span className="italic">you: </span>
                 )}
@@ -57,7 +57,7 @@ export function ContactItem({ contact }: ContactItemProps) {
         {(lastTimestamp || unreadCount) && (
           <div className="flex flex-col items-end justify-between gap-1">
             <Timestamp
-              className="text-nowrap text-sm font-normal text-muted-foreground opacity-70 group-hover:opacity-100"
+              className="text-nowrap text-sm font-normal text-muted-foreground"
               time={lastTimestamp}
             />
 

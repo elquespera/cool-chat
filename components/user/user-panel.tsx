@@ -74,60 +74,56 @@ export function UserPanel() {
   if (!user) return null;
 
   return (
-    <Collapsible open={open} onOpenChange={setOpen} asChild>
-      <GlassPanel position="bottom" className="shadow-top">
-        <div className="relative flex h-10 items-center gap-2">
-          <CollapsibleTrigger asChild>
-            <UserInfo
-              className="peer cursor-pointer select-none before:absolute before:inset-0"
-              user={user}
-              avatarUrl={avatarUrl}
-              status
-              self
-            />
-          </CollapsibleTrigger>
-          <ThemeSwitch className="ml-auto" />
-          <ChevronDownIcon className="-z-10 mx-2 h-4 w-4 shrink-0 text-muted-foreground transition-transform delay-300 duration-200 peer-data-[state=open]:rotate-180" />
-        </div>
-        <CollapsibleContent className="flex flex-col gap-3">
-          <ColorPicker
-            className="mt-4"
-            color={color}
-            setColor={handleColorChange}
-          />
-          <AvatarPicker url={avatarUrl} onUrlChange={setAvatarUrl} />
-          {isAdmin && (
-            <div className="mb-2 flex justify-end">
-              <IconButton size="sm" onClick={handleMockConversationClick}>
-                Generate mock conversation
-              </IconButton>
-            </div>
-          )}
-          <div className="flex gap-2">
-            {(avatarUrl || savedColor !== color) && (
-              <>
-                <IconButton
-                  size="sm"
-                  disabled={pending}
-                  pending={pending}
-                  onClick={handleSaveClick}
-                >
-                  Save
-                </IconButton>
-                <IconButton
-                  disabled={pending}
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => setOpen(false)}
-                >
-                  Cancel
-                </IconButton>
-              </>
-            )}
-            <LogOutButton className="ml-auto" />
+    <Collapsible
+      open={open}
+      onOpenChange={setOpen}
+      className="absolute bottom-0 w-full bg-background p-4 shadow-top"
+    >
+      <div className="relative isolate flex h-10 items-center gap-2">
+        <CollapsibleTrigger className="peer cursor-pointer select-none before:absolute before:inset-0">
+          <UserInfo user={user} avatarUrl={avatarUrl} status self />
+        </CollapsibleTrigger>
+        <ThemeSwitch className="ml-auto" />
+        <ChevronDownIcon className="-z-10 mx-2 h-4 w-4 shrink-0 text-muted-foreground transition-transform delay-300 duration-200 peer-data-[state=open]:rotate-180" />
+      </div>
+      <CollapsibleContent className="flex flex-col gap-3">
+        <ColorPicker
+          className="mt-4"
+          color={color}
+          setColor={handleColorChange}
+        />
+        <AvatarPicker url={avatarUrl} onUrlChange={setAvatarUrl} />
+        {isAdmin && (
+          <div className="mb-2 flex justify-end">
+            <IconButton size="sm" onClick={handleMockConversationClick}>
+              Generate mock conversation
+            </IconButton>
           </div>
-        </CollapsibleContent>
-      </GlassPanel>
+        )}
+        <div className="flex gap-2">
+          {(avatarUrl || savedColor !== color) && (
+            <>
+              <IconButton
+                size="sm"
+                disabled={pending}
+                pending={pending}
+                onClick={handleSaveClick}
+              >
+                Save
+              </IconButton>
+              <IconButton
+                disabled={pending}
+                size="sm"
+                variant="secondary"
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </IconButton>
+            </>
+          )}
+          <LogOutButton className="ml-auto" />
+        </div>
+      </CollapsibleContent>
     </Collapsible>
   );
 }
