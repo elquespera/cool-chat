@@ -77,8 +77,8 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
         <div
           className={cn(
             "group relative flex flex-wrap gap-x-6 overflow-hidden bg-background px-4 py-3",
-            id === editingId && "grow",
-            type !== "only" && "w-[calc(100%-1.5em)] lg:w-[calc(100%-2em)]",
+            (type !== "only" || id === editingId) &&
+              "w-[calc(100%-1.5em)] lg:w-[calc(100%-2em)]",
             ownMessage
               ? "mr-[1.5rem] bg-message-own text-message-own-foreground lg:mr-[2rem]"
               : "ml-[1.5rem] bg-message text-message-foreground lg:ml-[2rem]",
