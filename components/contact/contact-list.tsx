@@ -30,11 +30,11 @@ export function ContactList() {
         {!contactToDisplay.length || error ? (
           <EmptyContacts search={searchValue} error={error} />
         ) : (
-          <ul className="grow pt-40">
+          <div role="listbox" aria-label="Contacts" className="grow pt-40">
             {contactToDisplay.map((contact) => (
               <ContactItem key={contact.id} contact={contact} />
             ))}
-          </ul>
+          </div>
         )}
         {pending && <Spinner className="absolute right-2 top-2 w-3" />}
       </ScrollArea>

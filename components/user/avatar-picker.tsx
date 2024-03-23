@@ -33,6 +33,7 @@ export function AvatarPicker({
         <IconButton
           icon={<UpdateIcon />}
           toolTip="Regenerate"
+          aria-label="Regenerate"
           toolTipSide="left"
           className="h-7 w-7"
           variant="ghost"

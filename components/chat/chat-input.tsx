@@ -83,6 +83,7 @@ export function ChatInput() {
           <EmojiPicker onEmojiChange={handleInsertEmoji} />
           <IconButton
             toolTip="Send"
+            aria-label="Send"
             variant="ghost"
             className="h-8 w-8 group-focus-within:text-primary dark:group-focus-within:text-foreground"
             type="submit"

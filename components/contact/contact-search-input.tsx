@@ -13,7 +13,7 @@ export function ContactSearchInput() {
 
   return (
     <GlassPanel>
-      <h1 className="mb-6 mt-4 px-2 text-5xl font-semibold tracking-tight">
+      <h1 className="mb-6 mt-4 select-none px-2 text-5xl font-semibold tracking-tight">
         CoolChat
       </h1>
       <InputWrapper className="mb-4">

@@ -23,6 +23,7 @@ export function InputClearButton({
     <IconButton
       {...props}
       toolTip="Clear"
+      aria-label="Clear"
       type="button"
       className="h-8 w-8 shrink-0"
       icon={<Cross1Icon />}

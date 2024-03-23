@@ -88,6 +88,7 @@ export function UserPanel() {
         <ThemeSwitch className="ml-auto" />
         <CollapsibleTrigger asChild>
           <IconButton
+            aria-label="Settings"
             toolTip="Settings"
             variant="ghost"
             className="shrink-0"

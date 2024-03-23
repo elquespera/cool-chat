@@ -14,20 +14,18 @@ export function ContactItem({ contact }: ContactItemProps) {
   };
 
   return (
-    <li className="bg-background">
-      <button
-        role="option"
-        aria-selected={interlocutor?.id === contact.id}
-        className="relative flex w-full items-center gap-2 p-4 py-3 hover:bg-accent hover:text-accent-foreground aria-selected:bg-primary/10 aria-selected:text-accent-foreground"
-        onClick={handleContactClick}
-      >
-        <UserInfo user={contact} size="lg" oneLine status />
-        {!!contact?.unseenMessages && (
-          <span className="absolute left-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold leading-none text-primary-foreground">
-            {contact?.unseenMessages}
-          </span>
-        )}
-      </button>
-    </li>
+    <button
+      role="option"
+      aria-selected={interlocutor?.id === contact.id}
+      className="relative flex w-full items-center gap-2 p-4 py-3 hover:bg-accent hover:text-accent-foreground aria-selected:bg-primary/10 aria-selected:text-accent-foreground"
+      onClick={handleContactClick}
+    >
+      <UserInfo user={contact} size="lg" oneLine status />
+      {!!contact?.unseenMessages && (
+        <span className="absolute left-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold leading-none text-primary-foreground">
+          {contact?.unseenMessages}
+        </span>
+      )}
+    </button>
   );
 }

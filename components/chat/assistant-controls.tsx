@@ -40,6 +40,7 @@ export function AssistantControls() {
         ) : (
           <IconButton
             reverse
+            aria-label="Regenerate response"
             toolTip="Regenerate response"
             toolTipOffset={10}
             variant="ghost"
@@ -55,6 +56,7 @@ export function AssistantControls() {
         >
           <IconButton
             variant="ghost"
+            aria-label="Reset chat"
             toolTip="Reset chat"
             toolTipOffset={10}
             icon={<ResetIcon />}
