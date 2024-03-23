@@ -4,12 +4,14 @@ import { useChat } from "../providers/chat/chat-context";
 import { UserInfo } from "../user/user-info";
 import { useEffect, useRef } from "react";
 import { Timestamp } from "../common/timestamp";
+import { useAuth } from "../providers/auth/auth-context";
 
 type ContactItemProps = { contact: ContactUserWithChat };
 
 export function ContactItem({ contact }: ContactItemProps) {
+  const { user } = useAuth();
   const { interlocutor, setInterlocutorId } = useChat();
-  const { unreadCount, lastMessage, lastTimestamp } = contact;
+  const { unreadCount, lastMessage, lastAuthor, lastTimestamp } = contact;
   const ref = useRef<HTMLButtonElement>(null);
   const selected = interlocutor?.id === contact.id;
 
@@ -44,6 +46,9 @@ export function ContactItem({ contact }: ContactItemProps) {
           secondLine={
             lastMessage && (
               <p className="max-w-48 truncate text-sm font-normal text-muted-foreground opacity-70 group-hover:opacity-100">
+                {lastAuthor === user?.id && (
+                  <span className="italic">you: </span>
+                )}
                 {lastMessage}
               </p>
             )
@@ -52,7 +57,7 @@ export function ContactItem({ contact }: ContactItemProps) {
         {(lastTimestamp || unreadCount) && (
           <div className="flex flex-col items-end justify-between gap-1">
             <Timestamp
-              className="text-sm font-normal text-muted-foreground opacity-70 group-hover:opacity-100"
+              className="text-nowrap text-sm font-normal text-muted-foreground opacity-70 group-hover:opacity-100"
               time={lastTimestamp}
             />
 

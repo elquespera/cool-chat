@@ -80,14 +80,19 @@ export async function getUserContacts(): Promise<
         const unreadMessages = await countUnreadMesages(chat.id);
         const lastMessage = await getLastMessage(chat.id);
 
+        const last = lastMessage.ok
+          ? {
+              lastMessage: lastMessage.data?.content,
+              lastTimestamp: lastMessage.data?.createdAt,
+              lastAuthor: lastMessage.data?.authorId,
+            }
+          : {};
+
         return {
           ...author,
           chatId: chat.id,
           unreadCount: unreadMessages,
-          lastMessage: lastMessage.ok ? lastMessage.data?.content : undefined,
-          lastTimestamp: lastMessage.ok
-            ? lastMessage.data?.createdAt
-            : undefined,
+          ...last,
         };
       }),
     );
