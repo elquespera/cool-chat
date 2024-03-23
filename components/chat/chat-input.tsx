@@ -13,6 +13,8 @@ import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
 import { useInputFocus } from "./use-input-focus";
 import { useInsertEmoji } from "./use-insert-emoji";
+import { InputWrapper } from "../common/input-wrapper";
+import { GlassPanel } from "../common/glass-panel";
 
 export function ChatInput() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -65,32 +67,31 @@ export function ChatInput() {
   useInputFocus(inputRef);
 
   return interlocutor ? (
-    <div className="bg-background px-4 py-3">
-      <form
-        ref={formRef}
-        className="group flex gap-1 rounded-3xl bg-accent px-2 py-1.5 text-accent-foreground transition-colors focus-within:bg-primary/10 dark:focus-within:bg-primary/30"
-        onSubmit={handleSubmit}
-      >
-        <MultiTextArea
-          ref={inputRef}
-          formRef={formRef}
-          value={message}
-          onValueChange={setMessage}
-          className="pl-1 pt-1 group-focus-within:placeholder:text-primary/70 dark:group-focus-within:placeholder:text-foreground/50"
-          placeholder="Write a message..."
-          clearButton
-        />
+    <GlassPanel position="bottom">
+      <form ref={formRef} onSubmit={handleSubmit}>
+        <InputWrapper>
+          <MultiTextArea
+            ref={inputRef}
+            formRef={formRef}
+            value={message}
+            onValueChange={setMessage}
+            className="ps-1"
+            placeholder="Write a message..."
+            clearButton
+          />
 
-        <EmojiPicker onEmojiChange={handleInsertEmoji} />
-        <IconButton
-          toolTip="Send"
-          variant="ghost"
-          className="h-8 w-8 group-focus-within:text-primary dark:group-focus-within:text-foreground"
-          type="submit"
-          disabled={!isValid}
-          icon={<PaperPlaneIcon />}
-        />
+          <EmojiPicker onEmojiChange={handleInsertEmoji} />
+          <IconButton
+            toolTip="Send"
+            aria-label="Send"
+            variant="ghost"
+            className="h-8 w-8 group-focus-within:text-primary dark:group-focus-within:text-foreground"
+            type="submit"
+            disabled={!isValid}
+            icon={<PaperPlaneIcon />}
+          />
+        </InputWrapper>
       </form>
-    </div>
+    </GlassPanel>
   ) : null;
 }

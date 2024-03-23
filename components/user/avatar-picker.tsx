@@ -33,6 +33,7 @@ export function AvatarPicker({
         <IconButton
           icon={<UpdateIcon />}
           toolTip="Regenerate"
+          aria-label="Regenerate"
           toolTipSide="left"
           className="h-7 w-7"
           variant="ghost"
@@ -41,13 +42,13 @@ export function AvatarPicker({
       </div>
       <ToggleGroup
         type="single"
-        className="grid grid-cols-[repeat(auto-fit,minmax(3rem,1fr))] justify-items-center"
+        className="grid grid-cols-[repeat(auto-fit,minmax(3rem,1fr))] justify-items-center gap-2"
         value={url}
         onValueChange={onUrlChange}
       >
         {avatars.map((url) => (
-          <ToggleGroupItem key={url} value={url} className="h-16 w-16">
-            <UserAvatar avatarUrl={url} className="w-12" />
+          <ToggleGroupItem key={url} value={url} className="h-12 w-12">
+            <UserAvatar avatarUrl={url} className="w-10" />
           </ToggleGroupItem>
         ))}
       </ToggleGroup>

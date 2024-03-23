@@ -3,14 +3,14 @@ import { MessageWithAuthor } from "@/db/schemas/messages";
 import { cn } from "@/lib/utils";
 import Markdown from "markdown-to-jsx";
 import { ElementRef, forwardRef } from "react";
+import { Timestamp } from "../common/timestamp";
 import { useAuth } from "../providers/auth/auth-context";
 import { useMessages } from "../providers/message/message-context";
 import { UserAvatar } from "../user/user-avatar";
+import { UserText } from "../user/user-text";
 import { MessageEditForm } from "./message-edit-form";
 import { MessageMenu } from "./message-menu";
 import { MessageStatus } from "./message-status";
-import { MessageTimestamp } from "./message-timestamp";
-import { UserText } from "../user/user-text";
 
 type MessageItemProps = {
   message: MessageWithAuthor;
@@ -30,6 +30,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
 
     const isLast = type === "last" || type === "only";
     const isFirst = type === "first" || type === "only";
+    const isEdited = Math.abs(createdAt.getTime() - updatedAt.getTime()) > 1000;
 
     return (
       <li
@@ -43,7 +44,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
         {isFirst && (
           <div
             className={cn(
-              "mb-1 flex select-none items-center gap-4",
+              "mb-1 flex select-none items-center gap-2",
               ownMessage && "flex-row-reverse",
             )}
           >
@@ -61,21 +62,23 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
               email={author.email}
               oneLine
             />
-            <MessageTimestamp
-              createdAt={createdAt}
-              updatedAt={updatedAt}
-              className={cn(
-                "text-sm text-muted-foreground opacity-70 lg:text-base",
+            <span className="mx-2 text-xs tracking-tight text-muted-foreground opacity-70 lg:text-sm">
+              <Timestamp time={createdAt} style={isEdited ? "short" : "long"} />
+              {isEdited && (
+                <>
+                  {", edited "}
+                  <Timestamp time={updatedAt} />
+                </>
               )}
-            />
+            </span>
           </div>
         )}
 
         <div
           className={cn(
             "group relative flex flex-wrap gap-x-6 overflow-hidden bg-background px-4 py-3",
-            id === editingId && "grow",
-            type !== "only" && "w-[calc(100%-1.5em)] lg:w-[calc(100%-2em)]",
+            (type !== "only" || id === editingId) &&
+              "w-[calc(100%-1.5em)] lg:w-[calc(100%-2em)]",
             ownMessage
               ? "mr-[1.5rem] bg-message-own text-message-own-foreground lg:mr-[2rem]"
               : "ml-[1.5rem] bg-message text-message-foreground lg:ml-[2rem]",

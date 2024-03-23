@@ -72,6 +72,10 @@ export function ChatWindow() {
   }, [messages]);
 
   useEffect(() => {
+    if (isAssistant) scrollToBottom("instant");
+  }, [streamedMessage, isAssistant]);
+
+  useEffect(() => {
     if (
       !isIntersecting ||
       isValidating ||
@@ -115,7 +119,7 @@ export function ChatWindow() {
           >
             <ul
               ref={listRef}
-              className="mx-auto flex max-w-[48rem] flex-col-reverse p-4 pt-28"
+              className="mx-auto flex max-w-[48rem] flex-col-reverse px-4 pb-16 pt-28 md:px-8"
             >
               {isAssistant &&
                 isStreaming &&

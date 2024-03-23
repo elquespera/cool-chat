@@ -6,14 +6,15 @@ import { useChatWindow } from "../providers/chat-window/chat-window-context";
 import { useChat } from "../providers/chat/chat-context";
 import { UserInfo } from "../user/user-info";
 import { AssistantControls } from "./assistant-controls";
+import { GlassPanel } from "../common/glass-panel";
+import { UserControls } from "./user-controls";
 
 export function ChatUser() {
   const { interlocutor, setInterlocutorId } = useChat();
   const { isMobile } = useChatWindow();
 
   return interlocutor ? (
-    <div className="absolute flex h-20 w-full items-center gap-2 bg-background/80 p-4 backdrop-blur-sm">
-      {/* <div className="absolute flex h-20 w-full items-center gap-2 bg-accent px-4 py-3 text-accent-foreground"> */}
+    <GlassPanel className="flex h-20 items-center gap-2">
       {isMobile && (
         <IconButton
           variant="ghost"
@@ -23,7 +24,10 @@ export function ChatUser() {
         />
       )}
       <UserInfo user={interlocutor} status size="lg" />
-      <AssistantControls />
-    </div>
+      <div className="ml-auto flex justify-center gap-3">
+        <UserControls />
+        <AssistantControls />
+      </div>
+    </GlassPanel>
   ) : null;
 }

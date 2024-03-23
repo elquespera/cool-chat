@@ -1,13 +1,15 @@
 "use client";
-import { assistantId, interlocutorKey } from "@/constants";
+import { assistantId } from "@/constants";
+import { createCustomEvent } from "@/lib/custom-event";
 import { IconButton } from "../common/icon-button";
 import { Spinner } from "../common/spinner";
+import { AssistantIcon } from "../icons/assistant-icon";
+import { useChat } from "../providers/chat/chat-context";
 import { useContacts } from "../providers/contacts/contact-context";
 import { ScrollArea } from "../ui/scroll-area";
 import { ContactItem } from "./contact-item";
-import { AssistantIcon } from "../icons/assistant-icon";
-import { useChat } from "../providers/chat/chat-context";
-import { createCustomEvent } from "@/lib/custom-event";
+import { GlassPanel } from "../common/glass-panel";
+import { cn } from "@/lib/utils";
 
 export function ContactList() {
   const { contacts, foundContacts, searchValue, pending, error } =
@@ -22,7 +24,7 @@ export function ContactList() {
     searchValue !== "" || pending ? foundContacts : contacts;
 
   return (
-    <div className="relative mt-4 grow">
+    <div className="relative grow">
       <ScrollArea
         className="inset-0 flex flex-col"
         style={{ position: "absolute" }}
@@ -30,16 +32,23 @@ export function ContactList() {
         {!contactToDisplay.length || error ? (
           <EmptyContacts search={searchValue} error={error} />
         ) : (
-          <ul className="grow pb-20">
+          <div
+            role="listbox"
+            aria-label="Contacts"
+            className={cn("grow pb-2 pt-48", !hideAssistant && "pb-20")}
+          >
             {contactToDisplay.map((contact) => (
               <ContactItem key={contact.id} contact={contact} />
             ))}
-          </ul>
+          </div>
         )}
         {pending && <Spinner className="absolute right-2 top-2 w-3" />}
       </ScrollArea>
       {!hideAssistant && (
-        <div className="absolute bottom-0 flex h-20 w-full items-center justify-center bg-background/80 p-4 backdrop-blur-sm">
+        <GlassPanel
+          position="bottom"
+          className="flex h-20 items-center justify-center"
+        >
           <IconButton
             icon={<AssistantIcon className="h-4 w-4" />}
             onClick={() => {
@@ -49,7 +58,7 @@ export function ContactList() {
           >
             Talk to Assistant
           </IconButton>
-        </div>
+        </GlassPanel>
       )}
     </div>
   );

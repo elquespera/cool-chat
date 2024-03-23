@@ -75,7 +75,7 @@ export const POST = async (request: Request) => {
             id: messageId,
             chatId,
             authorId: assistantId,
-            content: message,
+            content: sanitazeResponse(message),
           });
           controller.close();
           request.signal.dispatchEvent(new Event("abort"));
@@ -113,4 +113,8 @@ function decodeChunk<T>(chunk?: Uint8Array) {
 
 function encodeChunk(chunk: any) {
   return encoder.encode(JSON.stringify(chunk) + "/n");
+}
+
+function sanitazeResponse(response: string) {
+  return response.replaceAll("<|system|>", "").replaceAll("<|assistant|>", "");
 }

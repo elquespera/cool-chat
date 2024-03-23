@@ -1,10 +1,12 @@
 import { deleteChat } from "@/db/actions/chats";
 import { dispatchCustomEvent } from "@/lib/custom-event";
-import { MagicWandIcon, ResetIcon, StopIcon } from "@radix-ui/react-icons";
 import ConfirmDialog from "../common/confirm-dialog";
 import { IconButton } from "../common/icon-button";
 import { useAssistant } from "../providers/assistant/assistant-context";
 import { useChat } from "../providers/chat/chat-context";
+import { StopIcon } from "../icons/stop-icon";
+import { MagicIcon } from "../icons/magic-icon";
+import { RefreshIcon } from "../icons/refresh-icon";
 
 export function AssistantControls() {
   const { chat, setInterlocutorId } = useChat();
@@ -26,25 +28,28 @@ export function AssistantControls() {
 
   return (
     isAssistant && (
-      <div className="ml-auto flex justify-center gap-3">
+      <>
         {isStreaming ? (
           <IconButton
             size="sm"
             variant="destructive"
             reverse
-            icon={<StopIcon />}
+            icon={<StopIcon className="h-6 w-6" />}
             onClick={abortResponse}
           >
             Stop
           </IconButton>
         ) : (
           <IconButton
-            reverse
+            className="group"
+            aria-label="Regenerate response"
             toolTip="Regenerate response"
             toolTipOffset={10}
             variant="ghost"
             onClick={handleRegenerate}
-            icon={<MagicWandIcon />}
+            icon={
+              <MagicIcon className="h-6 w-6 text-muted-foreground group-hover:text-primary" />
+            }
           />
         )}
 
@@ -54,13 +59,17 @@ export function AssistantControls() {
           onSuccess={handleResetChat}
         >
           <IconButton
+            className="group"
             variant="ghost"
+            aria-label="Reset chat"
             toolTip="Reset chat"
             toolTipOffset={10}
-            icon={<ResetIcon />}
+            icon={
+              <RefreshIcon className="h-6 w-6 text-muted-foreground group-hover:text-primary" />
+            }
           />
         </ConfirmDialog>
-      </div>
+      </>
     )
   );
 }

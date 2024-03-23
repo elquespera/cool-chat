@@ -11,9 +11,7 @@ import { authProvidersInfo } from "@/constants/auth-providers-info";
 import { formatRedirectURI } from "@/lib/auth/format-redirect-uri";
 import { signIn } from "@/lib/auth/sign-in";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { toast } from "sonner";
 import { IconButton } from "../common/icon-button";
-import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -57,16 +55,6 @@ export default function AuthForm({
       const result =
         type === "signIn" ? await handleSignIn() : await handleSignUp();
 
-      if (result?.error) {
-        toast.error(result.error);
-      } else {
-        toast.success(
-          type === "signIn"
-            ? "You have been logged in"
-            : "You have been successfully registered."
-        );
-      }
-
       setError(result?.error);
     } finally {
       setPending(false);
@@ -108,7 +96,7 @@ export default function AuthForm({
             <div
               className={cn(
                 "h-0 overflow-hidden transition-all delay-200 duration-500",
-                email.length && "h-12 p-1"
+                email.length && "h-12 p-1",
               )}
             >
               {!!email.length && (
@@ -137,7 +125,7 @@ export default function AuthForm({
             <div
               className={cn(
                 "h-0 overflow-hidden transition-all delay-200 duration-500",
-                password.length && "h-12 p-1"
+                password.length && "h-12 p-1",
               )}
             >
               {!!password.length && (
@@ -178,7 +166,7 @@ export default function AuthForm({
           <Link
             href={formatRedirectURI(
               type === "signIn" ? "signUp" : "signIn",
-              redirectURI
+              redirectURI,
             )}
             className="font-medium text-muted-foreground hover:text-primary"
           >

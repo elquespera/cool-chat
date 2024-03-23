@@ -1,5 +1,6 @@
 "use server";
 
+import { assistantId } from "@/constants";
 import { getAuth } from "@/lib/auth/get-auth";
 import { and, eq, like, ne, or } from "drizzle-orm";
 import { db } from "../db";
@@ -10,8 +11,7 @@ import {
   users,
 } from "../schemas/auth";
 import { getUserChats } from "./chats";
-import { countUnreadMesages } from "./messages";
-import { assistantId } from "@/constants";
+import { countUnreadMesages, getLastMessage } from "./messages";
 
 export async function getUserByEmailOrUsername(emailOrUsername: string) {
   return db.query.users.findFirst({
@@ -77,9 +77,30 @@ export async function getUserContacts(): Promise<
       chats.map(async (chat) => {
         const { userOne, userTwo } = chat;
         const author = userOne.id === user.id ? userTwo : userOne;
-        const unseenMessages = await countUnreadMesages(chat.id);
-        return { ...author, chatId: chat.id, unseenMessages };
+        const unreadMessages = await countUnreadMesages(chat.id);
+        const lastMessage = await getLastMessage(chat.id);
+
+        const last = lastMessage.ok
+          ? {
+              lastMessage: lastMessage.data?.content,
+              lastTimestamp: lastMessage.data?.createdAt,
+              lastAuthor: lastMessage.data?.authorId,
+            }
+          : {};
+
+        return {
+          ...author,
+          chatId: chat.id,
+          unreadCount: unreadMessages,
+          ...last,
+        };
       }),
+    );
+
+    data.sort((a, b) =>
+      a.lastTimestamp && b.lastTimestamp
+        ? b.lastTimestamp.getTime() - a.lastTimestamp.getTime()
+        : 0,
     );
 
     return { ok: true, data };

@@ -29,8 +29,8 @@ export default async function HomePage() {
         <ChatWrapper
           leftPanel={
             <>
-              <ContactSearchInput />
               <ContactList />
+              <ContactSearchInput />
               <UserPanel />
             </>
           }
