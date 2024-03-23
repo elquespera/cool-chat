@@ -45,6 +45,7 @@ export function ChatWrapper({ leftPanel, rightPanel }: ChatWrapperProps) {
       className="grow"
       direction="horizontal"
       id="chat-window"
+      autoSaveId="chat-window-resizable"
     >
       <ResizablePanel
         id="sidebar"

@@ -40,7 +40,7 @@ export function ContactList() {
           <div
             role="listbox"
             aria-label="Contacts"
-            className={cn("grow pb-2 pt-48", !hideAssistant && "pb-20")}
+            className={cn("grow pb-2 pt-48", hideAssistant ? "pb-20" : "pb-40")}
           >
             {contactToDisplay.map((contact) => (
               <ContactItem key={contact.id} contact={contact} />
@@ -52,7 +52,7 @@ export function ContactList() {
       {!hideAssistant && (
         <GlassPanel
           position="bottom"
-          className="flex h-20 items-center justify-center"
+          className="bottom-[4.5rem] flex h-20 items-center justify-center"
         >
           <IconButton
             icon={<AssistantIcon className="h-4 w-4" />}

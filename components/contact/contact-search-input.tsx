@@ -20,7 +20,9 @@ export function ContactSearchInput() {
   const isScrolledDown = scrollTop > threshold;
 
   return (
-    <GlassPanel className={cn("overflow-hidden", isScrolledDown && "h-32")}>
+    <GlassPanel
+      className={cn("overflow-hidden", isScrolledDown && "h-32 shadow-sm")}
+    >
       <h1
         className={cn(
           "text-5 mb-6 flex origin-top-left select-none gap-2 overflow-clip px-2 text-5xl font-semibold tracking-tighter transition-all",

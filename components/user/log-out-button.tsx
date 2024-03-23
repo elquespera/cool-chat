@@ -24,7 +24,8 @@ export function LogOutButton({ className }: PropsWithClassName) {
   return (
     <IconButton
       className={cn(className)}
-      variant="outline"
+      variant="secondary"
+      size="sm"
       pending={pending}
       reverse
       onClick={handleLogOut}

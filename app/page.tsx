@@ -50,10 +50,8 @@ export default async function HomePage() {
 
 function Loading() {
   return (
-    <div className="flex grow flex-col items-center justify-center bg-muted">
-      <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-muted-foreground">
-        <Spinner className="w-6" /> Loading...
-      </div>
+    <div className="flex grow flex-col items-center justify-center">
+      <Spinner className="w-6" />
     </div>
   );
 }

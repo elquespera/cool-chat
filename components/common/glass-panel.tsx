@@ -14,7 +14,7 @@ export function GlassPanel({
   return (
     <div
       className={cn(
-        "absolute w-full from-background via-background/70 to-background/50 p-4 backdrop-blur-sm",
+        "absolute w-full from-background via-background/70 to-background/70 p-4 backdrop-blur-sm",
         position === "top" ? "bg-gradient-to-b" : "bottom-0 bg-gradient-to-t",
         className,
       )}

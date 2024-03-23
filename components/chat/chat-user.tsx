@@ -14,7 +14,7 @@ export function ChatUser() {
   const { isMobile } = useChatWindow();
 
   return interlocutor ? (
-    <GlassPanel className="flex h-20 items-center gap-2">
+    <GlassPanel className="flex h-20 items-center gap-2 shadow-sm">
       {isMobile && (
         <IconButton
           variant="ghost"
