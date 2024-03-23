@@ -1,5 +1,5 @@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { ThemeColor, themeColors } from "@/constants";
+import { ThemeColor, themeColorInfo } from "@/constants";
 import { cn } from "@/lib/utils";
 import { CheckIcon } from "@radix-ui/react-icons";
 import { ComponentProps } from "react";
@@ -31,7 +31,7 @@ export function ColorPicker({
         value={color}
         onValueChange={setColor}
       >
-        {Object.entries(themeColors).map(([key, { color, name }]) => (
+        {Object.entries(themeColorInfo).map(([key, { color, name }]) => (
           <Hint
             key={key}
             value={name}
