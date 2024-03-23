@@ -8,6 +8,7 @@ import {
 import { ThemeColor } from "@/constants";
 import { createMockConversation } from "@/db/actions/mock";
 import { updateUser } from "@/db/actions/users";
+import { ChatBubbleIcon, ChevronDownIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IconButton } from "../common/icon-button";
@@ -18,12 +19,10 @@ import { ColorPicker } from "./color-picker";
 import { LogOutButton } from "./log-out-button";
 import ThemeSwitch from "./theme-switch";
 import { UserInfo } from "./user-info";
-import { GlassPanel } from "../common/glass-panel";
-import { ChevronDownIcon } from "@radix-ui/react-icons";
 
 export function UserPanel() {
   const router = useRouter();
-  const { user, isAdmin } = useAuth();
+  const { user } = useAuth();
   const { color, setColor } = useColors();
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
@@ -93,13 +92,15 @@ export function UserPanel() {
           setColor={handleColorChange}
         />
         <AvatarPicker url={avatarUrl} onUrlChange={setAvatarUrl} />
-        {isAdmin && (
-          <div className="mb-2 flex justify-end">
-            <IconButton size="sm" onClick={handleMockConversationClick}>
-              Generate mock conversation
-            </IconButton>
-          </div>
-        )}
+        <div className="mb-2 flex">
+          <IconButton
+            size="sm"
+            onClick={handleMockConversationClick}
+            icon={<ChatBubbleIcon />}
+          >
+            Create mock chat
+          </IconButton>
+        </div>
         <div className="flex gap-2">
           {(avatarUrl || savedColor !== color) && (
             <>

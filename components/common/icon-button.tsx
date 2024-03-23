@@ -78,7 +78,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
           <span
             className={cn(
               "inline-flex",
-              actualIcon && (reverse ? "pr-1" : "pl-1"),
+              actualIcon && (reverse ? "pe-2" : "ps-2"),
             )}
           >
             {children}
