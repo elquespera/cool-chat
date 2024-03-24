@@ -44,9 +44,10 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
     );
 
     useEffect(() => {
-      if (ownMessage || !isIntersecting || status !== "delivered") return;
+      if (ownMessage || streaming || !isIntersecting || status !== "delivered")
+        return;
       setMessageStatus("read");
-    }, [isIntersecting, status, ownMessage, setMessageStatus]);
+    }, [isIntersecting, status, ownMessage, streaming, setMessageStatus]);
 
     return (
       <li
