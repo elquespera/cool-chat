@@ -17,19 +17,24 @@ import { TrashIcon } from "../icons/trash-icon";
 import { ClipboardIcon } from "../icons/clipboard-icon";
 import { CheckCircleIcon } from "../icons/check-circle-icon";
 import { EllipsisVerticalIcon } from "../icons/ellipsis-vertical-icon";
+import { useChatWindow } from "../providers/chat-window/chat-window-context";
 
 type MessageMenuProps = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
   message: MessageSelect;
   ownMessage: boolean;
 } & ComponentProps<"button">;
 
 export function MessageMenu({
+  open,
+  setOpen,
   message,
   ownMessage,
   className,
   ...props
 }: MessageMenuProps) {
-  const [open, setOpen] = useState(false);
+  const { isMobile } = useChatWindow();
   const { setEditingId } = useMessages();
   const handleDelete = useDeleteMessage(message, ownMessage);
   const { handleCopy, copySuccess } = useCopyMessage(message);
@@ -41,8 +46,8 @@ export function MessageMenu({
           tabIndex={-1}
           aria-label="Message menu"
           className={cn(
-            "absolute right-0 top-0 flex h-7 w-7 items-center justify-center outline-none transition-opacity",
-            "opacity-0 group-hover:opacity-100 group-focus:opacity-100",
+            "absolute right-0 top-0 flex h-7 w-7 items-center justify-center opacity-0 outline-none transition-opacity group-hover:opacity-100 group-focus:opacity-100",
+            isMobile && "scale-0",
             className,
           )}
           {...props}
