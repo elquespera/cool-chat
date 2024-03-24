@@ -7,7 +7,10 @@ type MessageUpdateListener = (payload: {
 }) => void;
 
 type UserStatus = "online" | "offline" | "typing";
-type UserStatusListener = (userId: string, status: UserStatus) => void;
+type UserStatusListener = (payload: {
+  userId: string;
+  status: UserStatus;
+}) => void;
 
 type ServerToClientEvents = {
   messageUpdate: MessageUpdateListener;

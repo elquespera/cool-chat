@@ -3,6 +3,8 @@ import { Server as NetServer, Socket } from "net";
 import { Server as HttpServer } from "http";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Server as SocketIOServer } from "socket.io";
+import { db } from "@/db/db";
+import { settings } from "@/db/schemas/settings";
 
 type NextApiResponseServerIO = NextApiResponse & {
   socket: Socket & {
@@ -36,18 +38,24 @@ export default function handler(
     });
 
     io.on("connection", (socket) => {
-      socket.broadcast.emit("userStatusChange", socket.data.userId, "online");
-
       socket.on("disconnect", () => {
-        socket.broadcast.emit(
-          "userStatusChange",
-          socket.data.userId,
-          "offline",
-        );
+        const userId = socket.data.userId;
+        console.log("user disconnected", userId);
+        socket.broadcast.emit("userStatusChange", {
+          userId,
+          status: "offline",
+        });
+
+        updateStatus(userId, "offline");
       });
 
-      socket.on("userStatusChange", (...args) => {
-        socket.broadcast.emit("userStatusChange", ...args);
+      socket.on("userStatusChange", ({ userId, status }) => {
+        console.log("user status change", userId, status);
+        socket.data.userId = userId;
+        socket.broadcast.emit("userStatusChange", { userId, status });
+        if (status === "offline" || status === "online") {
+          updateStatus(userId, status);
+        }
       });
 
       socket.on("messageUpdate", async (args) => {
@@ -59,4 +67,11 @@ export default function handler(
   }
 
   response.end();
+}
+
+async function updateStatus(userId: string, status: "offline" | "online") {
+  await db.insert(settings).values({ userId, status }).onConflictDoUpdate({
+    target: settings.userId,
+    set: { status },
+  });
 }

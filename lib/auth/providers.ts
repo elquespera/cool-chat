@@ -1,19 +1,15 @@
-import { redirectURIKey, userIdLength } from "@/constants";
+import { redirectURIKey } from "@/constants";
 import { routes } from "@/constants/routes";
 import { addUserAndAccount, getAccountById } from "@/db/actions/accounts";
 import {
-  Discord,
-  Facebook,
   GitHub,
   Google,
   OAuth2Provider,
   OAuth2ProviderWithPKCE,
   OAuth2RequestError,
-  Reddit,
   generateCodeVerifier,
   generateState,
 } from "arctic";
-import { generateId } from "lucia";
 import { cookies } from "next/headers";
 import { createSession } from "./session";
 

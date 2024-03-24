@@ -11,7 +11,8 @@ type ContactItemProps = { contact: ContactUserWithChat };
 export function ContactItem({ contact }: ContactItemProps) {
   const { user } = useAuth();
   const { interlocutor, setInterlocutorId } = useChat();
-  const { unreadCount, lastMessage, lastAuthor, lastTimestamp } = contact;
+  const { unreadCount, lastMessage, lastAuthor, lastTimestamp, status } =
+    contact;
   const ref = useRef<HTMLButtonElement>(null);
   const selected = interlocutor?.id === contact.id;
 
@@ -42,10 +43,10 @@ export function ContactItem({ contact }: ContactItemProps) {
           user={contact}
           size="lg"
           oneLine
-          status
+          status={status}
           secondLine={
             lastMessage && (
-              <p className="max-w-48 truncate text-sm font-normal text-muted-foreground opacity-70 group-hover:opacity-100">
+              <p className="max-w-48 truncate text-sm font-normal text-muted-foreground">
                 {lastAuthor === user?.id && (
                   <span className="italic">you: </span>
                 )}
@@ -54,10 +55,10 @@ export function ContactItem({ contact }: ContactItemProps) {
             )
           }
         />
-        {(lastTimestamp || unreadCount) && (
+        {!!(lastTimestamp || unreadCount) && (
           <div className="flex flex-col items-end justify-between gap-1">
             <Timestamp
-              className="text-nowrap text-sm font-normal text-muted-foreground opacity-70 group-hover:opacity-100"
+              className="text-nowrap text-sm font-normal text-muted-foreground"
               time={lastTimestamp}
             />
 

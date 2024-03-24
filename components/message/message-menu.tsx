@@ -41,6 +41,7 @@ export function MessageMenu({
       <DropdownMenuTrigger asChild>
         <button
           tabIndex={-1}
+          aria-label="Message menu"
           className={cn(
             "absolute right-0 top-0 flex h-7 w-7 items-center justify-center outline-none transition-opacity",
             "opacity-0 group-hover:opacity-100 group-focus:opacity-100",

@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { ComponentProps } from "react";
 
 type StatusIndicatorProps = {
-  status: "online" | "pending" | "away" | "offline" | "typing";
+  status?: "online" | "pending" | "away" | "offline" | "typing";
 } & ComponentProps<"div">;
 
 export const StatusIndicator = ({
@@ -10,7 +10,7 @@ export const StatusIndicator = ({
   className,
   ...props
 }: StatusIndicatorProps) => {
-  return (
+  return status ? (
     <div
       {...props}
       role="status"
@@ -22,9 +22,9 @@ export const StatusIndicator = ({
             ? "bg-orange-400"
             : status === "online"
               ? "bg-emerald-500"
-              : "",
+              : "bg-muted-foreground",
         className,
       )}
     />
-  );
+  ) : null;
 };

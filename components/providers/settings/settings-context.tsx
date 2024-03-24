@@ -1,14 +1,14 @@
 import { ThemeColor, defaultColor } from "@/constants";
 import { createContext, useContext } from "react";
 
-type ColorContextType = {
+type SettingsContextType = {
   color: ThemeColor;
   setColor: (color: ThemeColor) => void;
 };
 
-export const ColorContext = createContext<ColorContextType>({
+export const SettingsContext = createContext<SettingsContextType>({
   color: defaultColor,
   setColor: () => {},
 });
 
-export const useColors = () => useContext(ColorContext);
+export const useSettings = () => useContext(SettingsContext);

@@ -12,13 +12,12 @@ import { MessageEditForm } from "./message-edit-form";
 import { MessageMenu } from "./message-menu";
 import { MessageStatus } from "./message-status";
 
+type MessageType = "only" | "first" | "middle" | "last";
 type MessageItemProps = {
   message: MessageWithAuthor;
-  type: "only" | "first" | "middle" | "last";
+  type: MessageType;
   streaming?: boolean;
 };
-
-const radius = "12px";
 
 export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
   ({ message, type, streaming }, ref) => {
@@ -31,6 +30,8 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
     const isLast = type === "last" || type === "only";
     const isFirst = type === "first" || type === "only";
     const isEdited = Math.abs(createdAt.getTime() - updatedAt.getTime()) > 1000;
+
+    const borderRadius = calculateBorderRadius(type, ownMessage);
 
     return (
       <li
@@ -86,20 +87,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
               ? "opacity-50"
               : "before:absolute before:inset-0 before:z-[-1] before:bg-background",
           )}
-          style={{
-            borderRadius:
-              type === "first"
-                ? ownMessage
-                  ? `${radius} 0 0 0`
-                  : `0 ${radius} 0 0`
-                : type === "last"
-                  ? `0 0 ${radius} ${radius}`
-                  : type === "middle"
-                    ? "0 0 0 0"
-                    : ownMessage
-                      ? `${radius} 0 ${radius} ${radius}`
-                      : `0 ${radius} ${radius} ${radius}`,
-          }}
+          style={{ borderRadius }}
         >
           {status === "deleted" ? (
             <p className="select-none italic">(deleted)</p>
@@ -125,3 +113,19 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
   },
 );
 MessageItem.displayName = "MessageItem";
+
+const radius = "16px";
+const smallRadius = "2px";
+
+const calculateBorderRadius = (type: MessageType, ownMessage: boolean) =>
+  type === "first"
+    ? ownMessage
+      ? `${radius} ${smallRadius} ${smallRadius} ${smallRadius}`
+      : `${smallRadius} ${radius} ${smallRadius} ${smallRadius}`
+    : type === "last"
+      ? `${smallRadius} ${smallRadius} ${radius} ${radius}`
+      : type === "middle"
+        ? `${smallRadius} ${smallRadius} ${smallRadius} ${smallRadius}`
+        : ownMessage
+          ? `${radius} ${smallRadius} ${radius} ${radius}`
+          : `${smallRadius} ${radius} ${radius} ${radius}`;

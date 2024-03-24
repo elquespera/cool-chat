@@ -110,6 +110,16 @@ export function ContactProvider({ children }: PropsWithChildren) {
     [user, socket],
   );
 
+  useCustomEvent(
+    "userstatuschange",
+    ({ userId }) => {
+      if (contacts.some((contact) => contact.id === userId)) {
+        refetchContacts();
+      }
+    },
+    [contacts],
+  );
+
   return (
     <ContactContext.Provider
       value={{

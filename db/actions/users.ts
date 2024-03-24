@@ -12,6 +12,7 @@ import {
 } from "../schemas/auth";
 import { getUserChats } from "./chats";
 import { countUnreadMesages, getLastMessage } from "./messages";
+import { getSettings } from "./settings";
 
 export async function getUserByEmailOrUsername(emailOrUsername: string) {
   return db.query.users.findFirst({
@@ -79,6 +80,7 @@ export async function getUserContacts(): Promise<
         const author = userOne.id === user.id ? userTwo : userOne;
         const unreadMessages = await countUnreadMesages(chat.id);
         const lastMessage = await getLastMessage(chat.id);
+        const settings = await getSettings(author.id);
 
         const last = lastMessage.ok
           ? {
@@ -88,10 +90,13 @@ export async function getUserContacts(): Promise<
             }
           : {};
 
+        const status = settings.ok ? settings.data?.status : undefined;
+
         return {
           ...author,
           chatId: chat.id,
           unreadCount: unreadMessages,
+          status,
           ...last,
         };
       }),
