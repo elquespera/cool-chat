@@ -159,11 +159,11 @@ export function ChatWindow() {
 
             <IconButton
               className={cn(
-                "absolute bottom-4 right-8 h-12 w-12 opacity-70 transition-opacity",
+                "absolute bottom-24 right-12 h-10 w-10 opacity-70 transition-opacity",
                 !scrollButtonVisible && "scale-0 opacity-0",
               )}
               variant="outline"
-              icon={<ArrowUpIcon className="h-5 w-5" />}
+              icon={<ArrowUpIcon className="h-5 w-5 rotate-180" />}
               onClick={() => scrollToBottom("smooth")}
             />
           </ScrollArea>

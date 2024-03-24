@@ -1,21 +1,18 @@
 "use client";
 import { updateMessage } from "@/db/actions/messages";
-import { MessageSelect } from "@/db/schemas/messages";
+import { MessageSelect, MessageStatus } from "@/db/schemas/messages";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
 
-export function useDeleteMessage(
-  { id, chatId, authorId }: MessageSelect,
-  ownMessage: boolean,
-) {
+export function useMessageStatus({ id, chatId, authorId }: MessageSelect) {
   const { socket } = useSocket();
   const { interlocutor } = useChat();
   const { refetchMessages } = useMessages();
 
-  return async () => {
-    if (!ownMessage || !interlocutor) return;
-    const result = await updateMessage(id, { status: "deleted" });
+  const setStatus = async (status: MessageStatus) => {
+    if (!interlocutor) return;
+    const result = await updateMessage(id, { status });
 
     if (result.ok) {
       socket?.emit("messageUpdate", {
@@ -23,9 +20,11 @@ export function useDeleteMessage(
         chatId,
         authorId,
         interlocutorId: interlocutor.id,
-        status: "deleted",
+        status,
       });
       refetchMessages();
     }
   };
+
+  return setStatus;
 }

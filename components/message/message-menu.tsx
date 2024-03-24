@@ -7,17 +7,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MessageSelect } from "@/db/schemas/messages";
 import { cn } from "@/lib/utils";
-import { ComponentProps, useState } from "react";
+import { ComponentProps } from "react";
 import ConfirmDialog from "../common/confirm-dialog";
-import { useMessages } from "../providers/message/message-context";
-import { useCopyMessage } from "./use-copy-message";
-import { useDeleteMessage } from "./use-delete-message";
+import { CheckCircleIcon } from "../icons/check-circle-icon";
+import { ClipboardIcon } from "../icons/clipboard-icon";
+import { EllipsisVerticalIcon } from "../icons/ellipsis-vertical-icon";
 import { PencilIcon } from "../icons/pencil-icon";
 import { TrashIcon } from "../icons/trash-icon";
-import { ClipboardIcon } from "../icons/clipboard-icon";
-import { CheckCircleIcon } from "../icons/check-circle-icon";
-import { EllipsisVerticalIcon } from "../icons/ellipsis-vertical-icon";
 import { useChatWindow } from "../providers/chat-window/chat-window-context";
+import { useMessages } from "../providers/message/message-context";
+import { useCopyMessage } from "./use-copy-message";
+import { useMessageStatus } from "./use-message-status";
 
 type MessageMenuProps = {
   open: boolean;
@@ -36,7 +36,8 @@ export function MessageMenu({
 }: MessageMenuProps) {
   const { isMobile } = useChatWindow();
   const { setEditingId } = useMessages();
-  const handleDelete = useDeleteMessage(message, ownMessage);
+  const setStatus = useMessageStatus(message);
+  const handleDelete = () => ownMessage && setStatus("deleted");
   const { handleCopy, copySuccess } = useCopyMessage(message);
 
   return (
