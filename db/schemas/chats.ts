@@ -1,7 +1,7 @@
 import { randomId } from "@/lib/random-id";
 import { relations, sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { users } from "./auth";
+import { ContactUser, users } from "./auth";
 import { messages } from "./messages";
 
 export const chats = sqliteTable("chat", {
@@ -42,3 +42,12 @@ export const chatsRelations = relations(chats, ({ many, one }) => ({
 
 export type ChatSelect = typeof chats.$inferSelect;
 export type ChatInsert = typeof chats.$inferInsert;
+
+export type OpenChat = ChatSelect & {
+  interlocutor: ContactUser;
+  status: UserStatus | null;
+  unreadCount: number;
+  lastMessage?: string;
+  lastTimestamp?: Date;
+  lastAuthor?: string;
+};

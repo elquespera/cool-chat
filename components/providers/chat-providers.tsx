@@ -4,7 +4,7 @@ import { SocketProvider } from "./socket/socket-provider";
 import { getAuth } from "@/lib/auth/get-auth";
 import { AuthProvider } from "./auth/auth-provider";
 import { MessageProvider } from "./message/message-provider";
-import { ContactProvider } from "./contacts/contact-provider";
+import { SearchContactsProvider } from "./search-contacts/search-contacts-provider";
 import { ChatWindowProvider } from "./chat-window/chat-window-provider";
 import {
   InitialSettings,
@@ -14,6 +14,7 @@ import { AssistantProvider } from "./assistant/assistant-provider";
 import { getAssistantUser } from "@/db/actions/users";
 import { getSettings } from "@/db/actions/settings";
 import { defaultColor } from "@/constants";
+import { OpenChatsProvider } from "./open-chats/open-chats-provider";
 
 export async function ChatProviders({ children }: PropsWithChildren) {
   const { user } = await getAuth();
@@ -23,7 +24,7 @@ export async function ChatProviders({ children }: PropsWithChildren) {
 
   if (user) {
     const settingsResult = await getSettings(user.id);
-    if (settingsResult.ok && settingsResult.data) {
+    if (settingsResult.ok) {
       settings = settingsResult.data;
     }
   }
@@ -33,13 +34,15 @@ export async function ChatProviders({ children }: PropsWithChildren) {
       <SettingsProvider initialSettings={settings}>
         <ChatWindowProvider>
           <SocketProvider>
-            <ChatProvider>
-              <MessageProvider>
-                <AssistantProvider assistant={assistant}>
-                  <ContactProvider>{children}</ContactProvider>
-                </AssistantProvider>
-              </MessageProvider>
-            </ChatProvider>
+            <OpenChatsProvider>
+              <ChatProvider>
+                <MessageProvider>
+                  <AssistantProvider assistant={assistant}>
+                    <SearchContactsProvider>{children}</SearchContactsProvider>
+                  </AssistantProvider>
+                </MessageProvider>
+              </ChatProvider>
+            </OpenChatsProvider>
           </SocketProvider>
         </ChatWindowProvider>
       </SettingsProvider>

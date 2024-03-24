@@ -1,18 +1,24 @@
-import { ContactUserWithChat } from "@/db/schemas/auth";
+import { ContactUser } from "@/db/schemas/auth";
 import { dispatchCustomEvent } from "@/lib/custom-event";
+import { ReactNode, useEffect, useRef } from "react";
 import { useChat } from "../providers/chat/chat-context";
 import { UserInfo } from "../user/user-info";
-import { useEffect, useRef } from "react";
-import { Timestamp } from "../common/timestamp";
-import { useAuth } from "../providers/auth/auth-context";
 
-type ContactItemProps = { contact: ContactUserWithChat };
+type ContactItemProps = {
+  contact: ContactUser;
+  status?: UserStatus | null;
+  secondLine?: ReactNode;
+  endDecoration?: ReactNode;
+};
 
-export function ContactItem({ contact }: ContactItemProps) {
-  const { user } = useAuth();
+export function ContactItem({
+  contact,
+  status,
+  secondLine,
+  endDecoration,
+}: ContactItemProps) {
   const { interlocutor, setInterlocutorId } = useChat();
-  const { unreadCount, lastMessage, lastAuthor, lastTimestamp, status } =
-    contact;
+
   const ref = useRef<HTMLButtonElement>(null);
   const selected = interlocutor?.id === contact.id;
 
@@ -35,7 +41,7 @@ export function ContactItem({ contact }: ContactItemProps) {
       ref={ref}
       role="option"
       aria-selected={selected}
-      className="group w-full px-3 py-1 sm:px-5 sm:transition-transform sm:aria-selected:scale-105"
+      className="group w-full px-3 py-1 sm:px-5"
       onClick={handleContactClick}
     >
       <div className="relative flex items-center justify-between gap-8 rounded-lg bg-message px-4 py-3 transition-colors group-hover:bg-accent group-hover:text-accent-foreground group-aria-selected:bg-message-own group-aria-selected:text-message-own-foreground">
@@ -43,32 +49,10 @@ export function ContactItem({ contact }: ContactItemProps) {
           user={contact}
           size="lg"
           oneLine
-          status={status}
-          secondLine={
-            lastMessage && (
-              <p className="max-w-48 truncate text-sm font-normal text-muted-foreground">
-                {lastAuthor === user?.id && (
-                  <span className="italic">you: </span>
-                )}
-                {lastMessage}
-              </p>
-            )
-          }
+          status={status ?? undefined}
+          secondLine={secondLine}
         />
-        {!!(lastTimestamp || unreadCount) && (
-          <div className="flex flex-col items-end justify-between gap-1">
-            <Timestamp
-              className="text-nowrap text-sm font-normal text-muted-foreground"
-              time={lastTimestamp}
-            />
-
-            {!!unreadCount && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold leading-none text-primary-foreground">
-                {unreadCount}
-              </span>
-            )}
-          </div>
-        )}
+        {endDecoration}
       </div>
     </button>
   );

@@ -7,9 +7,9 @@ import { dispatchCustomEvent } from "@/lib/custom-event";
 import { useCustomEvent } from "@/lib/hooks/use-custom-event";
 import { PropsWithChildren, useMemo, useState } from "react";
 import { useChat } from "../chat/chat-context";
-import { useContacts } from "../contacts/contact-context";
 import { useMessages } from "../message/message-context";
 import { AssistantContext } from "./assistant-context";
+import { useOpenChats } from "../open-chats/open-chats-context";
 
 const maxMessages = 10;
 
@@ -25,7 +25,7 @@ export function AssistantProvider({
 }: AssistantProviderProps) {
   const { interlocutor, chat } = useChat();
   const { refetchMessages } = useMessages();
-  const { refetchContacts } = useContacts();
+  const { refetchOpenChats } = useOpenChats();
 
   const [isStreaming, setIsStreaming] = useState(false);
   const [response, setResponse] = useState("");
@@ -80,13 +80,13 @@ export function AssistantProvider({
           });
         }
         await refetchMessages("smooth");
-        await refetchContacts();
+        await refetchOpenChats();
       } finally {
         setReader(undefined);
         setIsStreaming(false);
       }
     },
-    [isStreaming, isAssistant, assistant, refetchMessages, refetchContacts],
+    [isStreaming, isAssistant, assistant, refetchMessages, refetchOpenChats],
   );
 
   const streamedMessage: MessageWithAuthor = useMemo(

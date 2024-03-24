@@ -6,15 +6,15 @@ import { GlassPanel } from "../common/glass-panel";
 import { InputClearButton } from "../common/input-clear-button";
 import { InputWrapper } from "../common/input-wrapper";
 import { ChatDuoIcon } from "../icons/chat-icon";
-import { useContacts } from "../providers/contacts/contact-context";
 import { useContactScroll } from "./contact-scroll-context";
 import { MagnifyingGlassIcon } from "../icons/magnifying-glass-icon";
+import { useSearchContacts } from "../providers/search-contacts/search-contacts-context";
 
 const threshold = 120;
 
 export function ContactSearchInput() {
   const { scrollTop } = useContactScroll();
-  const { searchValue, setSearchValue } = useContacts();
+  const { searchValue, setSearchValue } = useSearchContacts();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const isScrolledDown = scrollTop > threshold;

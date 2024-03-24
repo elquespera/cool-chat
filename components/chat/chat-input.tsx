@@ -9,12 +9,12 @@ import { SendIcon } from "../icons/send-icon";
 import { useAssistant } from "../providers/assistant/assistant-context";
 import { useAuth } from "../providers/auth/auth-context";
 import { useChat } from "../providers/chat/chat-context";
-import { useContacts } from "../providers/contacts/contact-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
 import { useInputFocus } from "./use-input-focus";
 import { useInsertEmoji } from "./use-insert-emoji";
+import { useOpenChats } from "../providers/open-chats/open-chats-context";
 
 export function ChatInput() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -24,7 +24,7 @@ export function ChatInput() {
   const { interlocutor, chat, refetchChat } = useChat();
   const { isStreaming, generateResponse } = useAssistant();
   const { refetchMessages } = useMessages();
-  const { refetchContacts } = useContacts();
+  const { refetchOpenChats } = useOpenChats();
 
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
@@ -51,11 +51,11 @@ export function ChatInput() {
 
         if (chat?.id !== result.data.chatId) {
           await refetchChat(interlocutor);
-          await refetchContacts();
         } else {
           await refetchMessages("smooth");
         }
 
+        await refetchOpenChats();
         generateResponse(result.data.chatId);
       }
     } finally {
