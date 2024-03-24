@@ -7,18 +7,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MessageSelect } from "@/db/schemas/messages";
 import { cn } from "@/lib/utils";
-import {
-  CheckCircledIcon,
-  CopyIcon,
-  DotsVerticalIcon,
-  Pencil1Icon,
-  TrashIcon,
-} from "@radix-ui/react-icons";
 import { ComponentProps, useState } from "react";
 import ConfirmDialog from "../common/confirm-dialog";
 import { useMessages } from "../providers/message/message-context";
 import { useCopyMessage } from "./use-copy-message";
 import { useDeleteMessage } from "./use-delete-message";
+import { PencilIcon } from "../icons/pencil-icon";
+import { TrashIcon } from "../icons/trash-icon";
+import { ClipboardIcon } from "../icons/clipboard-icon";
+import { CheckCircleIcon } from "../icons/check-circle-icon";
+import { EllipsisVerticalIcon } from "../icons/ellipsis-vertical-icon";
 
 type MessageMenuProps = {
   message: MessageSelect;
@@ -49,14 +47,14 @@ export function MessageMenu({
           )}
           {...props}
         >
-          <DotsVerticalIcon className="h-4 w-4" />
+          <EllipsisVerticalIcon className="h-5 w-5" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {ownMessage && (
           <>
             <DropdownMenuItem onClick={() => setEditingId(message.id)}>
-              <Pencil1Icon className="mr-1 h-4 w-4" />
+              <PencilIcon className="mr-1 h-4 w-4" />
               Edit
             </DropdownMenuItem>
 
@@ -80,9 +78,9 @@ export function MessageMenu({
         )}
         <DropdownMenuItem onClick={handleCopy}>
           {copySuccess ? (
-            <CheckCircledIcon className="mr-1 h-4 w-4" />
+            <CheckCircleIcon className="mr-1 h-4 w-4" />
           ) : (
-            <CopyIcon className="mr-1 h-4 w-4" />
+            <ClipboardIcon className="mr-1 h-4 w-4" />
           )}
           Copy
         </DropdownMenuItem>

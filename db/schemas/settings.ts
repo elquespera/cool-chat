@@ -6,7 +6,7 @@ export const settings = sqliteTable("settings", {
   userId: text("user_id")
     .notNull()
     .primaryKey()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
 
   color: text("color", { enum: themeColors }).default(defaultColor).notNull(),
 

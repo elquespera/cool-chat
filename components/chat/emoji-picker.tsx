@@ -27,7 +27,7 @@ export function EmojiPicker({
           toolTip="Add emoji"
           aria-label="Add emoji"
           className={cn("h-8 w-8", className)}
-          icon={<SmileIcon className="h-4 w-4" />}
+          icon={<SmileIcon className="h-5 w-5" />}
         />
       </PopoverTrigger>
       <PopoverContent

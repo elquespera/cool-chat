@@ -1,6 +1,6 @@
 import { MessageStatus as MessageStatusType } from "@/db/schemas/messages";
 import { cn } from "@/lib/utils";
-import { CheckIcon } from "@radix-ui/react-icons";
+import { CheckIcon } from "../icons/check-icon";
 
 type MessageStatusProps = {
   status: MessageStatusType | null;

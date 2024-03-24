@@ -1,6 +1,6 @@
 import { ComponentProps, RefObject } from "react";
 import { IconButton } from "./icon-button";
-import { Cross1Icon } from "@radix-ui/react-icons";
+import { XMarkIcon } from "../icons/x-mark-icon";
 
 type InputClearButtonProps = {
   inputRef: RefObject<HTMLElement>;
@@ -26,7 +26,7 @@ export function InputClearButton({
       aria-label="Clear"
       type="button"
       className="h-8 w-8 shrink-0"
-      icon={<Cross1Icon />}
+      icon={<XMarkIcon className="h-5 w-5" />}
       variant="ghost"
       onClick={handleClick}
     />

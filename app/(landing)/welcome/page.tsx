@@ -1,8 +1,8 @@
 import peopleChat from "@/assets/images/people-chat.svg";
 import { IconButton } from "@/components/common/icon-button";
+import { ArrowUpIcon } from "@/components/icons/arrow-up-icon";
 import { routes } from "@/constants/routes";
 import { getAuth } from "@/lib/auth/get-auth";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
@@ -24,7 +24,7 @@ export default async function WelcomePage() {
         </p>
         <IconButton
           href={routes.signUp}
-          icon={<ArrowRightIcon className="ml-1" />}
+          icon={<ArrowUpIcon className="ml-1 rotate-90" />}
           reverse
         >
           Sign Up

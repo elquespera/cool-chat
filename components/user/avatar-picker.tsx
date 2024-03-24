@@ -1,10 +1,10 @@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
-import { UpdateIcon } from "@radix-ui/react-icons";
 import { ComponentProps, useState } from "react";
 import { IconButton } from "../common/icon-button";
 import { UserAvatar } from "./user-avatar";
 import { generateAvatarURLs } from "@/lib/generate-avatar-url";
+import { RefreshIcon } from "../icons/refresh-icon";
 
 type AvatarPickerProps = {
   count?: number;
@@ -15,7 +15,7 @@ type AvatarPickerProps = {
 export function AvatarPicker({
   url,
   onUrlChange,
-  count = 12,
+  count = 8,
   className,
   ...props
 }: AvatarPickerProps) {
@@ -31,7 +31,7 @@ export function AvatarPicker({
       <div className="mb-1 flex items-center justify-between">
         <p className="text-sm font-medium text-muted-foreground">Avatar</p>
         <IconButton
-          icon={<UpdateIcon />}
+          icon={<RefreshIcon />}
           toolTip="Regenerate"
           aria-label="Regenerate"
           toolTipSide="left"
@@ -42,12 +42,12 @@ export function AvatarPicker({
       </div>
       <ToggleGroup
         type="single"
-        className="grid grid-cols-[repeat(auto-fit,minmax(3rem,1fr))] justify-items-center gap-2"
+        className="grid grid-cols-[repeat(auto-fit,minmax(4rem,1fr))] grid-rows-[4rem] justify-center justify-items-center gap-2"
         value={url}
         onValueChange={onUrlChange}
       >
         {avatars.map((url) => (
-          <ToggleGroupItem key={url} value={url} className="h-12 w-12">
+          <ToggleGroupItem key={url} value={url} className="h-14 w-14">
             <UserAvatar avatarUrl={url} className="w-10" />
           </ToggleGroupItem>
         ))}
