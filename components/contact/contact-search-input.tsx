@@ -1,14 +1,14 @@
 "use client";
 
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { useEffect, useRef } from "react";
-import { InputClearButton } from "../common/input-clear-button";
-import { useContacts } from "../providers/contacts/contact-context";
-import { InputWrapper } from "../common/input-wrapper";
-import { GlassPanel } from "../common/glass-panel";
-import { useContactScroll } from "./contact-scroll-context";
 import { cn } from "@/lib/utils";
+import { useRef } from "react";
+import { GlassPanel } from "../common/glass-panel";
+import { InputClearButton } from "../common/input-clear-button";
+import { InputWrapper } from "../common/input-wrapper";
 import { ChatDuoIcon } from "../icons/chat-icon";
+import { useContacts } from "../providers/contacts/contact-context";
+import { useContactScroll } from "./contact-scroll-context";
+import { MagnifyingGlassIcon } from "../icons/magnifying-glass-icon";
 
 const threshold = 120;
 

@@ -1,9 +1,11 @@
 "use client";
 import { sendMessage } from "@/db/actions/messages";
-import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { FormEventHandler, useRef, useState } from "react";
+import { GlassPanel } from "../common/glass-panel";
 import { IconButton } from "../common/icon-button";
+import { InputWrapper } from "../common/input-wrapper";
 import { MultiTextArea } from "../common/multi-textarea";
+import { SendIcon } from "../icons/send-icon";
 import { useAssistant } from "../providers/assistant/assistant-context";
 import { useAuth } from "../providers/auth/auth-context";
 import { useChat } from "../providers/chat/chat-context";
@@ -13,8 +15,6 @@ import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
 import { useInputFocus } from "./use-input-focus";
 import { useInsertEmoji } from "./use-insert-emoji";
-import { InputWrapper } from "../common/input-wrapper";
-import { GlassPanel } from "../common/glass-panel";
 
 export function ChatInput() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -88,7 +88,7 @@ export function ChatInput() {
             className="h-8 w-8 group-focus-within:text-primary dark:group-focus-within:text-foreground"
             type="submit"
             disabled={!isValid}
-            icon={<PaperPlaneIcon />}
+            icon={<SendIcon className="h-5 w-5" />}
           />
         </InputWrapper>
       </form>

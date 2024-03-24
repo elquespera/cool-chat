@@ -19,7 +19,7 @@ export function UserControls() {
           toolTip="Start video call"
           toolTipOffset={10}
           icon={
-            <VideoCameraIcon className="h-6 w-6 text-muted-foreground group-hover:text-primary" />
+            <VideoCameraIcon className="h-5 w-5  group-hover:text-primary" />
           }
         />
         <IconButton
@@ -28,9 +28,7 @@ export function UserControls() {
           aria-label="Start voice call"
           toolTip="Start voice call"
           toolTipOffset={10}
-          icon={
-            <PhoneIcon className="h-6 w-6 text-muted-foreground group-hover:text-primary" />
-          }
+          icon={<PhoneIcon className="h-5 w-5  group-hover:text-primary" />}
         />
       </>
     )

@@ -9,10 +9,11 @@ import { ThemeColor } from "@/constants";
 import { createMockConversation } from "@/db/actions/mock";
 import { updateSettings } from "@/db/actions/settings";
 import { updateUser } from "@/db/actions/users";
-import { ChatBubbleIcon, ChevronUpIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IconButton } from "../common/icon-button";
+import { ChatConversationIcon } from "../icons/chat-conversation-icon";
+import { ChevronUpIcon } from "../icons/chevron-up-icon";
 import { useAuth } from "../providers/auth/auth-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSettings } from "../providers/settings/settings-context";
@@ -45,6 +46,7 @@ export function UserPanel() {
         const result = await updateUser(user.id, { avatarUrl });
         if (result) {
           refetchMessages();
+          router.refresh();
         }
       }
 
@@ -85,7 +87,7 @@ export function UserPanel() {
           <UserInfo user={user} avatarUrl={avatarUrl} status self />
         </CollapsibleTrigger>
         <ThemeSwitch className="ml-auto" />
-        <ChevronUpIcon className="-z-10 mx-2 h-4 w-4 shrink-0 text-muted-foreground transition-transform delay-300 duration-200 peer-data-[state=open]:rotate-180" />
+        <ChevronUpIcon className="-z-10 mx-2 h-5 w-5 shrink-0 text-muted-foreground transition-transform delay-300 duration-200 peer-data-[state=open]:rotate-180" />
       </div>
       <CollapsibleContent className="flex flex-col gap-3">
         <ColorPicker className="mt-4" color={color} setColor={setColor} />
@@ -94,7 +96,7 @@ export function UserPanel() {
           <IconButton
             size="sm"
             onClick={handleMockConversationClick}
-            icon={<ChatBubbleIcon />}
+            icon={<ChatConversationIcon />}
           >
             Create mock chat
           </IconButton>

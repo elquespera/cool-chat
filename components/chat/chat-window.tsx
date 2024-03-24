@@ -1,6 +1,5 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { ArrowDownIcon } from "@radix-ui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
 import { IconButton } from "../common/icon-button";
@@ -10,6 +9,7 @@ import { useAssistant } from "../providers/assistant/assistant-context";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { ScrollArea } from "../ui/scroll-area";
+import { ArrowUpIcon } from "../icons/arrow-up-icon";
 
 const scrollButtonMargin = 250;
 const scrollButtonTimeout = 3000;
@@ -159,11 +159,11 @@ export function ChatWindow() {
 
             <IconButton
               className={cn(
-                "absolute bottom-4 right-8 h-12 w-12 opacity-70 transition-opacity",
+                "absolute bottom-24 right-12 h-10 w-10 opacity-70 transition-opacity",
                 !scrollButtonVisible && "scale-0 opacity-0",
               )}
               variant="outline"
-              icon={<ArrowDownIcon className="h-4 w-4" />}
+              icon={<ArrowUpIcon className="h-5 w-5 rotate-180" />}
               onClick={() => scrollToBottom("smooth")}
             />
           </ScrollArea>

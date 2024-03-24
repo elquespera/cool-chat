@@ -1,9 +1,9 @@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ThemeColor, themeColorInfo } from "@/constants";
 import { cn } from "@/lib/utils";
-import { CheckIcon } from "@radix-ui/react-icons";
 import { ComponentProps } from "react";
 import { Hint } from "../common/hint";
+import { CheckIcon } from "../icons/check-icon";
 
 type ColorPickerProps = {
   color: ThemeColor;

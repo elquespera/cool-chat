@@ -1,12 +1,14 @@
 import { SVGProps } from "react";
+import { HeroIconWrapper } from "./hero-icon-wrapper";
 
 export function StopIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg width="1em" height="1em" viewBox="0 0 24 24" {...props}>
-      <path
-        fill="currentColor"
-        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8s8 3.58 8 8s-3.58 8-8 8m4-4H8V8h8z"
-      ></path>
-    </svg>
+    <HeroIconWrapper
+      {...props}
+      paths={[
+        "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+        "M9 9.563C9 9.252 9.252 9 9.563 9h4.874c.311 0 .563.252.563.563v4.874c0 .311-.252.563-.563.563H9.564A.562.562 0 0 1 9 14.437V9.564Z",
+      ]}
+    />
   );
 }

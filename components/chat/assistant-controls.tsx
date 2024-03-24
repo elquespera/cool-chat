@@ -47,9 +47,7 @@ export function AssistantControls() {
             toolTipOffset={10}
             variant="ghost"
             onClick={handleRegenerate}
-            icon={
-              <MagicIcon className="h-6 w-6 text-muted-foreground group-hover:text-primary" />
-            }
+            icon={<MagicIcon className="h-5 w-5 group-hover:text-primary" />}
           />
         )}
 
@@ -64,9 +62,7 @@ export function AssistantControls() {
             aria-label="Reset chat"
             toolTip="Reset chat"
             toolTipOffset={10}
-            icon={
-              <RefreshIcon className="h-6 w-6 text-muted-foreground group-hover:text-primary" />
-            }
+            icon={<RefreshIcon className="h-5 w-5 group-hover:text-primary" />}
           />
         </ConfirmDialog>
       </>

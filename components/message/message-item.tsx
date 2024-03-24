@@ -2,7 +2,7 @@
 import { MessageWithAuthor } from "@/db/schemas/messages";
 import { cn } from "@/lib/utils";
 import Markdown from "markdown-to-jsx";
-import { ElementRef, forwardRef } from "react";
+import { ElementRef, forwardRef, useEffect, useMemo, useState } from "react";
 import { Timestamp } from "../common/timestamp";
 import { useAuth } from "../providers/auth/auth-context";
 import { useMessages } from "../providers/message/message-context";
@@ -11,6 +11,8 @@ import { UserText } from "../user/user-text";
 import { MessageEditForm } from "./message-edit-form";
 import { MessageMenu } from "./message-menu";
 import { MessageStatus } from "./message-status";
+import { useIntersectionObserver } from "usehooks-ts";
+import { useMessageStatus } from "./use-message-status";
 
 type MessageType = "only" | "first" | "middle" | "last";
 type MessageItemProps = {
@@ -25,17 +27,30 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
     const { id, content, author, authorId, status, createdAt, updatedAt } =
       message;
     const { user } = useAuth();
-    const ownMessage = user?.id === authorId;
+    const { isIntersecting, ref: readMsgRef } = useIntersectionObserver({
+      threshold: 0.5,
+    });
+    const [menuOpen, setMenuOpen] = useState(false);
+    const setMessageStatus = useMessageStatus(message);
 
+    const ownMessage = user?.id === authorId;
     const isLast = type === "last" || type === "only";
     const isFirst = type === "first" || type === "only";
     const isEdited = Math.abs(createdAt.getTime() - updatedAt.getTime()) > 1000;
 
-    const borderRadius = calculateBorderRadius(type, ownMessage);
+    const borderRadius = useMemo(
+      () => calculateBorderRadius(type, ownMessage),
+      [type, ownMessage],
+    );
+
+    useEffect(() => {
+      if (ownMessage || !isIntersecting || status !== "delivered") return;
+      setMessageStatus("read");
+    }, [isIntersecting, status, ownMessage, setMessageStatus]);
 
     return (
       <li
-        ref={ref}
+        ref={readMsgRef}
         className={cn(
           "flex flex-col",
           ownMessage ? "items-end" : "items-start",
@@ -83,11 +98,13 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
             ownMessage
               ? "mr-[1.5rem] bg-message-own text-message-own-foreground lg:mr-[2rem]"
               : "ml-[1.5rem] bg-message text-message-foreground lg:ml-[2rem]",
-            status === "deleted"
-              ? "opacity-50"
-              : "before:absolute before:inset-0 before:z-[-1] before:bg-background",
+            status === "deleted" && "opacity-50",
           )}
           style={{ borderRadius }}
+          onContextMenu={(event) => {
+            event.preventDefault();
+            setMenuOpen(true);
+          }}
         >
           {status === "deleted" ? (
             <p className="select-none italic">(deleted)</p>
@@ -104,7 +121,12 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
               <div className="ml-auto flex items-center gap-2">
                 {ownMessage && <MessageStatus status={status} />}
               </div>
-              <MessageMenu message={message} ownMessage={ownMessage} />
+              <MessageMenu
+                open={menuOpen}
+                setOpen={setMenuOpen}
+                message={message}
+                ownMessage={ownMessage}
+              />
             </>
           )}
         </div>

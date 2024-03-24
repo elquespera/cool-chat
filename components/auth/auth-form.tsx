@@ -10,7 +10,6 @@ import { Hint } from "../common/hint";
 import { authProvidersInfo } from "@/constants/auth-providers-info";
 import { formatRedirectURI } from "@/lib/auth/format-redirect-uri";
 import { signIn } from "@/lib/auth/sign-in";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { IconButton } from "../common/icon-button";
 import {
   Card,
@@ -20,6 +19,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Input } from "../ui/input";
+import { ExclamationTriangleIcon } from "../icons/exclamation-triangle-icon";
 
 type AuthFormProps = {
   type: "signIn" | "signUp";

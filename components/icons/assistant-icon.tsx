@@ -2,10 +2,48 @@ import { SVGProps } from "react";
 
 export function AssistantIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg width="1em" height="1em" viewBox="0 0 24 24" {...props}>
+    <svg
+      width="1em"
+      height="1em"
+      viewBox="0 0 48 48"
+      {...props}
+      strokeWidth={2}
+    >
       <path
-        fill="currentColor"
-        d="M11 4c.649 0 1.25.206 1.741.556c-1.292.673-2.48 1.52-3.741 2.248l1 1.732c1.575-.91 3.052-2.05 4.76-2.706a3.001 3.001 0 0 1 4.057 3.09C17.588 8.137 16.26 7.531 15 6.804l-1 1.732c1.575.91 3.302 1.618 4.723 2.77a3.001 3.001 0 0 1-.648 5.058C18.14 14.908 18 13.455 18 12h-2c0 1.818.25 3.669-.037 5.476a3.001 3.001 0 0 1-4.705 1.967c1.293-.673 2.482-1.52 3.742-2.247l-1-1.732c-1.575.91-3.052 2.05-4.76 2.706a3.001 3.001 0 0 1-4.057-3.09c1.23.782 2.557 1.388 3.817 2.116l1-1.732c-1.575-.91-3.302-1.618-4.724-2.77a3.001 3.001 0 0 1 .649-5.058C5.86 9.092 6 10.545 6 12h2c0-1.818-.25-3.669.037-5.476A3.001 3.001 0 0 1 11 4m3.793-.258a5.001 5.001 0 0 0-8.548 1.71a5.001 5.001 0 0 0-2.793 8.258a5.001 5.001 0 0 0 5.756 6.548a5.001 5.001 0 0 0 8.548-1.71a5.001 5.001 0 0 0 2.793-8.258a5.001 5.001 0 0 0-5.756-6.548"
+        fill="none"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        d="M18.38 27.94v-14.4l11.19-6.46c6.2-3.58 17.3 5.25 12.64 13.33"
+      ></path>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        d="m18.38 20.94l12.47-7.2l11.19 6.46c6.2 3.58 4.1 17.61-5.23 17.61"
+      ></path>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        d="m24.44 17.44l12.47 7.2v12.93c0 7.16-13.2 12.36-17.86 4.28"
+      ></path>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        d="M30.5 21.2v14.14L19.31 41.8c-6.2 3.58-17.3-5.25-12.64-13.33"
+      ></path>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        d="m30.5 27.94l-12.47 7.2l-11.19-6.46c-6.21-3.59-4.11-17.61 5.22-17.61"
+      ></path>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        d="m24.44 31.44l-12.47-7.2V11.31c0-7.16 13.2-12.36 17.86-4.28"
       ></path>
     </svg>
   );
