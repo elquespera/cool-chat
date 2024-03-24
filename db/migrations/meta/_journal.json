@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1711031906145,
-      "tag": "0000_high_blockbuster",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1711229258060,
-      "tag": "0001_yummy_shocker",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1711231523727,
-      "tag": "0002_tired_loners",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1711231692383,
-      "tag": "0003_lethal_ulik",
+      "when": 1711236042293,
+      "tag": "0000_watery_rogue",
       "breakpoints": true
     }
   ]

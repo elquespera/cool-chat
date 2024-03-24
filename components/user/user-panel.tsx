@@ -7,20 +7,20 @@ import {
 } from "@/components/ui/collapsible";
 import { ThemeColor } from "@/constants";
 import { createMockConversation } from "@/db/actions/mock";
+import { updateSettings } from "@/db/actions/settings";
 import { updateUser } from "@/db/actions/users";
-import { ChatBubbleIcon, ChevronDownIcon } from "@radix-ui/react-icons";
+import { ChatBubbleIcon, ChevronUpIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IconButton } from "../common/icon-button";
 import { useAuth } from "../providers/auth/auth-context";
+import { useMessages } from "../providers/message/message-context";
 import { useSettings } from "../providers/settings/settings-context";
 import { AvatarPicker } from "./avatar-picker";
 import { ColorPicker } from "./color-picker";
 import { LogOutButton } from "./log-out-button";
 import ThemeSwitch from "./theme-switch";
 import { UserInfo } from "./user-info";
-import { updateSettings } from "@/db/actions/settings";
-import { useMessages } from "../providers/message/message-context";
 
 export function UserPanel() {
   const router = useRouter();
@@ -85,7 +85,7 @@ export function UserPanel() {
           <UserInfo user={user} avatarUrl={avatarUrl} status self />
         </CollapsibleTrigger>
         <ThemeSwitch className="ml-auto" />
-        <ChevronDownIcon className="-z-10 mx-2 h-4 w-4 shrink-0 text-muted-foreground transition-transform delay-300 duration-200 peer-data-[state=open]:rotate-180" />
+        <ChevronUpIcon className="-z-10 mx-2 h-4 w-4 shrink-0 text-muted-foreground transition-transform delay-300 duration-200 peer-data-[state=open]:rotate-180" />
       </div>
       <CollapsibleContent className="flex flex-col gap-3">
         <ColorPicker className="mt-4" color={color} setColor={setColor} />

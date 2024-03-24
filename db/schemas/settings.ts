@@ -1,7 +1,6 @@
-import { randomUUID } from "crypto";
+import { defaultColor, themeColors } from "@/constants";
 import { sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { users } from "./auth";
-import { defaultColor, themeColors } from "@/constants";
 
 export const settings = sqliteTable("settings", {
   userId: text("user_id")
@@ -10,6 +9,10 @@ export const settings = sqliteTable("settings", {
     .references(() => users.id),
 
   color: text("color", { enum: themeColors }).default(defaultColor).notNull(),
+
+  status: text("status", { enum: ["offline", "online"] })
+    .default("offline")
+    .notNull(),
 });
 
 export type SettingsSelect = typeof settings.$inferSelect;

@@ -5,12 +5,13 @@ import { SocketIndicator } from "../common/socket-indicator";
 import { UserAvatar } from "./user-avatar";
 import { UserText } from "./user-text";
 import { ContactUser } from "@/db/schemas/auth";
+import { StatusIndicator } from "../common/status-indicator";
 
 type UserInfoProps = {
   user: User | ContactUser;
   size?: "sm" | "md" | "lg";
   self?: boolean;
-  status?: boolean;
+  status?: UserStatus | true;
   avatarUrl?: string;
   oneLine?: boolean;
   secondLine?: ReactNode;
@@ -27,6 +28,11 @@ export function UserInfo({
   className,
   ...props
 }: UserInfoProps) {
+  const indicatorCn = cn(
+    "absolute bottom-0 right-0",
+    size === "sm" ? "w-2" : size === "lg" ? "w-3" : "w-2.5",
+  );
+
   return (
     <div
       className={cn("flex items-center gap-2 overflow-hidden", className)}
@@ -40,13 +46,14 @@ export function UserInfo({
             size === "sm" ? "w-8" : size === "lg" ? "w-12" : "w-10",
           )}
         />
-        {status && self && (
-          <SocketIndicator
-            className={cn(
-              "absolute bottom-0 right-0",
-              size === "sm" ? "w-2" : size === "lg" ? "w-3" : "w-2.5",
-            )}
-          />
+        {status === true ? (
+          self ? (
+            <SocketIndicator className={indicatorCn} />
+          ) : user.role === "assistant" ? (
+            <StatusIndicator status="online" className={indicatorCn} />
+          ) : null
+        ) : (
+          <StatusIndicator status={status} className={indicatorCn} />
         )}
       </div>
       <UserText

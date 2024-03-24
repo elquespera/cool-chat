@@ -22,7 +22,8 @@ export const messages = sqliteTable("message", {
 
   chatId: text("chat_id")
     .notNull()
-    .references(() => chats.id, { onDelete: "cascade" }),
+    // .references(() => chats.id, { onDelete: "cascade" }),
+    .references(() => chats.id),
 
   createdAt: integer("created_at", { mode: "timestamp" })
     .default(sql`(strftime('%s', 'now'))`)

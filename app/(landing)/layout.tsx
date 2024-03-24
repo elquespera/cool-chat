@@ -17,13 +17,11 @@ export default function LandingLayout({
             CoolChat
           </h1>
         </Link>
-        <IconButton variant="ghost" href={routes.signIn} reverse>
+        <IconButton variant="ghost" href={routes.signIn}>
           Log In
         </IconButton>
 
-        <IconButton href={routes.signUp} reverse>
-          Sign Up
-        </IconButton>
+        <IconButton href={routes.signUp}>Sign Up</IconButton>
       </header>
       {children}
       <footer className="mt-8 p-4">

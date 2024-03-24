@@ -17,15 +17,16 @@ import { defaultColor } from "@/constants";
 
 export async function ChatProviders({ children }: PropsWithChildren) {
   const { user } = await getAuth();
-  const assistant = await getAssistantUser();
-  const settingsResult = await getSettings();
 
-  const settings: InitialSettings =
-    settingsResult.ok && settingsResult.data
-      ? {
-          color: settingsResult.data.color,
-        }
-      : { color: defaultColor };
+  const assistant = await getAssistantUser();
+  let settings: InitialSettings = { color: defaultColor };
+
+  if (user) {
+    const settingsResult = await getSettings(user.id);
+    if (settingsResult.ok && settingsResult.data) {
+      settings = settingsResult.data;
+    }
+  }
 
   return (
     <AuthProvider user={user}>

@@ -68,6 +68,7 @@ export type ContactUserWithChat = ContactUser & {
   lastMessage?: string;
   lastTimestamp?: Date;
   lastAuthor?: string;
+  status?: UserStatus;
 };
 
 export type AccountInsert = typeof accounts.$inferInsert;

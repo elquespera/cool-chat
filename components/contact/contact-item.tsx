@@ -11,7 +11,8 @@ type ContactItemProps = { contact: ContactUserWithChat };
 export function ContactItem({ contact }: ContactItemProps) {
   const { user } = useAuth();
   const { interlocutor, setInterlocutorId } = useChat();
-  const { unreadCount, lastMessage, lastAuthor, lastTimestamp } = contact;
+  const { unreadCount, lastMessage, lastAuthor, lastTimestamp, status } =
+    contact;
   const ref = useRef<HTMLButtonElement>(null);
   const selected = interlocutor?.id === contact.id;
 
@@ -42,7 +43,7 @@ export function ContactItem({ contact }: ContactItemProps) {
           user={contact}
           size="lg"
           oneLine
-          status
+          status={status}
           secondLine={
             lastMessage && (
               <p className="max-w-48 truncate text-sm font-normal text-muted-foreground">
