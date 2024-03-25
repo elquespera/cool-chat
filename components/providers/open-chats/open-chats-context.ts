@@ -12,7 +12,7 @@ type OpenChatsContextType = {
   selectedContact?: ContactUser;
   setSelectedContact: (contact?: ContactUser) => void;
 
-  clearSelected: () => void;
+  clearNavigate: (route?: string) => void;
 };
 
 export const OpenChatsContext = createContext<OpenChatsContextType>({
@@ -20,7 +20,7 @@ export const OpenChatsContext = createContext<OpenChatsContextType>({
   selectedChat: null,
   setSelectedChat: () => {},
   setSelectedContact: () => {},
-  clearSelected: () => {},
+  clearNavigate: () => {},
 });
 
 export const useOpenChats = () => useContext(OpenChatsContext);

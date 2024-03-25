@@ -10,6 +10,7 @@ import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { ScrollArea } from "../ui/scroll-area";
 import { ArrowUpIcon } from "../icons/arrow-up-icon";
+import { useCustomEvent } from "@/lib/hooks/use-custom-event";
 
 const scrollButtonMargin = 250;
 const scrollButtonTimeout = 3000;
@@ -19,6 +20,7 @@ export function ChatWindow() {
   const {
     messages,
     fetchNextPage,
+    refetchMessages,
     scrollBehavior,
     setScrollBehavior,
     isReachingEnd,
@@ -111,6 +113,10 @@ export function ChatWindow() {
 
     return () => clearTimeout(timer);
   }, [scrollButtonVisible]);
+
+  useCustomEvent("assistantresponse", () => refetchMessages("smooth"), [
+    [refetchMessages],
+  ]);
 
   return interlocutor && messages?.length ? (
     <ScrollArea

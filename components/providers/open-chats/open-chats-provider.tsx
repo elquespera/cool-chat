@@ -56,10 +56,10 @@ export function OpenChatsProvider({ children }: PropsWithChildren) {
       setSelectedChat,
       selectedContact,
       setSelectedContact,
-      clearSelected: () => {
+      clearNavigate: (route: string = routes.home) => {
         setSelectedChat(null);
         setSelectedContact(undefined);
-        router.push(routes.home);
+        router.push(route);
       },
     }),
     [openChats, selectedChat, selectedContact, refetchOpenChats, router],

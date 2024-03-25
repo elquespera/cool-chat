@@ -1,5 +1,7 @@
 "use client";
+import { routes } from "@/constants/routes";
 import { sendMessage } from "@/db/actions/messages";
+import { useRouter } from "next/navigation";
 import { FormEventHandler, useRef, useState } from "react";
 import { GlassPanel } from "../common/glass-panel";
 import { IconButton } from "../common/icon-button";
@@ -10,13 +12,11 @@ import { useAssistant } from "../providers/assistant/assistant-context";
 import { useAuth } from "../providers/auth/auth-context";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
+import { useOpenChats } from "../providers/open-chats/open-chats-context";
 import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
 import { useInputFocus } from "./use-input-focus";
 import { useInsertEmoji } from "./use-insert-emoji";
-import { useOpenChats } from "../providers/open-chats/open-chats-context";
-import { useRouter } from "next/navigation";
-import { routes } from "@/constants/routes";
 
 export function ChatInput() {
   const router = useRouter();
@@ -57,8 +57,8 @@ export function ChatInput() {
         } else {
           await refetchMessages("smooth");
         }
-
         await refetchOpenChats();
+
         generateResponse(result.data.chatId);
       }
     } finally {

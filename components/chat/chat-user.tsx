@@ -13,7 +13,7 @@ import { UserControls } from "./user-controls";
 export function ChatUser() {
   const { interlocutor } = useChat();
   const { isMobile } = useChatWindow();
-  const { clearSelected } = useOpenChats();
+  const { clearNavigate } = useOpenChats();
 
   return interlocutor ? (
     <GlassPanel className="flex h-20 items-center gap-2 shadow-sm">
@@ -23,7 +23,7 @@ export function ChatUser() {
           className="h-9 w-9"
           aria-label="Back to contacts"
           icon={<ArrowUpIcon className="h-5 w-5 -rotate-90" />}
-          onClick={clearSelected}
+          onClick={() => clearNavigate()}
         />
       )}
       <UserInfo user={interlocutor} status size="lg" />

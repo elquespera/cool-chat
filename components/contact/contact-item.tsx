@@ -24,12 +24,12 @@ export function ContactItem({
   endDecoration,
 }: ContactItemProps) {
   const ref = useRef<HTMLAnchorElement>(null);
-  const { selectedChat, selectedContact, clearSelected } = useOpenChats();
+  const { selectedChat, selectedContact, clearNavigate } = useOpenChats();
 
   const handleClick: MouseEventHandler = (event) => {
     if (!selected) return;
     event.preventDefault();
-    clearSelected();
+    clearNavigate();
   };
 
   useEffect(() => {

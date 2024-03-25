@@ -1,29 +1,30 @@
+import { assistantId } from "@/constants";
+import { routes } from "@/constants/routes";
 import { deleteChat } from "@/db/actions/chats";
-import { dispatchCustomEvent } from "@/lib/custom-event";
 import ConfirmDialog from "../common/confirm-dialog";
 import { IconButton } from "../common/icon-button";
-import { useAssistant } from "../providers/assistant/assistant-context";
-import { useChat } from "../providers/chat/chat-context";
-import { StopIcon } from "../icons/stop-icon";
 import { MagicIcon } from "../icons/magic-icon";
 import { RefreshIcon } from "../icons/refresh-icon";
+import { StopIcon } from "../icons/stop-icon";
+import { useAssistant } from "../providers/assistant/assistant-context";
+import { useChat } from "../providers/chat/chat-context";
+import { useOpenChats } from "../providers/open-chats/open-chats-context";
 
 export function AssistantControls() {
   const { chat } = useChat();
-  const { isAssistant, isStreaming, abortResponse } = useAssistant();
+  const { isAssistant, isStreaming, generateResponse, abortResponse } =
+    useAssistant();
+  const { clearNavigate } = useOpenChats();
 
-  const handleRegenerate = () => {
+  const handleRegenerateResponse = () => {
     if (!chat) return;
-    dispatchCustomEvent("assistantresponse", {
-      chatId: chat.id,
-      regenerate: true,
-    });
+    generateResponse(chat.id, true);
   };
 
   const handleResetChat = async () => {
     if (!isAssistant || !chat) return;
-    // await deleteChat(chat.id);
-    // setInterlocutorId(null);
+    await deleteChat(chat.id);
+    clearNavigate(`${routes.user}/${assistantId}`);
   };
 
   return (
@@ -46,7 +47,7 @@ export function AssistantControls() {
             toolTip="Regenerate response"
             toolTipOffset={10}
             variant="ghost"
-            onClick={handleRegenerate}
+            onClick={handleRegenerateResponse}
             icon={<MagicIcon className="h-5 w-5 group-hover:text-primary" />}
           />
         )}
