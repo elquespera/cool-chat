@@ -31,6 +31,7 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
       threshold: 0.5,
     });
     const [menuOpen, setMenuOpen] = useState(false);
+    const [statusChanged, setStatusChanged] = useState(false);
     const setMessageStatus = useMessageStatus(message);
 
     const ownMessage = user?.id === authorId;
@@ -44,8 +45,15 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
     );
 
     useEffect(() => {
-      if (ownMessage || streaming || !isIntersecting || status !== "delivered")
+      if (
+        ownMessage ||
+        streaming ||
+        statusChanged ||
+        !isIntersecting ||
+        status !== "delivered"
+      )
         return;
+      setStatusChanged(true);
       setMessageStatus("read");
     }, [isIntersecting, status, ownMessage, streaming, setMessageStatus]);
 
