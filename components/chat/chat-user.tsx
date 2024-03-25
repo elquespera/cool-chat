@@ -10,7 +10,7 @@ import { UserControls } from "./user-controls";
 import { ArrowUpIcon } from "../icons/arrow-up-icon";
 
 export function ChatUser() {
-  const { interlocutor, setInterlocutorId } = useChat();
+  const { interlocutor } = useChat();
   const { isMobile } = useChatWindow();
 
   return interlocutor ? (
@@ -21,7 +21,7 @@ export function ChatUser() {
           className="h-9 w-9"
           aria-label="Back to contacts"
           icon={<ArrowUpIcon className="h-5 w-5 -rotate-90" />}
-          onClick={() => setInterlocutorId(null)}
+          // onClick={() => setInterlocutorId(null)}
         />
       )}
       <UserInfo user={interlocutor} status size="lg" />

@@ -1,20 +1,17 @@
-import { PropsWithChildren } from "react";
-import { ChatProvider } from "./chat/chat-provider";
-import { SocketProvider } from "./socket/socket-provider";
+import { defaultColor } from "@/constants";
+import { getSettings } from "@/db/actions/settings";
+import { getAssistantUser } from "@/db/actions/users";
 import { getAuth } from "@/lib/auth/get-auth";
+import { PropsWithChildren } from "react";
+import { AssistantProvider } from "./assistant/assistant-provider";
 import { AuthProvider } from "./auth/auth-provider";
-import { MessageProvider } from "./message/message-provider";
-import { SearchContactsProvider } from "./search-contacts/search-contacts-provider";
 import { ChatWindowProvider } from "./chat-window/chat-window-provider";
+import { OpenChatsProvider } from "./open-chats/open-chats-provider";
 import {
   InitialSettings,
   SettingsProvider,
 } from "./settings/settings-provider";
-import { AssistantProvider } from "./assistant/assistant-provider";
-import { getAssistantUser } from "@/db/actions/users";
-import { getSettings } from "@/db/actions/settings";
-import { defaultColor } from "@/constants";
-import { OpenChatsProvider } from "./open-chats/open-chats-provider";
+import { SocketProvider } from "./socket/socket-provider";
 
 export async function ChatProviders({ children }: PropsWithChildren) {
   const { user } = await getAuth();
@@ -35,13 +32,9 @@ export async function ChatProviders({ children }: PropsWithChildren) {
         <ChatWindowProvider>
           <SocketProvider>
             <OpenChatsProvider>
-              <ChatProvider>
-                <MessageProvider>
-                  <AssistantProvider assistant={assistant}>
-                    <SearchContactsProvider>{children}</SearchContactsProvider>
-                  </AssistantProvider>
-                </MessageProvider>
-              </ChatProvider>
+              <AssistantProvider assistant={assistant}>
+                {children}
+              </AssistantProvider>
             </OpenChatsProvider>
           </SocketProvider>
         </ChatWindowProvider>

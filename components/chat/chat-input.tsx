@@ -21,7 +21,7 @@ export function ChatInput() {
   const formRef = useRef<HTMLFormElement>(null);
   const { socket } = useSocket();
   const { user } = useAuth();
-  const { interlocutor, chat, refetchChat } = useChat();
+  const { interlocutor, chat } = useChat();
   const { isStreaming, generateResponse } = useAssistant();
   const { refetchMessages } = useMessages();
   const { refetchOpenChats } = useOpenChats();
@@ -50,7 +50,7 @@ export function ChatInput() {
         });
 
         if (chat?.id !== result.data.chatId) {
-          await refetchChat(interlocutor);
+          // await refetchChat(interlocutor);
         } else {
           await refetchMessages("smooth");
         }

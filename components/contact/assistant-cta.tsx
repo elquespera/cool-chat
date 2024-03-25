@@ -8,7 +8,7 @@ import { useChat } from "../providers/chat/chat-context";
 type AssistantCTAProps = { show: boolean };
 
 export function AssistantCTA({ show }: AssistantCTAProps) {
-  const { setInterlocutorId } = useChat();
+  // const { setInterlocutorId } = useChat();
 
   return show ? (
     <GlassPanel
@@ -18,7 +18,7 @@ export function AssistantCTA({ show }: AssistantCTAProps) {
       <IconButton
         icon={<AssistantIcon className="h-4 w-4" />}
         onClick={() => {
-          setInterlocutorId(assistantId);
+          // setInterlocutorId(assistantId);
           window.dispatchEvent(createCustomEvent("chatclick"));
         }}
       >

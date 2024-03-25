@@ -4,18 +4,18 @@ import { createContext, useContext } from "react";
 
 type ChatContextType = {
   interlocutor: ContactUser | null;
-  interlocutorId: string | null;
-  setInterlocutorId: (interlocutor: string | null) => void;
+  // interlocutorId: string | null;
+  // setInterlocutorId: (interlocutor: string | null) => void;
   chat: ChatSelect | null;
-  refetchChat: (intercolutor: ContactUser | null) => Promise<void>;
+  // refetchChat: (intercolutor: ContactUser | null) => Promise<void>;
 };
 
 export const ChatContext = createContext<ChatContextType>({
   interlocutor: null,
-  interlocutorId: null,
-  setInterlocutorId: () => {},
+  // interlocutorId: null,
+  // setInterlocutorId: () => {},
   chat: null,
-  refetchChat: () => new Promise((resolve) => resolve()),
+  // refetchChat: () => Promise.resolve(),
 });
 
 export const useChat = () => useContext(ChatContext);

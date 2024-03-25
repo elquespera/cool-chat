@@ -1,14 +1,15 @@
 "use client";
 
-import { PropsWithChildren, useEffect, useMemo } from "react";
+import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { OpenChatsContext } from "./open-chats-context";
 import useSWR from "swr";
 import { useAuth } from "../auth/auth-context";
 import { getOpenChats } from "@/db/actions/chats";
-import { OpenChat } from "@/db/schemas/chats";
+import { ChatSelect, OpenChat } from "@/db/schemas/chats";
 import { useOpenChatsEvents } from "./use-open-chats-events";
 import { useSocket } from "../socket/socket-context";
 import { markMessagesDelivered } from "@/db/actions/messages";
+import { ContactUser } from "@/db/schemas/auth";
 
 export function OpenChatsProvider({ children }: PropsWithChildren) {
   const { user } = useAuth();
@@ -20,11 +21,8 @@ export function OpenChatsProvider({ children }: PropsWithChildren) {
       return result.ok ? result.data : [];
     },
   );
-
-  const value = useMemo(
-    () => ({ openChats, refetchOpenChats }),
-    [openChats, refetchOpenChats],
-  );
+  const [selectedChat, setSelectedChat] = useState<ChatSelect | null>(null);
+  const [selectedContact, setSelectedContact] = useState<ContactUser>();
 
   useOpenChatsEvents(openChats, refetchOpenChats);
 
@@ -45,6 +43,19 @@ export function OpenChatsProvider({ children }: PropsWithChildren) {
       });
     });
   }, [openChats, socket, user]);
+
+  const value = useMemo(
+    () => ({
+      openChats,
+      refetchOpenChats,
+      selectedChat,
+      setSelectedChat,
+      selectedContact,
+      setSelectedContact,
+    }),
+    [openChats, selectedChat, selectedContact, refetchOpenChats],
+  );
+
   return (
     <OpenChatsContext.Provider value={value}>
       {children}

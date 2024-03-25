@@ -3,9 +3,10 @@ import { useOpenChats } from "../providers/open-chats/open-chats-context";
 import { ContactItem } from "./contact-item";
 import { useAuth } from "../providers/auth/auth-context";
 import { Timestamp } from "../common/timestamp";
+import { routes } from "@/constants/routes";
 
 export function OpenChatList() {
-  const { openChats } = useOpenChats();
+  const { openChats, selectedChat } = useOpenChats();
 
   return openChats?.length ? (
     <>
@@ -13,6 +14,8 @@ export function OpenChatList() {
         <ContactItem
           key={data.id}
           contact={data.interlocutor}
+          href={`${routes.chat}/${data.id}`}
+          selected={data.id === selectedChat?.id}
           status={data.status}
           secondLine={<SecondLine data={data} />}
           endDecoration={<EndDecoration data={data} />}

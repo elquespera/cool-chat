@@ -9,7 +9,7 @@ import { MagicIcon } from "../icons/magic-icon";
 import { RefreshIcon } from "../icons/refresh-icon";
 
 export function AssistantControls() {
-  const { chat, setInterlocutorId } = useChat();
+  const { chat } = useChat();
   const { isAssistant, isStreaming, abortResponse } = useAssistant();
 
   const handleRegenerate = () => {
@@ -22,8 +22,8 @@ export function AssistantControls() {
 
   const handleResetChat = async () => {
     if (!isAssistant || !chat) return;
-    await deleteChat(chat.id);
-    setInterlocutorId(null);
+    // await deleteChat(chat.id);
+    // setInterlocutorId(null);
   };
 
   return (

@@ -93,11 +93,11 @@ export const sendMessage = async (contactId: string, message: string) =>
   withAuth<MessageSelect>(async (user) => {
     const chat = await findOrCreateChat(user.id, contactId);
 
-    if (!chat) return;
+    if (!chat.ok) return;
 
     return await db
       .insert(messages)
-      .values({ authorId: user.id, chatId: chat.id, content: message })
+      .values({ authorId: user.id, chatId: chat.data.id, content: message })
       .returning()
       .get();
   });

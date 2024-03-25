@@ -2,7 +2,7 @@
 
 import { and, eq, or } from "drizzle-orm";
 import { db } from "../db";
-import { ChatInsert, OpenChat, chats } from "../schemas/chats";
+import { ChatInsert, ChatSelect, OpenChat, chats } from "../schemas/chats";
 import { withAuth } from "./with-auth";
 import { countUnreadMesages, getLastMessage } from "./messages";
 import { getSettings } from "./settings";
@@ -15,20 +15,27 @@ export async function getUserChats(userId: string) {
   });
 }
 
-export async function findChatByIds(userOneId: string, userTwoId: string) {
-  return db.query.chats.findFirst({
-    where: or(
-      and(eq(chats.userOneId, userOneId), eq(chats.userTwoId, userTwoId)),
-      and(eq(chats.userOneId, userTwoId), eq(chats.userTwoId, userOneId)),
-    ),
-  });
-}
+export const getChatById = async (chatId: string) =>
+  withAuth<ChatSelect>(async () =>
+    db.query.chats.findFirst({ where: eq(chats.id, chatId) }),
+  );
 
-export async function findOrCreateChat(userOneId: string, userTwoId: string) {
-  const result = await findChatByIds(userOneId, userTwoId);
-  if (result) return result;
-  return db.insert(chats).values({ userOneId, userTwoId }).returning().get();
-}
+export const findChatByIds = async (userOneId: string, userTwoId: string) =>
+  withAuth<ChatSelect>(async () =>
+    db.query.chats.findFirst({
+      where: or(
+        and(eq(chats.userOneId, userOneId), eq(chats.userTwoId, userTwoId)),
+        and(eq(chats.userOneId, userTwoId), eq(chats.userTwoId, userOneId)),
+      ),
+    }),
+  );
+
+export const findOrCreateChat = async (userOneId: string, userTwoId: string) =>
+  withAuth<ChatSelect>(async () => {
+    const result = await findChatByIds(userOneId, userTwoId);
+    if (result.ok) return result.data;
+    return db.insert(chats).values({ userOneId, userTwoId }).returning().get();
+  });
 
 export async function addChat(data: ChatInsert) {
   return db.insert(chats).values(data).returning().get();
