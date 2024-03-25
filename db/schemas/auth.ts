@@ -61,6 +61,10 @@ export const sessions = sqliteTable("session", {
 export type UserSelect = typeof users.$inferSelect;
 export type UserInsert = typeof users.$inferInsert;
 export type ContactUser = Omit<UserSelect, "hashedPassword" | "providerId">;
+export const ContactUserColumns = {
+  hashedPassword: false,
+  providerId: false,
+} as const;
 
 export type ContactUserWithChat = ContactUser & {
   chatId?: string;

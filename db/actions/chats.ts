@@ -2,10 +2,17 @@
 
 import { and, eq, or } from "drizzle-orm";
 import { db } from "../db";
-import { ChatInsert, ChatSelect, OpenChat, chats } from "../schemas/chats";
+import {
+  ChatInsert,
+  ChatSelect,
+  ChatWithUsers,
+  OpenChat,
+  chats,
+} from "../schemas/chats";
 import { withAuth } from "./with-auth";
 import { countUnreadMesages, getLastMessage } from "./messages";
 import { getSettings } from "./settings";
+import { ContactUserColumns } from "../schemas/auth";
 
 //to be removed
 export async function getUserChats(userId: string) {
@@ -16,8 +23,14 @@ export async function getUserChats(userId: string) {
 }
 
 export const getChatById = async (chatId: string) =>
-  withAuth<ChatSelect>(async () =>
-    db.query.chats.findFirst({ where: eq(chats.id, chatId) }),
+  withAuth<ChatWithUsers>(async () =>
+    db.query.chats.findFirst({
+      where: eq(chats.id, chatId),
+      with: {
+        userOne: { columns: ContactUserColumns },
+        userTwo: { columns: ContactUserColumns },
+      },
+    }),
   );
 
 export const findChatByIds = async (userOneId: string, userTwoId: string) =>
