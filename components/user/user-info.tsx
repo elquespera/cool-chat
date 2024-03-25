@@ -1,11 +1,11 @@
+import { ContactUser } from "@/db/schemas/auth";
 import { cn } from "@/lib/utils";
 import { User } from "lucia";
 import { ComponentProps, ReactNode } from "react";
 import { SocketIndicator } from "../common/socket-indicator";
+import { StatusIndicator } from "../common/status-indicator";
 import { UserAvatar } from "./user-avatar";
 import { UserText } from "./user-text";
-import { ContactUser } from "@/db/schemas/auth";
-import { StatusIndicator } from "../common/status-indicator";
 
 type UserInfoProps = {
   user: User | ContactUser;

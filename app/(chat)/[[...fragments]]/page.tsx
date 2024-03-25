@@ -1,6 +1,7 @@
 import { ChatInput } from "@/components/chat/chat-input";
 import { ChatUser } from "@/components/chat/chat-user";
 import { CenteredMessage } from "@/components/common/centered-message";
+import { NotFound } from "@/components/common/not-found";
 import { Spinner } from "@/components/common/spinner";
 import { ContactList } from "@/components/contact/contact-list";
 import { ContactScrollProvider } from "@/components/contact/contact-scroll-context";
@@ -62,7 +63,15 @@ export default async function ChatPage({
   /*** USER SEGMENT ***/
   if (fragments[0] === "user") {
     const response = await getUserById(fragments[1]);
-    if (!response.ok) notFound();
+    if (!response.ok)
+      return (
+        <Wrapper interlocutor={null} chat={null}>
+          <NotFound title="User Not Found">
+            The user you are looking for was not found.{" "}
+          </NotFound>
+        </Wrapper>
+      );
+
     interlocutor = response.data;
     const chatResponse = await findChatByIds(user.id, response.data.id);
     if (chatResponse.ok) redirect(`${routes.chat}/${chatResponse.data.id}`);
@@ -88,7 +97,14 @@ export default async function ChatPage({
     notFound();
 
   const response = await getChatById(chatId);
-  if (!response.ok) notFound();
+  if (!response.ok)
+    return (
+      <Wrapper interlocutor={null} chat={null}>
+        <NotFound title="Chat Not Found">
+          The chat you are looking for was not found.
+        </NotFound>
+      </Wrapper>
+    );
 
   chat = response.data;
 
