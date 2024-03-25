@@ -23,17 +23,13 @@ export function ContactItem({
   secondLine,
   endDecoration,
 }: ContactItemProps) {
-  const router = useRouter();
   const ref = useRef<HTMLAnchorElement>(null);
-  const { selectedChat, selectedContact, setSelectedContact, setSelectedChat } =
-    useOpenChats();
+  const { selectedChat, selectedContact, clearSelected } = useOpenChats();
 
   const handleClick: MouseEventHandler = (event) => {
     if (!selected) return;
     event.preventDefault();
-    setSelectedChat(null);
-    setSelectedContact(undefined);
-    router.push(routes.home);
+    clearSelected();
   };
 
   useEffect(() => {

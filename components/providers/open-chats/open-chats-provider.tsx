@@ -10,8 +10,12 @@ import { useOpenChatsEvents } from "./use-open-chats-events";
 import { useSocket } from "../socket/socket-context";
 import { markMessagesDelivered } from "@/db/actions/messages";
 import { ContactUser } from "@/db/schemas/auth";
+import { useRouter } from "next/navigation";
+import { routes } from "@/constants/routes";
 
 export function OpenChatsProvider({ children }: PropsWithChildren) {
+  const router = useRouter();
+
   const { user } = useAuth();
   const { socket } = useSocket();
   const { data: openChats, mutate: refetchOpenChats } = useSWR<OpenChat[]>(
@@ -44,6 +48,12 @@ export function OpenChatsProvider({ children }: PropsWithChildren) {
     });
   }, [openChats, socket, user]);
 
+  const clearSelected = () => {
+    setSelectedChat(null);
+    setSelectedContact(undefined);
+    router.push(routes.home);
+  };
+
   const value = useMemo(
     () => ({
       openChats,
@@ -52,8 +62,9 @@ export function OpenChatsProvider({ children }: PropsWithChildren) {
       setSelectedChat,
       selectedContact,
       setSelectedContact,
+      clearSelected,
     }),
-    [openChats, selectedChat, selectedContact, refetchOpenChats],
+    [openChats, selectedChat, selectedContact, refetchOpenChats, clearSelected],
   );
 
   return (

@@ -1,15 +1,24 @@
 "use client";
-import { PropsWithChildren, useMemo, useState } from "react";
-import { ChatWindowContext, ChatWindowPage } from "./chat-window-context";
+import { routes } from "@/constants/routes";
+import { usePathname } from "next/navigation";
+import { PropsWithChildren, useMemo } from "react";
 import { useMediaQuery } from "usehooks-ts";
+import { ChatWindowContext } from "./chat-window-context";
 
 export function ChatWindowProvider({ children }: PropsWithChildren) {
-  const [page, setPage] = useState<ChatWindowPage>("sidebar");
+  const pathname = usePathname();
   const isMobile = useMediaQuery("(max-width: 639px)");
 
   const value = useMemo(
-    () => ({ page, setPage, isMobile }),
-    [page, setPage, isMobile],
+    () =>
+      ({
+        page:
+          pathname?.startsWith(routes.chat) || pathname?.startsWith(routes.user)
+            ? "chat"
+            : "sidebar",
+        isMobile,
+      }) as const,
+    [isMobile, pathname],
   );
 
   return (

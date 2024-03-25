@@ -2,8 +2,8 @@
 import type { ContactUser } from "@/db/schemas/auth";
 import { ChatSelect } from "@/db/schemas/chats";
 import { PropsWithChildren, useEffect } from "react";
-import { ChatContext } from "./chat-context";
 import { useOpenChats } from "../open-chats/open-chats-context";
+import { ChatContext } from "./chat-context";
 
 type ChatProviderProps = {
   interlocutor: ContactUser;
@@ -17,8 +17,8 @@ export function ChatProvider({
 }: ChatProviderProps) {
   const { setSelectedChat, setSelectedContact } = useOpenChats();
 
-  useEffect(() => setSelectedChat(chat), [chat]);
   useEffect(() => setSelectedContact(interlocutor), [interlocutor]);
+  useEffect(() => setSelectedChat(chat), [chat]);
 
   return (
     <ChatContext.Provider value={{ interlocutor, chat }}>
