@@ -1,75 +1,61 @@
-import { ContactUserWithChat } from "@/db/schemas/auth";
-import { dispatchCustomEvent } from "@/lib/custom-event";
-import { useChat } from "../providers/chat/chat-context";
+import { routes } from "@/constants/routes";
+import { ContactUser } from "@/db/schemas/auth";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { MouseEventHandler, ReactNode, useEffect, useRef } from "react";
+import { useOpenChats } from "../providers/open-chats/open-chats-context";
 import { UserInfo } from "../user/user-info";
-import { useEffect, useRef } from "react";
-import { Timestamp } from "../common/timestamp";
-import { useAuth } from "../providers/auth/auth-context";
 
-type ContactItemProps = { contact: ContactUserWithChat };
+type ContactItemProps = {
+  contact: ContactUser;
+  href: string;
+  selected?: boolean;
+  status?: UserStatus | null;
+  secondLine?: ReactNode;
+  endDecoration?: ReactNode;
+};
 
-export function ContactItem({ contact }: ContactItemProps) {
-  const { user } = useAuth();
-  const { interlocutor, setInterlocutorId } = useChat();
-  const { unreadCount, lastMessage, lastAuthor, lastTimestamp, status } =
-    contact;
-  const ref = useRef<HTMLButtonElement>(null);
-  const selected = interlocutor?.id === contact.id;
+export function ContactItem({
+  contact,
+  href,
+  selected,
+  status,
+  secondLine,
+  endDecoration,
+}: ContactItemProps) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const { selectedChat, selectedContact, clearNavigate } = useOpenChats();
 
-  const handleContactClick = () => {
-    if (selected) {
-      setInterlocutorId(null);
-    } else {
-      setInterlocutorId(contact.id);
-      dispatchCustomEvent("chatclick");
-    }
+  const handleClick: MouseEventHandler = (event) => {
+    if (!selected) return;
+    event.preventDefault();
+    clearNavigate();
   };
 
   useEffect(() => {
     if (selected)
       ref.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [interlocutor, selected]);
+  }, [selectedChat, selectedContact, selected]);
 
   return (
-    <button
+    <Link
       ref={ref}
+      href={selected ? "#" : href}
       role="option"
       aria-selected={selected}
-      className="group w-full px-3 py-1 sm:px-5 sm:transition-transform sm:aria-selected:scale-105"
-      onClick={handleContactClick}
+      className="group block w-full px-3 py-1 sm:px-5"
+      onClickCapture={handleClick}
     >
       <div className="relative flex items-center justify-between gap-8 rounded-lg bg-message px-4 py-3 transition-colors group-hover:bg-accent group-hover:text-accent-foreground group-aria-selected:bg-message-own group-aria-selected:text-message-own-foreground">
         <UserInfo
           user={contact}
           size="lg"
           oneLine
-          status={status}
-          secondLine={
-            lastMessage && (
-              <p className="max-w-48 truncate text-sm font-normal text-muted-foreground">
-                {lastAuthor === user?.id && (
-                  <span className="italic">you: </span>
-                )}
-                {lastMessage}
-              </p>
-            )
-          }
+          status={status ?? undefined}
+          secondLine={secondLine}
         />
-        {!!(lastTimestamp || unreadCount) && (
-          <div className="flex flex-col items-end justify-between gap-1">
-            <Timestamp
-              className="text-nowrap text-sm font-normal text-muted-foreground"
-              time={lastTimestamp}
-            />
-
-            {!!unreadCount && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold leading-none text-primary-foreground">
-                {unreadCount}
-              </span>
-            )}
-          </div>
-        )}
+        {endDecoration}
       </div>
-    </button>
+    </Link>
   );
 }

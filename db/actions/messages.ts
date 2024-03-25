@@ -1,11 +1,12 @@
 "use server";
 
-import { getAuth } from "@/lib/auth/get-auth";
 import { and, count, desc, eq, isNull, ne, or } from "drizzle-orm";
 import { db } from "../db";
 import { MessageInsert, MessageSelect, messages } from "../schemas/messages";
 import { findOrCreateChat } from "./chats";
+import { withAuth } from "./with-auth";
 
+// not protected
 export async function getMessagesByChatId(
   chatId: string,
   pageIndex = 0,
@@ -20,125 +21,83 @@ export async function getMessagesByChatId(
   });
 }
 
-export async function getLastMessage(
-  chatId: string,
-): Promise<DBActionResult<MessageSelect | null>> {
-  const { user } = await getAuth();
-  if (!user) return { ok: false, error: "Unauthorized access." };
+export const getLastMessage = async (chatId: string) =>
+  withAuth<MessageSelect>(async () => {
+    const result = await db.query.messages.findMany({
+      where: eq(messages.chatId, chatId),
+      limit: 1,
+      orderBy: desc(messages.createdAt),
+    });
 
-  const result = await db.query.messages.findMany({
-    where: eq(messages.chatId, chatId),
-    limit: 1,
-    orderBy: desc(messages.createdAt),
+    return result[0];
   });
 
-  return result[0]
-    ? { ok: true, data: result[0] }
-    : { ok: false, error: "Message not found." };
-}
+export const createMessage = async (data: MessageInsert) =>
+  withAuth<MessageSelect>(async () =>
+    db.insert(messages).values(data).returning().get(),
+  );
 
-export async function createMessage(
-  data: MessageInsert,
-): Promise<DBActionResult<MessageSelect>> {
-  const { user } = await getAuth();
-  if (!user) return { ok: false, error: "Unauthorized access." };
-
-  const result = await db.insert(messages).values(data).returning().get();
-
-  return { ok: true, data: result };
-}
-
-export async function updateMessage(
+export const updateMessage = async (
   messageId: string,
   data: Partial<MessageInsert>,
-): Promise<DBActionResult<MessageSelect>> {
-  const { user } = await getAuth();
-  if (!user) return { ok: false, error: "Unauthorized access." };
+) =>
+  withAuth<MessageSelect>(async () =>
+    db
+      .update(messages)
+      .set(data)
+      .where(eq(messages.id, messageId))
+      .returning()
+      .get(),
+  );
 
-  const result = await db
-    .update(messages)
-    .set(data)
-    .where(eq(messages.id, messageId))
-    .returning()
-    .get();
+export const deleteMessage = async (messageId: string) =>
+  withAuth<MessageSelect>(async () =>
+    db.delete(messages).where(eq(messages.id, messageId)).returning().get(),
+  );
 
-  return { ok: true, data: result };
-}
+export const markMessagesDelivered = async (chatId: string) =>
+  withAuth<MessageSelect>(async (user) => {
+    const result = await db
+      .update(messages)
+      .set({ status: "delivered" })
+      .where(
+        and(
+          eq(messages.chatId, chatId),
+          ne(messages.authorId, user.id),
+          isNull(messages.status),
+        ),
+      )
+      .returning();
 
-export async function deleteMessage(
-  messageId: string,
-): Promise<DBActionResult<MessageSelect | undefined>> {
-  const { user } = await getAuth();
-  if (!user) return { ok: false, error: "Unauthorized access." };
+    return result[result.length - 1];
+  });
 
-  const result = await db
-    .delete(messages)
-    .where(eq(messages.id, messageId))
-    .returning()
-    .get();
+export const countUnreadMesages = async (chatId: string) =>
+  withAuth<number>(async (user) => {
+    const result = await db
+      .select({ value: count() })
+      .from(messages)
+      .where(
+        and(
+          eq(messages.chatId, chatId),
+          ne(messages.authorId, user.id),
+          or(isNull(messages.status), eq(messages.status, "delivered")),
+        ),
+      )
+      .get();
 
-  return { ok: true, data: result };
-}
+    return result?.value ?? 0;
+  });
 
-export async function markMessagesDelivered(
-  chatId: string,
-): Promise<DBActionResult<MessageSelect | null>> {
-  const { user } = await getAuth();
-  if (!user) return { ok: false, error: "Unauthorized access." };
+export const sendMessage = async (contactId: string, message: string) =>
+  withAuth<MessageSelect>(async (user) => {
+    const chat = await findOrCreateChat(user.id, contactId);
 
-  const result = await db
-    .update(messages)
-    .set({ status: "delivered" })
-    .where(
-      and(
-        eq(messages.chatId, chatId),
-        ne(messages.authorId, user.id),
-        isNull(messages.status),
-      ),
-    )
-    .returning();
+    if (!chat.ok) return;
 
-  return {
-    ok: true,
-    data: result.length > 0 ? result[result.length - 1] : null,
-  };
-}
-
-export async function countUnreadMesages(chatId: string): Promise<number> {
-  const { user } = await getAuth();
-  if (!user) return 0;
-
-  const result = await db
-    .select({ value: count() })
-    .from(messages)
-    .where(
-      and(
-        eq(messages.chatId, chatId),
-        ne(messages.authorId, user.id),
-        or(isNull(messages.status), eq(messages.status, "delivered")),
-      ),
-    )
-    .get();
-
-  return result?.value ?? 0;
-}
-
-export async function sendMessage(
-  contactId: string,
-  message: string,
-): Promise<DBActionResult<MessageSelect>> {
-  const { user } = await getAuth();
-  if (!user) return { ok: false, error: "Unauthorized access." };
-
-  const chat = await findOrCreateChat(user.id, contactId);
-
-  if (!chat) return { ok: false, error: "Failed to create chat." };
-
-  const data = await db
-    .insert(messages)
-    .values({ authorId: user.id, chatId: chat.id, content: message })
-    .returning()
-    .get();
-
-  return { ok: true, data };
-}
+    return await db
+      .insert(messages)
+      .values({ authorId: user.id, chatId: chat.data.id, content: message })
+      .returning()
+      .get();
+  });

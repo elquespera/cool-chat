@@ -22,12 +22,14 @@ import { ColorPicker } from "./color-picker";
 import { LogOutButton } from "./log-out-button";
 import ThemeSwitch from "./theme-switch";
 import { UserInfo } from "./user-info";
+import { useOpenChats } from "../providers/open-chats/open-chats-context";
 
 export function UserPanel() {
   const router = useRouter();
   const { user } = useAuth();
   const { color, setColor } = useSettings();
   const { refetchMessages } = useMessages();
+  const { refetchOpenChats } = useOpenChats();
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [pending, setPending] = useState(false);
@@ -58,7 +60,7 @@ export function UserPanel() {
 
   const handleMockConversationClick = async () => {
     await createMockConversation();
-    router.refresh();
+    refetchOpenChats();
     setOpen(false);
   };
 

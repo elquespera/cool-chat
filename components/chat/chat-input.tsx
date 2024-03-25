@@ -1,5 +1,7 @@
 "use client";
+import { routes } from "@/constants/routes";
 import { sendMessage } from "@/db/actions/messages";
+import { useRouter } from "next/navigation";
 import { FormEventHandler, useRef, useState } from "react";
 import { GlassPanel } from "../common/glass-panel";
 import { IconButton } from "../common/icon-button";
@@ -9,22 +11,23 @@ import { SendIcon } from "../icons/send-icon";
 import { useAssistant } from "../providers/assistant/assistant-context";
 import { useAuth } from "../providers/auth/auth-context";
 import { useChat } from "../providers/chat/chat-context";
-import { useContacts } from "../providers/contacts/contact-context";
 import { useMessages } from "../providers/message/message-context";
+import { useOpenChats } from "../providers/open-chats/open-chats-context";
 import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
 import { useInputFocus } from "./use-input-focus";
 import { useInsertEmoji } from "./use-insert-emoji";
 
 export function ChatInput() {
+  const router = useRouter();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const { socket } = useSocket();
   const { user } = useAuth();
-  const { interlocutor, chat, refetchChat } = useChat();
+  const { interlocutor, chat } = useChat();
   const { isStreaming, generateResponse } = useAssistant();
   const { refetchMessages } = useMessages();
-  const { refetchContacts } = useContacts();
+  const { refetchOpenChats } = useOpenChats();
 
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
@@ -50,11 +53,11 @@ export function ChatInput() {
         });
 
         if (chat?.id !== result.data.chatId) {
-          await refetchChat(interlocutor);
-          await refetchContacts();
+          router.push(`${routes.chat}/${result.data.chatId}`);
         } else {
           await refetchMessages("smooth");
         }
+        await refetchOpenChats();
 
         generateResponse(result.data.chatId);
       }

@@ -9,7 +9,9 @@ export const publicRoutes = {
 
 export const privateRoutes = {
   home: "/",
-  dashboard: "/dashboard",
+  user: "/user",
+  chat: "/chat",
+
   assistant: "/api/assistant",
 } as const;
 

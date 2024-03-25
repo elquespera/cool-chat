@@ -1,19 +1,17 @@
-import { PropsWithChildren } from "react";
-import { ChatProvider } from "./chat/chat-provider";
-import { SocketProvider } from "./socket/socket-provider";
+import { defaultColor } from "@/constants";
+import { getSettings } from "@/db/actions/settings";
+import { getAssistantUser } from "@/db/actions/users";
 import { getAuth } from "@/lib/auth/get-auth";
+import { PropsWithChildren } from "react";
+import { AssistantProvider } from "./assistant/assistant-provider";
 import { AuthProvider } from "./auth/auth-provider";
-import { MessageProvider } from "./message/message-provider";
-import { ContactProvider } from "./contacts/contact-provider";
 import { ChatWindowProvider } from "./chat-window/chat-window-provider";
+import { OpenChatsProvider } from "./open-chats/open-chats-provider";
 import {
   InitialSettings,
   SettingsProvider,
 } from "./settings/settings-provider";
-import { AssistantProvider } from "./assistant/assistant-provider";
-import { getAssistantUser } from "@/db/actions/users";
-import { getSettings } from "@/db/actions/settings";
-import { defaultColor } from "@/constants";
+import { SocketProvider } from "./socket/socket-provider";
 
 export async function ChatProviders({ children }: PropsWithChildren) {
   const { user } = await getAuth();
@@ -23,7 +21,7 @@ export async function ChatProviders({ children }: PropsWithChildren) {
 
   if (user) {
     const settingsResult = await getSettings(user.id);
-    if (settingsResult.ok && settingsResult.data) {
+    if (settingsResult.ok) {
       settings = settingsResult.data;
     }
   }
@@ -33,13 +31,11 @@ export async function ChatProviders({ children }: PropsWithChildren) {
       <SettingsProvider initialSettings={settings}>
         <ChatWindowProvider>
           <SocketProvider>
-            <ChatProvider>
-              <MessageProvider>
-                <AssistantProvider assistant={assistant}>
-                  <ContactProvider>{children}</ContactProvider>
-                </AssistantProvider>
-              </MessageProvider>
-            </ChatProvider>
+            <OpenChatsProvider>
+              <AssistantProvider assistant={assistant}>
+                {children}
+              </AssistantProvider>
+            </OpenChatsProvider>
           </SocketProvider>
         </ChatWindowProvider>
       </SettingsProvider>

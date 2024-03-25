@@ -1,19 +1,12 @@
 "use server";
 
 import { assistantId } from "@/constants";
-import { getAuth } from "@/lib/auth/get-auth";
 import { and, eq, like, ne, or } from "drizzle-orm";
 import { db } from "../db";
-import {
-  ContactUser,
-  ContactUserWithChat,
-  UserInsert,
-  users,
-} from "../schemas/auth";
-import { getUserChats } from "./chats";
-import { countUnreadMesages, getLastMessage } from "./messages";
-import { getSettings } from "./settings";
+import { ContactUser, UserInsert, users } from "../schemas/auth";
+import { withAuth } from "./with-auth";
 
+// To be removed
 export async function getUserByEmailOrUsername(emailOrUsername: string) {
   return db.query.users.findFirst({
     where: or(
@@ -23,96 +16,28 @@ export async function getUserByEmailOrUsername(emailOrUsername: string) {
   });
 }
 
-export async function getUserById(
-  id: string,
-): Promise<DBActionResult<ContactUser>> {
-  const { user } = await getAuth();
-  if (!user) return { ok: false, error: "Unauthorized access." };
+export const getUserById = async (id: string) =>
+  withAuth<ContactUser>(
+    async () =>
+      await db.query.users.findFirst({
+        where: eq(users.id, id),
+        columns: { hashedPassword: false, providerId: false },
+      }),
+  );
 
-  const data = await db.query.users.findFirst({
-    where: eq(users.id, id),
-  });
+export const searchUsers = async (searchValue: string) =>
+  withAuth<ContactUser[]>(async (user) => {
+    if (!searchValue.length) return [];
+    const search = `${searchValue}%`;
 
-  if (!data) return { ok: false, error: "User not found" };
-  return { ok: true, data };
-}
-
-export async function getAssistantUser() {
-  const result = await getUserById(assistantId);
-  return result.ok ? result.data : null;
-}
-
-export async function searchUsers(
-  searchValue: string,
-): Promise<DBActionResult<ContactUser[]>> {
-  const { user } = await getAuth();
-  if (!user) return { ok: false, error: "Unauthorized access." };
-  if (!searchValue.length) return { ok: true, data: [] };
-
-  const search = `${searchValue}%`;
-
-  try {
-    const data = await db.query.users.findMany({
+    return db.query.users.findMany({
       where: and(
         or(like(users.email, search), like(users.username, search)),
         ne(users.id, user.id),
       ),
       columns: { hashedPassword: false, providerId: false },
     });
-
-    return { ok: true, data };
-  } catch (error) {
-    return { ok: false, error: "Unknown error" };
-  }
-}
-
-export async function getUserContacts(): Promise<
-  DBActionResult<ContactUserWithChat[]>
-> {
-  const { user } = await getAuth();
-  if (!user) return { ok: false, error: "Unauthorized access." };
-
-  try {
-    const chats = await getUserChats(user.id);
-    const data = await Promise.all(
-      chats.map(async (chat) => {
-        const { userOne, userTwo } = chat;
-        const author = userOne.id === user.id ? userTwo : userOne;
-        const unreadMessages = await countUnreadMesages(chat.id);
-        const lastMessage = await getLastMessage(chat.id);
-        const settings = await getSettings(author.id);
-
-        const last = lastMessage.ok
-          ? {
-              lastMessage: lastMessage.data?.content,
-              lastTimestamp: lastMessage.data?.createdAt,
-              lastAuthor: lastMessage.data?.authorId,
-            }
-          : {};
-
-        const status = settings.ok ? settings.data?.status : undefined;
-
-        return {
-          ...author,
-          chatId: chat.id,
-          unreadCount: unreadMessages,
-          status,
-          ...last,
-        };
-      }),
-    );
-
-    data.sort((a, b) =>
-      a.lastTimestamp && b.lastTimestamp
-        ? b.lastTimestamp.getTime() - a.lastTimestamp.getTime()
-        : 0,
-    );
-
-    return { ok: true, data };
-  } catch (error) {
-    return { ok: false, error: "Unknown error" };
-  }
-}
+  });
 
 export async function addUser(data: UserInsert) {
   return db.insert(users).values(data).returning().get();
@@ -125,4 +50,9 @@ export async function updateUser(userId: string, data: UserInsert) {
     .where(eq(users.id, userId))
     .returning()
     .get();
+}
+
+export async function getAssistantUser() {
+  const result = await getUserById(assistantId);
+  return result.ok ? result.data : null;
 }

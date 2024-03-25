@@ -6,7 +6,7 @@ import {
   getMessagesByChatId,
 } from "@/db/actions/messages";
 import { getAuth } from "@/lib/auth/get-auth";
-import { randomUUID } from "crypto";
+import { randomId } from "@/lib/random-id";
 
 type OllamaMessage = {
   content: string;
@@ -42,7 +42,7 @@ export const POST = async (request: Request) => {
   if (!rawMessages.length)
     return new Response("No messages found.", { status: 400 });
 
-  const messageId = randomUUID();
+  const messageId = randomId();
 
   const messages: OllamaMessage[] = rawMessages
     .map(({ content, author }) => ({

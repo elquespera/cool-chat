@@ -5,7 +5,6 @@ type MessageContextType = {
   messages?: MessageWithAuthor[];
   isLoading: boolean;
   isValidating: boolean;
-  isLoadingMore: boolean;
   isReachingEnd: boolean;
   refetchMessages: (scrollBehavior?: ScrollBehavior) => Promise<void>;
   fetchNextPage: () => void;
@@ -19,7 +18,6 @@ export const MessageContext = createContext<MessageContextType>({
   messages: [],
   isLoading: false,
   isValidating: false,
-  isLoadingMore: false,
   isReachingEnd: false,
   refetchMessages: () => new Promise(() => {}),
   fetchNextPage: () => {},

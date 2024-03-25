@@ -4,11 +4,13 @@ import { MessageSelect, MessageStatus } from "@/db/schemas/messages";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
+import { useOpenChats } from "../providers/open-chats/open-chats-context";
 
 export function useMessageStatus({ id, chatId, authorId }: MessageSelect) {
   const { socket } = useSocket();
   const { interlocutor } = useChat();
   const { refetchMessages } = useMessages();
+  const { refetchOpenChats } = useOpenChats();
 
   const setStatus = async (status: MessageStatus) => {
     if (!interlocutor) return;
@@ -23,6 +25,7 @@ export function useMessageStatus({ id, chatId, authorId }: MessageSelect) {
         status,
       });
       refetchMessages();
+      refetchOpenChats();
     }
   };
 

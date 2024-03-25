@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { randomId } from "@/lib/random-id";
 import { sql } from "drizzle-orm";
 import {
   integer,
@@ -14,7 +14,7 @@ export const users = sqliteTable("user", {
   id: text("id")
     .notNull()
     .primaryKey()
-    .$defaultFn(() => randomUUID()),
+    .$defaultFn(() => randomId()),
 
   role: text("role", { enum: UserRoles }).default("user").notNull(),
 

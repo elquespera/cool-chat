@@ -23,14 +23,6 @@ export function MessageProvider({ children }: PropsWithChildren) {
       ({ chatId, pageIndex }) =>
         getMessagesByChatId(chatId, pageIndex, messagesPerPage),
     );
-  const isEmpty = data?.[0]?.length === 0;
-  const isReachingEnd =
-    isEmpty || (!!data && data[data.length - 1]?.length < messagesPerPage);
-
-  const isLoadingMore =
-    isLoading || (size > 0 && !!data && typeof data[size - 1] === "undefined");
-
-  const messages = useMemo(() => (data ? data.flat() : undefined), [data]);
 
   const refetchMessages = useMemo(
     () => async (scrollBehavior?: ScrollBehavior) => {
@@ -39,8 +31,6 @@ export function MessageProvider({ children }: PropsWithChildren) {
     },
     [mutate],
   );
-
-  const fetchNextPage = () => setSize(size + 1);
 
   useCustomEvent(
     "messageupdate",
@@ -54,25 +44,36 @@ export function MessageProvider({ children }: PropsWithChildren) {
     [refetchMessages],
   );
 
-  useCustomEvent("chatclick", () => setScrollBehavior("instant"));
+  const messages = useMemo(() => (data ? data.flat() : undefined), [data]);
+
+  const value = useMemo(
+    () => ({
+      messages,
+      isValidating,
+      isReachingEnd:
+        data?.[0]?.length === 0 ||
+        (!!data && data[data.length - 1]?.length < messagesPerPage),
+      isLoading:
+        isLoading || (size > 0 && !!data && data[size - 1] === undefined),
+      editingId,
+      setScrollBehavior,
+      refetchMessages,
+      fetchNextPage: () => setSize(size + 1),
+      setEditingId,
+    }),
+    [
+      data,
+      messages,
+      size,
+      isValidating,
+      isLoading,
+      setSize,
+      editingId,
+      refetchMessages,
+    ],
+  );
 
   return (
-    <MessageContext.Provider
-      value={{
-        messages,
-        isLoading,
-        isValidating,
-        isLoadingMore,
-        isReachingEnd,
-        scrollBehavior,
-        editingId,
-        setScrollBehavior,
-        refetchMessages,
-        fetchNextPage,
-        setEditingId,
-      }}
-    >
-      {children}
-    </MessageContext.Provider>
+    <MessageContext.Provider value={value}>{children}</MessageContext.Provider>
   );
 }
