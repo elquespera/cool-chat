@@ -13,8 +13,8 @@ import { OpenChatList } from "./open-chat-list";
 export function ContactList() {
   const { setScrollTop } = useContactScroll();
   const { searchValue, isPending } = useSearchContacts();
-
   const { interlocutor } = useChat();
+
   const showAssistant = interlocutor?.id !== assistantId;
 
   return (
