@@ -4,7 +4,7 @@ import { useAuth } from "../auth/auth-context";
 import { useSocket } from "../socket/socket-context";
 import { updateMessage } from "@/db/actions/messages";
 
-export function useOpenChatsEvents(
+export function useChatEvents(
   openChats: OpenChat[] | undefined,
   refetchOpenChats: () => Promise<OpenChat[] | undefined | void>,
 ) {

@@ -12,7 +12,6 @@ import { useAssistant } from "../providers/assistant/assistant-context";
 import { useAuth } from "../providers/auth/auth-context";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
-import { useOpenChats } from "../providers/open-chats/open-chats-context";
 import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
 import { useInputFocus } from "./use-input-focus";
@@ -24,10 +23,9 @@ export function ChatInput() {
   const formRef = useRef<HTMLFormElement>(null);
   const { socket } = useSocket();
   const { user } = useAuth();
-  const { interlocutor, chat } = useChat();
+  const { interlocutor, chat, refetchOpenChats } = useChat();
   const { isStreaming, generateResponse } = useAssistant();
   const { refetchMessages } = useMessages();
-  const { refetchOpenChats } = useOpenChats();
 
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);

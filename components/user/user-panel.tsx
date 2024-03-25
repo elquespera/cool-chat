@@ -15,6 +15,7 @@ import { IconButton } from "../common/icon-button";
 import { ChatConversationIcon } from "../icons/chat-conversation-icon";
 import { ChevronUpIcon } from "../icons/chevron-up-icon";
 import { useAuth } from "../providers/auth/auth-context";
+import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSettings } from "../providers/settings/settings-context";
 import { AvatarPicker } from "./avatar-picker";
@@ -22,14 +23,13 @@ import { ColorPicker } from "./color-picker";
 import { LogOutButton } from "./log-out-button";
 import ThemeSwitch from "./theme-switch";
 import { UserInfo } from "./user-info";
-import { useOpenChats } from "../providers/open-chats/open-chats-context";
 
 export function UserPanel() {
   const router = useRouter();
   const { user } = useAuth();
   const { color, setColor } = useSettings();
   const { refetchMessages } = useMessages();
-  const { refetchOpenChats } = useOpenChats();
+  const { refetchOpenChats } = useChat();
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [pending, setPending] = useState(false);

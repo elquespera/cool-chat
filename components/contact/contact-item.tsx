@@ -1,9 +1,10 @@
-import { routes } from "@/constants/routes";
 import { ContactUser } from "@/db/schemas/auth";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { MouseEventHandler, ReactNode, useEffect, useRef } from "react";
-import { useOpenChats } from "../providers/open-chats/open-chats-context";
+import { useChat } from "../providers/chat/chat-context";
+
+import { routes } from "@/constants/routes";
+import { useRouter } from "next/navigation";
 import { UserInfo } from "../user/user-info";
 
 type ContactItemProps = {
@@ -23,19 +24,20 @@ export function ContactItem({
   secondLine,
   endDecoration,
 }: ContactItemProps) {
+  const router = useRouter();
   const ref = useRef<HTMLAnchorElement>(null);
-  const { selectedChat, selectedContact, clearNavigate } = useOpenChats();
+  const { chat } = useChat();
 
   const handleClick: MouseEventHandler = (event) => {
     if (!selected) return;
     event.preventDefault();
-    clearNavigate();
+    router.push(routes.home);
   };
 
   useEffect(() => {
     if (selected)
       ref.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [selectedChat, selectedContact, selected]);
+  }, [chat, selected]);
 
   return (
     <Link
