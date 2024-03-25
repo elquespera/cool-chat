@@ -15,8 +15,11 @@ import { EmojiPicker } from "./emoji-picker";
 import { useInputFocus } from "./use-input-focus";
 import { useInsertEmoji } from "./use-insert-emoji";
 import { useOpenChats } from "../providers/open-chats/open-chats-context";
+import { useRouter } from "next/navigation";
+import { routes } from "@/constants/routes";
 
 export function ChatInput() {
+  const router = useRouter();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const { socket } = useSocket();
@@ -50,7 +53,7 @@ export function ChatInput() {
         });
 
         if (chat?.id !== result.data.chatId) {
-          // await refetchChat(interlocutor);
+          router.push(`${routes.chat}/${result.data.chatId}`);
         } else {
           await refetchMessages("smooth");
         }
