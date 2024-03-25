@@ -54,8 +54,6 @@ export function MessageProvider({ children }: PropsWithChildren) {
     [refetchMessages],
   );
 
-  useCustomEvent("chatclick", () => setScrollBehavior("instant"));
-
   return (
     <MessageContext.Provider
       value={{

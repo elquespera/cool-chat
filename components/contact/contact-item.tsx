@@ -1,10 +1,10 @@
+import { routes } from "@/constants/routes";
 import { ContactUser } from "@/db/schemas/auth";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { MouseEventHandler, ReactNode, useEffect, useRef } from "react";
 import { useOpenChats } from "../providers/open-chats/open-chats-context";
 import { UserInfo } from "../user/user-info";
-import { routes } from "@/constants/routes";
-import { useRouter } from "next/navigation";
 
 type ContactItemProps = {
   contact: ContactUser;

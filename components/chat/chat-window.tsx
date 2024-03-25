@@ -34,6 +34,7 @@ export function ChatWindow() {
     threshold: 0.5,
   });
 
+  const [justMounted, setJustMounted] = useState(true);
   const [scrollHeight, setScrollHeight] = useState(0);
   const [scrollButtonVisible, setScrollButtonVisible] = useState(false);
 
@@ -55,6 +56,10 @@ export function ChatWindow() {
 
   useEffect(() => {
     if (!messages) return;
+    if (justMounted) {
+      setJustMounted(false);
+      scrollToBottom("instant");
+    }
     updateScrollButtonVisible();
 
     if (scrollBehavior) {
@@ -77,6 +82,7 @@ export function ChatWindow() {
 
   useEffect(() => {
     if (
+      justMounted ||
       !isIntersecting ||
       isValidating ||
       isLoadingMore ||
@@ -89,6 +95,7 @@ export function ChatWindow() {
     setScrollHeight(scrollAreaRef.current?.scrollHeight ?? 0);
     fetchNextPage();
   }, [
+    justMounted,
     isIntersecting,
     isLoadingMore,
     isValidating,
@@ -106,6 +113,14 @@ export function ChatWindow() {
 
     return () => clearTimeout(timer);
   }, [scrollButtonVisible]);
+
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     scrollToBottom("instant");
+  //     setJustMounted(false);
+  //   }, 1000);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   return (
     <div className="relative flex grow flex-col justify-center">
