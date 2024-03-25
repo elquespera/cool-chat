@@ -1,7 +1,6 @@
-import { ChatInput } from "@/components/chat/chat-input";
 import { ChatUser } from "@/components/chat/chat-user";
 import { ChatProvider } from "@/components/providers/chat/chat-provider";
-import { Room } from "@/components/room/room";
+import { EmptyRoom } from "@/components/room/empty-room";
 import { routes } from "@/constants/routes";
 import { findChatByIds } from "@/db/actions/chats";
 import { getUserById } from "@/db/actions/users";
@@ -26,5 +25,10 @@ export default async function UserPage({
   const chatResponse = await findChatByIds(user.id, response.data.id);
   if (chatResponse.ok) redirect(`${routes.chat}/${chatResponse.data.id}`);
 
-  return <Room type="empty" interlocutor={response.data} chat={null} />;
+  return (
+    <ChatProvider interlocutor={response.data} chat={null}>
+      <EmptyRoom />
+      <ChatUser />
+    </ChatProvider>
+  );
 }

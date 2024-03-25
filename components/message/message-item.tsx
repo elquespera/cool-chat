@@ -55,7 +55,14 @@ export const MessageItem = forwardRef<ElementRef<"li">, MessageItemProps>(
         return;
       setStatusChanged(true);
       setMessageStatus("read");
-    }, [isIntersecting, status, ownMessage, streaming, setMessageStatus]);
+    }, [
+      isIntersecting,
+      status,
+      statusChanged,
+      ownMessage,
+      streaming,
+      setMessageStatus,
+    ]);
 
     return (
       <li
