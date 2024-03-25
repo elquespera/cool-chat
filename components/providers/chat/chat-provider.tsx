@@ -17,8 +17,11 @@ export function ChatProvider({
 }: ChatProviderProps) {
   const { setSelectedChat, setSelectedContact } = useOpenChats();
 
-  useEffect(() => setSelectedContact(interlocutor), [interlocutor]);
-  useEffect(() => setSelectedChat(chat), [chat]);
+  useEffect(
+    () => setSelectedContact(interlocutor),
+    [interlocutor, setSelectedContact],
+  );
+  useEffect(() => setSelectedChat(chat), [chat, setSelectedChat]);
 
   return (
     <ChatContext.Provider value={{ interlocutor, chat }}>

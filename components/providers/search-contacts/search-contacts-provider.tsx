@@ -26,7 +26,7 @@ export function SearchContactsProvider({ children }: PropsWithChildren) {
       error: String(error),
       isPending: isValidating,
     }),
-    [searchUsers, contacts, isValidating, error],
+    [searchValue, contacts, isValidating, error],
   );
 
   return (

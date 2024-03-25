@@ -48,12 +48,6 @@ export function OpenChatsProvider({ children }: PropsWithChildren) {
     });
   }, [openChats, socket, user]);
 
-  const clearSelected = () => {
-    setSelectedChat(null);
-    setSelectedContact(undefined);
-    router.push(routes.home);
-  };
-
   const value = useMemo(
     () => ({
       openChats,
@@ -62,9 +56,13 @@ export function OpenChatsProvider({ children }: PropsWithChildren) {
       setSelectedChat,
       selectedContact,
       setSelectedContact,
-      clearSelected,
+      clearSelected: () => {
+        setSelectedChat(null);
+        setSelectedContact(undefined);
+        router.push(routes.home);
+      },
     }),
-    [openChats, selectedChat, selectedContact, refetchOpenChats, clearSelected],
+    [openChats, selectedChat, selectedContact, refetchOpenChats, router],
   );
 
   return (
