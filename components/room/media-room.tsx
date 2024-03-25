@@ -15,6 +15,7 @@ import { routes } from "@/constants/routes";
 import { useAuth } from "../providers/auth/auth-context";
 import { useChat } from "../providers/chat/chat-context";
 import { useRouter } from "next/navigation";
+import { CenteredMessage } from "../common/centered-message";
 
 type MediaRoomProps = {
   type: "video" | "audio";
@@ -28,9 +29,12 @@ export function MediaRoom({ type }: MediaRoomProps) {
 
   useEffect(() => {
     const getToken = async () => {
-      if (!user || !chat) return;
-      let name = user.username;
-      if (user.email) name += ` (${user.email})`;
+      if (!user || !chat) {
+        setToken("");
+        return;
+      }
+
+      const name = `${user.username}${user.email ? " " + user.email : ""}`;
 
       try {
         const resp = await fetch(
@@ -38,14 +42,16 @@ export function MediaRoom({ type }: MediaRoomProps) {
         );
         const data = await resp.json();
         setToken(data.token);
-      } catch {}
+      } catch {
+        setToken("");
+      }
     };
 
     getToken();
   }, [user, chat]);
 
   if (!token) {
-    return <div>Getting token...</div>;
+    return <CenteredMessage>Initializing chat...</CenteredMessage>;
   }
 
   return (

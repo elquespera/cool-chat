@@ -1,3 +1,4 @@
+import { ChatInput } from "@/components/chat/chat-input";
 import { ChatUser } from "@/components/chat/chat-user";
 import { ChatProvider } from "@/components/providers/chat/chat-provider";
 import { EmptyRoom } from "@/components/room/empty-room";
@@ -28,6 +29,7 @@ export default async function UserPage({
   return (
     <ChatProvider interlocutor={response.data} chat={null}>
       <EmptyRoom />
+      <ChatInput />
       <ChatUser />
     </ChatProvider>
   );
