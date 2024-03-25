@@ -1,3 +1,4 @@
+import { CenteredMessage } from "@/components/common/centered-message";
 import { routes } from "@/constants/routes";
 import { getAuth } from "@/lib/auth/get-auth";
 import { redirect } from "next/navigation";
@@ -7,12 +8,10 @@ export default async function HomePage() {
   if (!user) redirect(routes.welcome);
 
   return (
-    <div className="flex grow flex-col justify-center">
-      <p className="p-4 text-center text-sm font-medium text-muted-foreground">
-        Select a contact to start or continue a conversation.
-        <br />
-        Use search input to find new users.
-      </p>
-    </div>
+    <CenteredMessage>
+      Select a contact to start or continue a conversation.
+      <br />
+      Use search input to find new users.
+    </CenteredMessage>
   );
 }

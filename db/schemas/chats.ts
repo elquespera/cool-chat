@@ -51,3 +51,8 @@ export type OpenChat = ChatSelect & {
   lastTimestamp?: Date;
   lastAuthor?: string;
 };
+
+export type ChatWithUsers = ChatSelect & {
+  userOne: ContactUser;
+  userTwo: ContactUser;
+};

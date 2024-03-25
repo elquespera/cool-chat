@@ -18,6 +18,8 @@ type AuthPageProps = {
   };
 };
 
+type ChatPageProps = { params: { chatId: string } };
+
 type PropsWithClassName = {
   className?: string;
 };
