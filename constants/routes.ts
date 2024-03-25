@@ -15,6 +15,7 @@ export const privateRoutes = {
   chatAudio: "/chat/audio",
 
   assistant: "/api/assistant",
+  getLivekitToken: "/api/get-livekit-token",
 } as const;
 
 export const routes = {
