@@ -68,6 +68,10 @@ export function MediaRoom({ type }: MediaRoomProps) {
         <RoomAudioRenderer />
         <ControlBar
           variation="minimal"
+          className="absolute bottom-8 w-full bg-transparent"
+          style={{
+            borderTop: "0px transparent",
+          }}
           controls={{
             microphone: true,
             camera: true,
@@ -88,10 +92,7 @@ function VideoConference() {
     { onlySubscribed: false },
   );
   return (
-    <GridLayout
-      tracks={tracks}
-      style={{ height: "calc(100vh - var(--lk-control-bar-height))" }}
-    >
+    <GridLayout tracks={tracks}>
       <ParticipantTile />
     </GridLayout>
   );
