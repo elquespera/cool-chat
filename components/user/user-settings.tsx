@@ -28,7 +28,7 @@ import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 import { BackgroundPicker } from "./background-picker";
 import { ThemeBackground } from "@/constants/theme-background";
 
-export function UserPanel() {
+export function UserSettings() {
   const router = useRouter();
   const { user } = useAuth();
   const { color, setColor, background, setBackground } = useSettings();
@@ -108,7 +108,6 @@ export function UserPanel() {
       <CollapsibleContent className="flex flex-col gap-3">
         <ColorPicker className="mt-4" color={color} setColor={setColor} />
         <BackgroundPicker
-          className="mt-4"
           background={background}
           setBackground={setBackground}
         />

@@ -5,7 +5,7 @@ import { ContactScrollProvider } from "@/components/contact/contact-scroll-conte
 import { ContactSearchInput } from "@/components/contact/contact-search-input";
 import { ChatProviders } from "@/components/providers/chat-providers";
 import { SearchContactsProvider } from "@/components/providers/search-contacts/search-contacts-provider";
-import { UserPanel } from "@/components/user/user-panel";
+import { UserSettings } from "@/components/user/user-settings";
 import dynamic from "next/dynamic";
 import { PropsWithChildren } from "react";
 
@@ -27,7 +27,7 @@ export default function ChatLayout({ children }: PropsWithChildren) {
               <ContactList />
               <ContactSearchInput />
             </SearchContactsProvider>
-            <UserPanel />
+            <UserSettings />
           </ContactScrollProvider>
         }
         rightPanel={children}
