@@ -1,0 +1,1 @@
+ALTER TABLE settings ADD `sound` integer DEFAULT false NOT NULL;

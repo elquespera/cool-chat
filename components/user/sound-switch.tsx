@@ -1,18 +1,22 @@
 "use client";
 
+import { updateSettings } from "@/db/actions/settings";
 import { cn } from "@/lib/utils";
-import { useTheme } from "next-themes";
-import { ComponentProps, useEffect, useState } from "react";
+import { ComponentProps } from "react";
 import { IconButton } from "../common/icon-button";
-import { SunIcon } from "../icons/sun-icon";
-import { MoonIcon } from "../icons/moon-icon";
 import { SoundOffIcon } from "../icons/sound-off-icon";
 import { SoundOnIcon } from "../icons/sound-on-icon";
+import { useSettings } from "../providers/settings/settings-context";
 
 type SoundSwitchProps = ComponentProps<typeof IconButton>;
 
 export default function SoundSwitch({ className, ...props }: SoundSwitchProps) {
-  const [sound, setSound] = useState(false);
+  const { sound, setSound } = useSettings();
+
+  const handleClick = async () => {
+    const result = await updateSettings({ sound: !sound });
+    if (result.ok) setSound(result.data.sound);
+  };
 
   const hint = sound ? "Sound on" : "Sound off";
 
@@ -29,7 +33,7 @@ export default function SoundSwitch({ className, ...props }: SoundSwitchProps) {
           <SoundOnIcon className={cn("absolute h-5 w-5", !sound && "hidden")} />
         </>
       }
-      onClick={() => setSound((current) => !current)}
+      onClick={handleClick}
     />
   );
 }

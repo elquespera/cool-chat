@@ -1,11 +1,12 @@
 "use client";
 
 import { ThemeColor, defaultColor, themeColors } from "@/constants";
-import { PropsWithChildren, useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { SettingsContext } from "./settings-context";
 
 export type InitialSettings = {
   color: ThemeColor;
+  sound: boolean;
 };
 
 type SettingsProviderProps = {
@@ -17,6 +18,7 @@ export function SettingsProvider({
   children,
 }: SettingsProviderProps) {
   const [color, setColorInternal] = useState<ThemeColor>(initialSettings.color);
+  const [sound, setSound] = useState(initialSettings.sound);
 
   const updateColorClass = (value: ThemeColor) => {
     themeColors.forEach((themeColor) =>
@@ -35,8 +37,18 @@ export function SettingsProvider({
 
   useEffect(() => updateColorClass(initialSettings.color), [initialSettings]);
 
+  const value = useMemo(
+    () => ({
+      color,
+      setColor,
+      sound,
+      setSound,
+    }),
+    [color, sound],
+  );
+
   return (
-    <SettingsContext.Provider value={{ color, setColor }}>
+    <SettingsContext.Provider value={value}>
       {children}
     </SettingsContext.Provider>
   );
