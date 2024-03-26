@@ -23,6 +23,7 @@ import { ColorPicker } from "./color-picker";
 import { LogOutButton } from "./log-out-button";
 import ThemeSwitch from "./theme-switch";
 import { UserInfo } from "./user-info";
+import SoundSwitch from "./sound-switch";
 
 export function UserPanel() {
   const router = useRouter();
@@ -88,7 +89,8 @@ export function UserPanel() {
         <CollapsibleTrigger className="peer cursor-pointer select-none before:absolute before:inset-0">
           <UserInfo user={user} avatarUrl={avatarUrl} status self />
         </CollapsibleTrigger>
-        <ThemeSwitch className="ml-auto" />
+        <SoundSwitch className="ml-auto" />
+        <ThemeSwitch />
         <ChevronUpIcon className="-z-10 mx-2 h-5 w-5 shrink-0 text-muted-foreground transition-transform delay-300 duration-200 peer-data-[state=open]:rotate-180" />
       </div>
       <CollapsibleContent className="flex flex-col gap-3">
