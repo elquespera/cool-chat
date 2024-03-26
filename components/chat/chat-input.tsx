@@ -14,7 +14,6 @@ import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
-import { useInputFocus } from "./use-input-focus";
 import { useInsertEmoji } from "./use-insert-emoji";
 import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 
@@ -33,8 +32,9 @@ export function ChatInput() {
   const [pending, setPending] = useState(false);
 
   const isValid = interlocutor && user && message && !pending && !isStreaming;
+  const handleInsertEmoji = useInsertEmoji(inputRef, message, setMessage);
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+  const handleSubmit: FormEventHandler = async (event) => {
     event.preventDefault();
     if (!isValid) return;
 
@@ -46,8 +46,8 @@ export function ChatInput() {
         playSound();
 
         socket?.emit("messageUpdate", {
-          chatId: result.data.chatId,
           messageId: result.data.id,
+          chatId: result.data.chatId,
           authorId: result.data.authorId,
           interlocutorId: interlocutor.id,
           status: "created",
@@ -56,9 +56,9 @@ export function ChatInput() {
         if (chat?.id !== result.data.chatId) {
           router.push(`${routes.chat}/${result.data.chatId}`);
         } else {
-          await refetchMessages("smooth");
+          refetchMessages("smooth");
         }
-        await refetchOpenChats();
+        refetchOpenChats();
 
         generateResponse(result.data.chatId);
       }
@@ -66,9 +66,6 @@ export function ChatInput() {
       setPending(false);
     }
   };
-
-  const handleInsertEmoji = useInsertEmoji(inputRef, message, setMessage);
-  useInputFocus(inputRef);
 
   return interlocutor ? (
     <GlassPanel position="bottom" className="shadow-top">
