@@ -1,7 +1,6 @@
 import { ContactUser } from "@/db/schemas/auth";
 import Link from "next/link";
 import { MouseEventHandler, ReactNode, useEffect, useRef } from "react";
-import { useChat } from "../providers/chat/chat-context";
 
 import { routes } from "@/constants/routes";
 import { useRouter } from "next/navigation";
@@ -26,7 +25,6 @@ export function ContactItem({
 }: ContactItemProps) {
   const router = useRouter();
   const ref = useRef<HTMLAnchorElement>(null);
-  const { chat } = useChat();
 
   const handleClick: MouseEventHandler = (event) => {
     if (!selected) return;
@@ -35,10 +33,10 @@ export function ContactItem({
   };
 
   useEffect(() => {
-    if (selected && ref.current && chat) {
-      ref.current?.scrollIntoView({ behavior: "auto", block: "nearest" });
+    if (selected && ref.current) {
+      ref.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-  }, [chat, selected]);
+  }, [selected]);
 
   return (
     <Link
