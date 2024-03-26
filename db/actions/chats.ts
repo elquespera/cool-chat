@@ -12,7 +12,7 @@ import {
 import { withAuth } from "./with-auth";
 import { countUnreadMesages, getLastMessage } from "./messages";
 import { getSettings } from "./settings";
-import { ContactUserColumns } from "../schemas/auth";
+import { contactUserFilter } from "../schemas/auth";
 
 //to be removed
 export async function getUserChats(userId: string) {
@@ -27,8 +27,8 @@ export const getChatById = async (chatId: string) =>
     db.query.chats.findFirst({
       where: eq(chats.id, chatId),
       with: {
-        userOne: { columns: ContactUserColumns },
-        userTwo: { columns: ContactUserColumns },
+        userOne: { columns: contactUserFilter },
+        userTwo: { columns: contactUserFilter },
       },
     }),
   );

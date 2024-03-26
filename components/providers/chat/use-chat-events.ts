@@ -3,6 +3,7 @@ import { useCustomEvent } from "@/lib/hooks/use-custom-event";
 import { useAuth } from "../auth/auth-context";
 import { useSocket } from "../socket/socket-context";
 import { updateMessage } from "@/db/actions/messages";
+import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 
 export function useChatEvents(
   openChats: OpenChat[] | undefined,
@@ -10,6 +11,7 @@ export function useChatEvents(
 ) {
   const { user } = useAuth();
   const { socket } = useSocket();
+  const playMessageAlert = useSoundEffect("message-alert");
 
   // Refetch on user status change
   useCustomEvent(
@@ -27,6 +29,7 @@ export function useChatEvents(
     "messageupdate",
     async ({ interlocutorId, status, messageId, ...rest }) => {
       if (interlocutorId === user?.id && status === "created") {
+        playMessageAlert();
         const result = await updateMessage(messageId, { status: "delivered" });
 
         if (result.ok) {

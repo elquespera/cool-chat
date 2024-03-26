@@ -7,6 +7,7 @@ const sounds = {
   "click-off": "/sounds/minimal-pop-click-ui-6.mp3",
   refresh: "/sounds/ui-pop-up-8.mp3",
   blip: "/sounds/ui-pop-up-1.mp3",
+  "message-alert": "/sounds/cute-level-up-2.mp3",
 } as const;
 
 type SoundType = keyof typeof sounds;

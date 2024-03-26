@@ -1,5 +1,5 @@
 import { randomId } from "@/lib/random-id";
-import { sql } from "drizzle-orm";
+import { getTableColumns, sql } from "drizzle-orm";
 import {
   integer,
   primaryKey,
@@ -61,10 +61,13 @@ export const sessions = sqliteTable("session", {
 export type UserSelect = typeof users.$inferSelect;
 export type UserInsert = typeof users.$inferInsert;
 export type ContactUser = Omit<UserSelect, "hashedPassword" | "providerId">;
-export const ContactUserColumns = {
+export const contactUserFilter = {
   hashedPassword: false,
   providerId: false,
 } as const;
+
+export const { hashedPassword, providerId, ...contactUserColumns } =
+  getTableColumns(users);
 
 export type ContactUserWithChat = ContactUser & {
   chatId?: string;
