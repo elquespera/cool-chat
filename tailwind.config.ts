@@ -70,9 +70,9 @@ const config = {
       },
       boxShadow: {
         top: "0 -1px 2px 0 rgba(0 0 0 / 0.1)",
-        msg: "0 0px 8px 0 rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+        msg: "0 0px 4px 0 rgb(0 0 0 / 0.1), 0 4px 2px -4px rgb(0 0 0 / 0.1)",
         "msg-hover":
-          "0 0px 12px 0 rgb(0 0 0 / 0.1), 0 4px 12px -4px rgb(0 0 0 / 0.1)",
+          "0 0px 8px 0 rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
       },
       keyframes: {
         "accordion-down": {

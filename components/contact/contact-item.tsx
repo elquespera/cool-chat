@@ -47,7 +47,7 @@ export function ContactItem({
       href={selected ? "#" : href}
       role="option"
       aria-selected={selected}
-      className="group block w-full px-3 py-1 sm:px-5"
+      className="group block w-full px-3 py-1"
       onClickCapture={handleClick}
     >
       <div className="relative flex items-center justify-between gap-8 rounded-lg bg-message px-4 py-3 transition-colors group-hover:bg-accent group-hover:text-accent-foreground group-aria-selected:bg-message-own group-aria-selected:text-message-own-foreground">

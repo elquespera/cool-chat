@@ -25,7 +25,7 @@ export function BackgroundPicker({
   return (
     <div
       className={cn(
-        "relative flex items-center justify-between gap-4 p-4",
+        "relative flex items-start justify-between gap-4 p-4",
         className,
       )}
       {...props}

@@ -131,7 +131,7 @@ export const MessageItem = ({
           (type !== "only" || id === editingId) &&
             "w-[calc(100%-1.5em)] lg:w-[calc(100%-2em)]",
           ownMessage
-            ? "mr-[1.5rem] text-message-own-foreground after:bg-message-own lg:mr-[2rem]"
+            ? "mr-[1.5rem] border border-primary/25 text-message-own-foreground after:bg-message-own lg:mr-[2rem]"
             : "ml-[1.5rem] text-message-foreground after:bg-message lg:ml-[2rem]",
           status === "deleted" && "opacity-50",
         )}

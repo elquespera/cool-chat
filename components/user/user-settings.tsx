@@ -43,6 +43,9 @@ export function UserSettings() {
   const playClickOn = useSoundEffect("click-on");
   const playClickOff = useSoundEffect("click-off");
 
+  const touched =
+    !!avatarUrl || savedColor !== color || savedBackground !== background;
+
   const handleSaveClick = async () => {
     if (!user) return;
     setPending(true);
@@ -127,13 +130,9 @@ export function UserSettings() {
             variant="secondary"
             onClick={() => setOpen(false)}
           >
-            Close
+            Reset
           </IconButton>
-          {!!(
-            avatarUrl ||
-            savedColor !== color ||
-            savedBackground !== background
-          ) && (
+          {touched && (
             <IconButton
               size="sm"
               disabled={pending}

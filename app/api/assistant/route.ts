@@ -121,5 +121,8 @@ function encodeChunk(chunk: any) {
 }
 
 function sanitazeResponse(response: string) {
-  return response.replaceAll("<|system|>", "").replaceAll("<|assistant|>", "");
+  return response
+    .replaceAll("<|system|>", "")
+    .replaceAll("<|assistant|>", "")
+    .replaceAll("<|user|>", "");
 }
