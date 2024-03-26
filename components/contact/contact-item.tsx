@@ -5,6 +5,7 @@ import { MouseEventHandler, ReactNode, useEffect, useRef } from "react";
 import { routes } from "@/constants/routes";
 import { useRouter } from "next/navigation";
 import { UserInfo } from "../user/user-info";
+import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 
 type ContactItemProps = {
   contact: ContactUser;
@@ -25,8 +26,10 @@ export function ContactItem({
 }: ContactItemProps) {
   const router = useRouter();
   const ref = useRef<HTMLAnchorElement>(null);
+  const playClick = useSoundEffect("click");
 
   const handleClick: MouseEventHandler = (event) => {
+    playClick();
     if (!selected) return;
     event.preventDefault();
     router.push(routes.home);

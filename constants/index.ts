@@ -33,6 +33,6 @@ export const themeColorInfo: Record<
 
 export const colorKey = "theme-color";
 export const defaultColor = "blue";
-export const defaultSound = false;
+export const defaultSound = true;
 
 export const assistantId = "assistant";

@@ -16,6 +16,7 @@ import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
 import { useInputFocus } from "./use-input-focus";
 import { useInsertEmoji } from "./use-insert-emoji";
+import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 
 export function ChatInput() {
   const router = useRouter();
@@ -26,6 +27,7 @@ export function ChatInput() {
   const { interlocutor, chat, refetchOpenChats } = useChat();
   const { isStreaming, generateResponse } = useAssistant();
   const { refetchMessages } = useMessages();
+  const playSound = useSoundEffect("blip");
 
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
@@ -41,6 +43,7 @@ export function ChatInput() {
       const result = await sendMessage(interlocutor.id, message);
       if (result.ok) {
         setMessage("");
+        playSound();
 
         socket?.emit("messageUpdate", {
           chatId: result.data.chatId,

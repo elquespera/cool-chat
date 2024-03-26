@@ -5,6 +5,7 @@ import { IconButton } from "../common/icon-button";
 import { UserAvatar } from "./user-avatar";
 import { generateAvatarURLs } from "@/lib/generate-avatar-url";
 import { RefreshIcon } from "../icons/refresh-icon";
+import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 
 type AvatarPickerProps = {
   count?: number;
@@ -20,8 +21,11 @@ export function AvatarPicker({
   ...props
 }: AvatarPickerProps) {
   const [avatars, setAvatars] = useState(generateAvatarURLs(count));
+  const playClick = useSoundEffect("click");
+  const playRegenerate = useSoundEffect("refresh");
 
   const handleRegenerateClick = () => {
+    playRegenerate();
     setAvatars(generateAvatarURLs(count));
     onUrlChange("");
   };
@@ -45,6 +49,7 @@ export function AvatarPicker({
         className="grid grid-cols-[repeat(auto-fit,minmax(4rem,1fr))] grid-rows-[4rem] justify-center justify-items-center gap-2"
         value={url}
         onValueChange={onUrlChange}
+        onClick={() => playClick()}
       >
         {avatars.map((url) => (
           <ToggleGroupItem key={url} value={url} className="h-14 w-14">

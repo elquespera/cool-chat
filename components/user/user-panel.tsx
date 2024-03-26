@@ -24,6 +24,7 @@ import { LogOutButton } from "./log-out-button";
 import ThemeSwitch from "./theme-switch";
 import { UserInfo } from "./user-info";
 import SoundSwitch from "./sound-switch";
+import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 
 export function UserPanel() {
   const router = useRouter();
@@ -35,6 +36,8 @@ export function UserPanel() {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [pending, setPending] = useState(false);
   const [savedColor, setSavedColor] = useState<ThemeColor>(color);
+  const playClickOn = useSoundEffect("click-on");
+  const playClickOff = useSoundEffect("click-off");
 
   const handleSaveClick = async () => {
     if (!user) return;
@@ -66,13 +69,13 @@ export function UserPanel() {
   };
 
   useEffect(() => {
-    setOpen(open);
-
     if (open) {
       setSavedColor(color);
+      playClickOn();
     } else {
       setColor(savedColor);
       setAvatarUrl("");
+      playClickOff();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
