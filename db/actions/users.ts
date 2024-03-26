@@ -1,12 +1,18 @@
 "use server";
 
-import { assistantId } from "@/constants";
+import { assistantId, defaultAssistantUser } from "@/constants";
 import { and, eq, like, ne, or } from "drizzle-orm";
 import { db } from "../db";
-import { ContactUser, UserInsert, users } from "../schemas/auth";
+import {
+  ContactUser,
+  contactUserColumns,
+  contactUserFilter,
+  UserInsert,
+  users,
+} from "../schemas/auth";
 import { withAuth } from "./with-auth";
 
-// To be removed
+// Auth Actions without Authentication
 export async function getUserByEmailOrUsername(emailOrUsername: string) {
   return db.query.users.findFirst({
     where: or(
@@ -16,12 +22,18 @@ export async function getUserByEmailOrUsername(emailOrUsername: string) {
   });
 }
 
+export async function addUserWithoutAuth(data: UserInsert) {
+  if (data.id === assistantId) return null;
+  return db.insert(users).values(data).returning().get();
+}
+
+// Wiht Auth
 export const getUserById = async (id: string) =>
   withAuth<ContactUser>(
     async () =>
       await db.query.users.findFirst({
         where: eq(users.id, id),
-        columns: { hashedPassword: false, providerId: false },
+        columns: contactUserFilter,
       }),
   );
 
@@ -35,24 +47,32 @@ export const searchUsers = async (searchValue: string) =>
         or(like(users.email, search), like(users.username, search)),
         ne(users.id, user.id),
       ),
-      columns: { hashedPassword: false, providerId: false },
+      columns: contactUserFilter,
     });
   });
 
-export async function addUser(data: UserInsert) {
-  return db.insert(users).values(data).returning().get();
-}
+export const addUser = async (data: UserInsert) =>
+  withAuth<ContactUser>(async () => {
+    if (data.id === assistantId) return;
+    return db.insert(users).values(data).returning(contactUserColumns).get();
+  });
 
-export async function updateUser(userId: string, data: UserInsert) {
-  return db
-    .update(users)
-    .set(data)
-    .where(eq(users.id, userId))
-    .returning()
-    .get();
-}
+export const updateUser = async (userId: string, data: UserInsert) =>
+  withAuth<ContactUser>(async () =>
+    db
+      .update(users)
+      .set(data)
+      .where(eq(users.id, userId))
+      .returning(contactUserColumns)
+      .get(),
+  );
 
-export async function getAssistantUser() {
-  const result = await getUserById(assistantId);
-  return result.ok ? result.data : null;
-}
+export const getAssistantUser = async () =>
+  withAuth<ContactUser>(async () => {
+    return db
+      .insert(users)
+      .values(defaultAssistantUser)
+      .onConflictDoNothing()
+      .returning(contactUserColumns)
+      .get();
+  });

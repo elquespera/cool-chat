@@ -15,7 +15,8 @@ import { AssistantProvider } from "./assistant/assistant-provider";
 
 export async function ChatProviders({ children }: PropsWithChildren) {
   const { user } = await getAuth();
-  const assistant = await getAssistantUser();
+  const assistantResponse = await getAssistantUser();
+  const assistant = assistantResponse.ok ? assistantResponse.data : null;
 
   let settings: InitialSettings = {
     color: defaultColor,

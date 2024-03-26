@@ -73,9 +73,11 @@ export function UserSettings() {
   };
 
   const handleMockConversationClick = async () => {
-    await createMockConversation();
-    refetchOpenChats();
-    setOpen(false);
+    const result = await createMockConversation();
+    if (result.ok) {
+      refetchOpenChats();
+      setOpen(false);
+    }
   };
 
   useEffect(() => {

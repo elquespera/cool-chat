@@ -2,7 +2,7 @@
 
 import { emailMatcher, passwordMatcher } from "@/constants";
 import { routes } from "@/constants/routes";
-import { addUser } from "@/db/actions/users";
+import { addUserWithoutAuth as addUser } from "@/db/actions/users";
 import { LibsqlError } from "@libsql/client";
 import { Scrypt } from "lucia";
 import { redirect } from "next/navigation";
@@ -30,6 +30,7 @@ export async function signUp(
 
   try {
     const user = await addUser({ email, username, hashedPassword });
+    if (!user) throw new Error("Can't add user.");
     await createSession(user.id);
   } catch (e) {
     if ((e as LibsqlError).code === "SQLITE_CONSTRAINT_UNIQUE") {

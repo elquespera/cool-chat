@@ -6,46 +6,50 @@ import { db } from "../db";
 import { messages } from "../schemas/messages";
 import { addChat } from "./chats";
 import { addUser } from "./users";
+import { withAuth } from "./with-auth";
+import { ChatSelect } from "../schemas/chats";
 
-export async function createMockConversation() {
-  const { user } = await getAuth();
-  if (!user) return { ok: false, error: "Unauthorized access." };
+export const createMockConversation = async () =>
+  withAuth<ChatSelect>(async (user) => {
+    const mockUserResponse = await addUser({
+      username: mockNames[randomInt(0, mockNames.length)],
+      avatarUrl: generateAvatarURL(),
+      email: `test${randomInt(20, 1000)}@mail.com`,
+      hashedPassword: process.env.MOCK_USER_PASSWORD_HASH,
+    });
 
-  const mockUser = await addUser({
-    username: mockNames[randomInt(0, mockNames.length)],
-    avatarUrl: generateAvatarURL(),
-    email: `test${randomInt(20, 1000)}@mail.com`,
-    hashedPassword: process.env.MOCK_USER_PASSWORD_HASH,
+    if (!mockUserResponse.ok) return;
+
+    const mockUser = mockUserResponse.data;
+
+    const mockChat = await addChat({
+      userOneId: user.id,
+      userTwoId: mockUser.id,
+    });
+
+    let now = Date.now();
+
+    await db
+      .insert(messages)
+      .values(
+        Array.from({
+          length: randomInt(allMockMessages.length / 3, allMockMessages.length),
+        }).map(() => {
+          now -= randomInt(10000, 120000);
+          return {
+            authorId: Math.random() > 0.5 ? user.id : mockUser.id,
+            chatId: mockChat.id,
+            content: allMockMessages[randomInt(0, allMockMessages.length - 1)],
+            createdAt: new Date(now),
+            updatedAt: new Date(now),
+          };
+        }),
+      )
+      .returning()
+      .get();
+
+    return mockChat;
   });
-
-  const mockChat = await addChat({
-    userOneId: user.id,
-    userTwoId: mockUser.id,
-  });
-
-  let now = Date.now();
-
-  await db
-    .insert(messages)
-    .values(
-      Array.from({
-        length: randomInt(allMockMessages.length / 3, allMockMessages.length),
-      }).map(() => {
-        now -= randomInt(10000, 120000);
-        return {
-          authorId: Math.random() > 0.5 ? user.id : mockUser.id,
-          chatId: mockChat.id,
-          content: allMockMessages[randomInt(0, allMockMessages.length - 1)],
-          createdAt: new Date(now),
-          updatedAt: new Date(now),
-        };
-      }),
-    )
-    .returning()
-    .get();
-
-  return mockChat;
-}
 
 const mockNames = [
   "Alice",
