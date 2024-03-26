@@ -11,12 +11,9 @@ type UserStatusChangeEvent = CustomEvent<{
   status: UserStatus;
 }>;
 
-type AssistantResponseEvent = CustomEvent;
-
 interface CustomEventHandlersMap {
   chatclick: CustomEvent;
   messageupdate: MessageUpdateEvent;
-  assistantresponse: AssistantResponseEvent;
   userstatuschange: UserStatusChangeEvent;
 }
 

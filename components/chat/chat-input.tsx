@@ -56,11 +56,11 @@ export function ChatInput() {
         if (chat?.id !== result.data.chatId) {
           router.push(`${routes.chat}/${result.data.chatId}`);
         } else {
-          refetchMessages("smooth");
+          await refetchMessages("smooth");
         }
-        refetchOpenChats();
+        await refetchOpenChats();
 
-        generateResponse(result.data.chatId);
+        generateResponse(result.data.chatId, refetchMessages);
       }
     } finally {
       setPending(false);

@@ -1,16 +1,14 @@
 "use client";
 
+import { useChat } from "@/components/providers/chat/chat-context";
 import { routes } from "@/constants/routes";
 import { ContactUser, UserSelect } from "@/db/schemas/auth";
 import { MessageWithAuthor } from "@/db/schemas/messages";
-import { dispatchCustomEvent } from "@/lib/custom-event";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { AssistantContext } from "./assistant-context";
-import { useChat } from "@/components/providers/chat/chat-context";
+import { AssistantStreamReader, readAssistantStream } from "./assistant-utils";
 
 const maxMessages = 10;
-
-type StreamEntry = { content?: string; message_id?: string };
 
 type AssistantProviderProps = {
   assistant: ContactUser | null;
@@ -24,60 +22,43 @@ export function AssistantProvider({
   const [isStreaming, setIsStreaming] = useState(false);
   const [response, setResponse] = useState("");
   const [messageId, setMessageId] = useState("");
-  const [reader, setReader] =
-    useState<ReadableStreamDefaultReader<Uint8Array>>();
+  const [reader, setReader] = useState<AssistantStreamReader>();
+
   const isAssistant = interlocutor?.role === "assistant";
 
   const generateResponse = useCallback(
-    async (chatId: string, regenerate = false) => {
-      const doGenerate = async () => {
-        if (!isAssistant || !assistant || isStreaming) return "";
-        let content = "";
-        setResponse("");
-        setIsStreaming(true);
-        try {
-          const response = await fetch(routes.assistant, {
-            method: "POST",
-            body: JSON.stringify({
-              chatId,
-              regenerate,
-              maxMessages,
-            }),
-          });
-          if (!response.ok) return "error";
+    async (
+      chatId: string,
+      messageCallback: (scrollBehavior?: ScrollBehavior) => Promise<void>,
+      regenerate = false,
+    ) => {
+      if (!isAssistant || !assistant || isStreaming) return;
+      setResponse("");
+      setIsStreaming(true);
+      try {
+        const response = await fetch(routes.assistant, {
+          method: "POST",
+          body: JSON.stringify({
+            chatId,
+            regenerate,
+            maxMessages,
+          }),
+        });
+        if (!response.ok) return;
 
-          dispatchCustomEvent("assistantresponse");
+        messageCallback("instant");
 
-          const reader = response.body?.getReader();
-          setReader(reader);
-          if (!reader) return "error";
-          const decoder = new TextDecoder("utf-8");
-          while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            const entries = decoder.decode(value).split("/n");
-            entries.forEach((entry) => {
-              try {
-                const parsed = JSON.parse(entry) as StreamEntry;
-                if (parsed.content) {
-                  content += parsed.content;
-                  setResponse(content);
-                }
-                if (parsed.message_id) {
-                  setMessageId(parsed.message_id);
-                }
-              } catch {}
-            });
-          }
+        const reader = response.body?.getReader();
+        setReader(reader);
+        if (!reader) return;
 
-          dispatchCustomEvent("assistantresponse");
-        } finally {
-          setReader(undefined);
-          setIsStreaming(false);
-        }
-      };
-      await doGenerate();
-      dispatchCustomEvent("assistantresponse");
+        await readAssistantStream(reader, setResponse, setMessageId);
+
+        await messageCallback("instant");
+      } finally {
+        setReader(undefined);
+        setIsStreaming(false);
+      }
     },
     [assistant, isAssistant, isStreaming],
   );

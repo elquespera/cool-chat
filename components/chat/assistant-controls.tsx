@@ -9,16 +9,18 @@ import { RefreshIcon } from "../icons/refresh-icon";
 import { StopIcon } from "../icons/stop-icon";
 import { useAssistant } from "../providers/assistant/assistant-context";
 import { useChat } from "../providers/chat/chat-context";
+import { useMessages } from "../providers/message/message-context";
 
 export function AssistantControls() {
   const router = useRouter();
   const { chat } = useChat();
   const { isAssistant, isStreaming, generateResponse, abortResponse } =
     useAssistant();
+  const { refetchMessages } = useMessages();
 
   const handleRegenerateResponse = () => {
     if (!chat) return;
-    generateResponse(chat.id, true);
+    generateResponse(chat.id, refetchMessages, true);
   };
 
   const handleResetChat = async () => {
