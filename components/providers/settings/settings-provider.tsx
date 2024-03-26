@@ -1,11 +1,14 @@
 "use client";
 
-import { ThemeColor, defaultColor, themeColors } from "@/constants";
+import { ThemeColor, themeColors } from "@/constants/theme-color";
 import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { SettingsContext } from "./settings-context";
+import { defaultBackground, defaultColor } from "@/constants";
+import { ThemeBackground } from "@/constants/theme-background";
 
 export type InitialSettings = {
   color: ThemeColor;
+  background: ThemeBackground;
   sound: boolean;
 };
 
@@ -17,7 +20,10 @@ export function SettingsProvider({
   initialSettings,
   children,
 }: SettingsProviderProps) {
-  const [color, setColorInternal] = useState<ThemeColor>(initialSettings.color);
+  const [color, setColor] = useState<ThemeColor>(initialSettings.color);
+  const [background, setBackground] = useState<ThemeBackground>(
+    initialSettings.background,
+  );
   const [sound, setSound] = useState(initialSettings.sound);
 
   const updateColorClass = (value: ThemeColor) => {
@@ -29,22 +35,25 @@ export function SettingsProvider({
     );
   };
 
-  const setColor = (value: ThemeColor) => {
-    const newValue = value || color || defaultColor;
-    setColorInternal(newValue || defaultColor);
-    updateColorClass(newValue);
-  };
-
   useEffect(() => updateColorClass(initialSettings.color), [initialSettings]);
 
   const value = useMemo(
     () => ({
       color,
-      setColor,
+      setColor: (value: ThemeColor) => {
+        const newValue = value || color || defaultColor;
+        setColor(newValue);
+        updateColorClass(newValue);
+      },
+      background,
+      setBackground: (value: ThemeBackground) => {
+        const newValue = value || background || defaultBackground;
+        setBackground(newValue);
+      },
       sound,
       setSound,
     }),
-    [color, sound],
+    [color, background, sound],
   );
 
   return (

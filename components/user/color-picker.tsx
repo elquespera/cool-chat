@@ -1,5 +1,5 @@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { ThemeColor, themeColorInfo } from "@/constants";
+import { ThemeColor, themeColorInfo } from "@/constants/theme-color";
 import { cn } from "@/lib/utils";
 import { ComponentProps } from "react";
 import { Hint } from "../common/hint";
@@ -27,7 +27,7 @@ export function ColorPicker({
       )}
       {...props}
     >
-      <p className="text-sm font-medium text-muted-foreground">Theme Color </p>
+      <p className="text-sm font-medium text-muted-foreground">Color</p>
       <ToggleGroup
         type="single"
         className="flex flex-wrap justify-start gap-4"

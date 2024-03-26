@@ -5,7 +5,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ThemeColor } from "@/constants";
+import { ThemeColor } from "@/constants/theme-color";
 import { createMockConversation } from "@/db/actions/mock";
 import { updateSettings } from "@/db/actions/settings";
 import { updateUser } from "@/db/actions/users";
@@ -25,17 +25,21 @@ import ThemeSwitch from "./theme-switch";
 import { UserInfo } from "./user-info";
 import SoundSwitch from "./sound-switch";
 import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
+import { BackgroundPicker } from "./background-picker";
+import { ThemeBackground } from "@/constants/theme-background";
 
 export function UserPanel() {
   const router = useRouter();
   const { user } = useAuth();
-  const { color, setColor } = useSettings();
+  const { color, setColor, background, setBackground } = useSettings();
   const { refetchMessages } = useMessages();
   const { refetchOpenChats } = useChat();
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [pending, setPending] = useState(false);
   const [savedColor, setSavedColor] = useState<ThemeColor>(color);
+  const [savedBackground, setSavedBackground] =
+    useState<ThemeBackground>(background);
   const playClickOn = useSoundEffect("click-on");
   const playClickOff = useSoundEffect("click-off");
 
@@ -43,9 +47,12 @@ export function UserPanel() {
     if (!user) return;
     setPending(true);
     try {
-      if (color !== savedColor) {
-        const result = await updateSettings({ color });
+      if (color !== savedColor || background !== savedBackground) {
+        const result = await updateSettings({ color, background });
         setSavedColor(result.ok ? result.data.color : savedColor);
+        setSavedBackground(
+          result.ok ? result.data.background : savedBackground,
+        );
       }
 
       if (avatarUrl) {
@@ -71,9 +78,11 @@ export function UserPanel() {
   useEffect(() => {
     if (open) {
       setSavedColor(color);
+      setSavedBackground(background);
       playClickOn();
     } else {
       setColor(savedColor);
+      setBackground(savedBackground);
       setAvatarUrl("");
       playClickOff();
     }
@@ -98,6 +107,11 @@ export function UserPanel() {
       </div>
       <CollapsibleContent className="flex flex-col gap-3">
         <ColorPicker className="mt-4" color={color} setColor={setColor} />
+        <BackgroundPicker
+          className="mt-4"
+          background={background}
+          setBackground={setBackground}
+        />
         <AvatarPicker url={avatarUrl} onUrlChange={setAvatarUrl} />
         <div className="mb-2 flex justify-end">
           <IconButton
@@ -108,26 +122,27 @@ export function UserPanel() {
             Create mock chat
           </IconButton>
         </div>
-        <div className="flex gap-2">
-          {(avatarUrl || savedColor !== color) && (
-            <>
-              <IconButton
-                size="sm"
-                disabled={pending}
-                pending={pending}
-                onClick={handleSaveClick}
-              >
-                Save
-              </IconButton>
-              <IconButton
-                disabled={pending}
-                size="sm"
-                variant="secondary"
-                onClick={() => setOpen(false)}
-              >
-                Cancel
-              </IconButton>
-            </>
+        <div className="flex gap-4">
+          <IconButton
+            size="sm"
+            variant="secondary"
+            onClick={() => setOpen(false)}
+          >
+            Close
+          </IconButton>
+          {!!(
+            avatarUrl ||
+            savedColor !== color ||
+            savedBackground !== background
+          ) && (
+            <IconButton
+              size="sm"
+              disabled={pending}
+              pending={pending}
+              onClick={handleSaveClick}
+            >
+              Save
+            </IconButton>
           )}
           <LogOutButton className="ml-auto" />
         </div>

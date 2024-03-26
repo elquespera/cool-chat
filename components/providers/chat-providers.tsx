@@ -1,4 +1,4 @@
-import { defaultColor, defaultSound } from "@/constants";
+import { defaultBackground, defaultColor, defaultSound } from "@/constants";
 import { getSettings } from "@/db/actions/settings";
 import { getAuth } from "@/lib/auth/get-auth";
 import { PropsWithChildren } from "react";
@@ -17,7 +17,11 @@ export async function ChatProviders({ children }: PropsWithChildren) {
   const { user } = await getAuth();
   const assistant = await getAssistantUser();
 
-  let settings: InitialSettings = { color: defaultColor, sound: defaultSound };
+  let settings: InitialSettings = {
+    color: defaultColor,
+    sound: defaultSound,
+    background: defaultBackground,
+  };
 
   if (user) {
     const settingsResult = await getSettings(user.id);
