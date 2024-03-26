@@ -9,29 +9,29 @@ import { ChatDuoIcon } from "../icons/chat-icon";
 import { useContactScroll } from "./contact-scroll-context";
 import { MagnifyingGlassIcon } from "../icons/magnifying-glass-icon";
 import { useSearchContacts } from "../providers/search-contacts/search-contacts-context";
-
-const threshold = 120;
+import { AssistantButton } from "./assistant-button";
 
 export function ContactSearchInput() {
-  const { scrollTop } = useContactScroll();
   const { searchValue, setSearchValue } = useSearchContacts();
+  const { isScrolledDown } = useContactScroll();
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const isScrolledDown = scrollTop > threshold;
 
   return (
     <GlassPanel
       className={cn("overflow-hidden", isScrolledDown && "h-32 shadow-sm")}
     >
-      <h1
-        className={cn(
-          "text-5 mb-6 flex origin-top-left select-none gap-2 overflow-clip px-2 text-5xl font-semibold tracking-tighter transition-all",
-          isScrolledDown ? "mt-2 scale-50" : "mt-4 ",
-        )}
-      >
-        <ChatDuoIcon className={cn("shrink-0 text-5xl text-primary")} />
-        CoolChat
-      </h1>
+      <div className="flex items-center justify-between gap-2">
+        <h1
+          className={cn(
+            "text-5 gap- mb-6 flex origin-top-left select-none items-center px-2 text-5xl font-semibold tracking-tighter transition-all",
+            isScrolledDown ? "mt-2 scale-50" : "mt-4 ",
+          )}
+        >
+          <ChatDuoIcon className={cn("shrink-0 text-5xl text-primary")} />
+          CoolChat
+        </h1>
+        <AssistantButton />
+      </div>
       <InputWrapper
         className={cn(
           "mb-4 transition-transform",
