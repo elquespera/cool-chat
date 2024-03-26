@@ -69,10 +69,14 @@ export const updateUser = async (userId: string, data: UserInsert) =>
 
 export const getAssistantUser = async () =>
   withAuth<ContactUser>(async () => {
-    return db
-      .insert(users)
-      .values(defaultAssistantUser)
-      .onConflictDoNothing()
-      .returning(contactUserColumns)
-      .get();
+    const result = await getUserById(assistantId);
+
+    return result.ok
+      ? result.data
+      : db
+          .insert(users)
+          .values(defaultAssistantUser)
+          .onConflictDoNothing()
+          .returning(contactUserColumns)
+          .get();
   });

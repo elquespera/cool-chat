@@ -5,7 +5,11 @@ type AssistantContextType = {
   isAssistant: boolean;
   isStreaming: boolean;
   streamedMessage: MessageWithAuthor;
-  generateResponse: (chatId: string, regenerate?: boolean) => void;
+  generateResponse: (
+    chatId: string,
+    messageCallback: (scrollBehavior?: ScrollBehavior) => Promise<void>,
+    regenerate?: boolean,
+  ) => Promise<void>;
   abortResponse: () => void;
 };
 
@@ -13,7 +17,7 @@ export const AssistantContext = createContext<AssistantContextType>({
   isAssistant: false,
   isStreaming: false,
   streamedMessage: {} as MessageWithAuthor,
-  generateResponse: () => {},
+  generateResponse: () => Promise.resolve(),
   abortResponse: () => {},
 });
 

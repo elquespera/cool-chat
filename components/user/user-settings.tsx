@@ -10,7 +10,7 @@ import { createMockConversation } from "@/db/actions/mock";
 import { updateSettings } from "@/db/actions/settings";
 import { updateUser } from "@/db/actions/users";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
 import { IconButton } from "../common/icon-button";
 import { ChatConversationIcon } from "../icons/chat-conversation-icon";
 import { ChevronUpIcon } from "../icons/chevron-up-icon";
@@ -46,7 +46,8 @@ export function UserSettings() {
   const touched =
     !!avatarUrl || savedColor !== color || savedBackground !== background;
 
-  const handleSaveClick = async () => {
+  const handleSubmit: FormEventHandler = async (event) => {
+    event.preventDefault();
     if (!user) return;
     setPending(true);
     try {
@@ -110,42 +111,46 @@ export function UserSettings() {
         <ThemeSwitch />
         <ChevronUpIcon className="-z-10 mx-2 h-5 w-5 shrink-0 text-muted-foreground transition-transform delay-300 duration-200 peer-data-[state=open]:rotate-180" />
       </div>
-      <CollapsibleContent className="flex flex-col gap-3">
-        <ColorPicker className="mt-4" color={color} setColor={setColor} />
-        <BackgroundPicker
-          background={background}
-          setBackground={setBackground}
-        />
-        <AvatarPicker url={avatarUrl} onUrlChange={setAvatarUrl} />
-        <div className="mb-2 flex justify-end">
-          <IconButton
-            size="sm"
-            onClick={handleMockConversationClick}
-            icon={<ChatConversationIcon />}
-          >
-            Create mock chat
-          </IconButton>
-        </div>
-        <div className="flex gap-4">
-          <IconButton
-            size="sm"
-            variant="secondary"
-            onClick={() => setOpen(false)}
-          >
-            Reset
-          </IconButton>
-          {touched && (
+      <CollapsibleContent asChild>
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <ColorPicker className="mt-4" color={color} setColor={setColor} />
+          <BackgroundPicker
+            background={background}
+            setBackground={setBackground}
+          />
+          <AvatarPicker url={avatarUrl} onUrlChange={setAvatarUrl} />
+          <div className="mb-2 flex justify-end">
             <IconButton
+              type="button"
               size="sm"
-              disabled={pending}
-              pending={pending}
-              onClick={handleSaveClick}
+              onClick={handleMockConversationClick}
+              icon={<ChatConversationIcon />}
             >
-              Save
+              Create mock chat
             </IconButton>
-          )}
-          <LogOutButton className="ml-auto" />
-        </div>
+          </div>
+          <div className="flex gap-4">
+            <IconButton
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={() => setOpen(false)}
+            >
+              Restore
+            </IconButton>
+            {touched && (
+              <IconButton
+                type="submit"
+                size="sm"
+                disabled={pending}
+                pending={pending}
+              >
+                Save
+              </IconButton>
+            )}
+            <LogOutButton className="ml-auto" />
+          </div>
+        </form>
       </CollapsibleContent>
     </Collapsible>
   );

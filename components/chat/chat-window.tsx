@@ -2,17 +2,16 @@
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
+import { Background } from "../background/background";
 import { IconButton } from "../common/icon-button";
 import { Spinner } from "../common/spinner";
+import { ArrowUpIcon } from "../icons/arrow-up-icon";
 import { MessageItem } from "../message/message-item";
 import { useAssistant } from "../providers/assistant/assistant-context";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
-import { ScrollArea } from "../ui/scroll-area";
-import { ArrowUpIcon } from "../icons/arrow-up-icon";
-import { useCustomEvent } from "@/lib/hooks/use-custom-event";
-import { Background } from "../background/background";
 import { useSettings } from "../providers/settings/settings-context";
+import { ScrollArea } from "../ui/scroll-area";
 
 const scrollButtonMargin = 250;
 const scrollButtonTimeout = 3000;
@@ -22,7 +21,6 @@ export function ChatWindow() {
   const {
     messages,
     fetchNextPage,
-    refetchMessages,
     scrollBehavior,
     setScrollBehavior,
     isReachingEnd,
@@ -113,10 +111,6 @@ export function ChatWindow() {
 
     return () => clearTimeout(timer);
   }, [scrollButtonVisible]);
-
-  useCustomEvent("assistantresponse", () => refetchMessages("smooth"), [
-    [refetchMessages],
-  ]);
 
   return interlocutor && messages?.length ? (
     <Background asChild type={background}>

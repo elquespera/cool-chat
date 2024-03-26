@@ -1,13 +1,13 @@
 "use server";
-import { getAuth } from "@/lib/auth/get-auth";
 import { generateAvatarURL } from "@/lib/generate-avatar-url";
 import { randomInt } from "crypto";
 import { db } from "../db";
+import { ChatSelect } from "../schemas/chats";
 import { messages } from "../schemas/messages";
 import { addChat } from "./chats";
 import { addUser } from "./users";
 import { withAuth } from "./with-auth";
-import { ChatSelect } from "../schemas/chats";
+import { encryptText } from "@/lib/encrypt-text";
 
 export const createMockConversation = async () =>
   withAuth<ChatSelect>(async (user) => {
@@ -39,7 +39,9 @@ export const createMockConversation = async () =>
           return {
             authorId: Math.random() > 0.5 ? user.id : mockUser.id,
             chatId: mockChat.id,
-            content: allMockMessages[randomInt(0, allMockMessages.length - 1)],
+            content: encryptText(
+              allMockMessages[randomInt(0, allMockMessages.length - 1)],
+            ),
             createdAt: new Date(now),
             updatedAt: new Date(now),
           };

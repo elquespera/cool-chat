@@ -10,43 +10,51 @@ import {
 } from "../schemas/messages";
 import { findOrCreateChat } from "./chats";
 import { withAuth } from "./with-auth";
+import { decryptText, encryptText } from "@/lib/encrypt-text";
 
 export const getMessagesByChatId = async (
   chatId: string,
   pageIndex = 0,
   messagesPerPage = 10,
 ) =>
-  withAuth<MessageWithAuthor[]>(async () =>
-    db.query.messages.findMany({
+  withAuth<MessageWithAuthor[]>(async () => {
+    const result = await db.query.messages.findMany({
       where: eq(messages.chatId, chatId),
       with: { author: true },
       offset: pageIndex * messagesPerPage,
       limit: messagesPerPage,
       orderBy: desc(messages.createdAt),
-    }),
-  );
+    });
+
+    return result.map(decryptMessage);
+  });
 
 export const getLastMessage = async (chatId: string) =>
-  withAuth<MessageSelect>(async () =>
-    db.query.messages.findFirst({
+  withAuth<MessageSelect>(async () => {
+    const result = await db.query.messages.findFirst({
       where: eq(messages.chatId, chatId),
       orderBy: desc(messages.createdAt),
-    }),
-  );
+    });
+    return result ? decryptMessage(result) : undefined;
+  });
 
-export const createMessage = async (data: MessageInsert) =>
+export const createMessage = async ({ content, ...data }: MessageInsert) =>
   withAuth<MessageSelect>(async () =>
-    db.insert(messages).values(data).returning().get(),
+    db
+      .insert(messages)
+      .values({ ...data, content: encryptText(content) })
+      .returning()
+      .get(),
   );
 
 export const updateMessage = async (
   messageId: string,
-  data: Partial<MessageInsert>,
+  { content, ...data }: Partial<MessageInsert>,
 ) =>
   withAuth<MessageSelect>(async () =>
     db
       .update(messages)
-      .set(data)
+      .set({ ...data, content: content ? encryptText(content) : undefined })
       .where(eq(messages.id, messageId))
       .returning()
       .get(),
@@ -99,7 +107,16 @@ export const sendMessage = async (contactId: string, message: string) =>
 
     return await db
       .insert(messages)
-      .values({ authorId: user.id, chatId: chat.data.id, content: message })
+      .values({
+        authorId: user.id,
+        chatId: chat.data.id,
+        content: encryptText(message),
+      })
       .returning()
       .get();
   });
+
+const decryptMessage = <T extends MessageSelect>({
+  content,
+  ...restMessage
+}: T) => ({ ...restMessage, content: decryptText(content) });
