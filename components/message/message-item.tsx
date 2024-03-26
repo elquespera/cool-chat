@@ -127,7 +127,7 @@ export const MessageItem = ({
       <div
         ref={observerRef}
         className={cn(
-          "group relative isolate flex flex-wrap gap-x-6 overflow-hidden bg-background px-4 py-3 before:absolute before:inset-0 before:-z-10 before:bg-background after:absolute after:inset-0 after:-z-10",
+          "shadow-msg hover:shadow-msg-hover group relative isolate flex flex-wrap gap-x-6 overflow-hidden bg-background px-4 py-3 transition-shadow before:absolute before:inset-0 before:-z-10 before:bg-background after:absolute after:inset-0 after:-z-10",
           (type !== "only" || id === editingId) &&
             "w-[calc(100%-1.5em)] lg:w-[calc(100%-2em)]",
           ownMessage
