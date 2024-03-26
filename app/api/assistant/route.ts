@@ -33,7 +33,12 @@ export const POST = async (request: Request) => {
   const { chatId, maxMessages, regenerate } =
     (await request.json()) as AssistantOptions;
 
-  const rawMessages = await getMessagesByChatId(chatId, 0, maxMessages);
+  const messageResponse = await getMessagesByChatId(chatId, 0, maxMessages);
+
+  if (!messageResponse.ok)
+    return new Response("No messages found.", { status: 400 });
+
+  const rawMessages = messageResponse.data;
 
   if (regenerate && rawMessages[0]?.authorId === assistantId) {
     await deleteMessage(rawMessages[0].id);

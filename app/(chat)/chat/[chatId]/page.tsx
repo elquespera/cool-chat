@@ -10,3 +10,5 @@ export default async function TextChatPage({
     </ChatInfoWrapper>
   );
 }
+
+export const dynamic = "force-dynamic";

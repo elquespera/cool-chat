@@ -2,7 +2,7 @@
 import { useChat } from "@/components/providers/chat/chat-context";
 import { ContactUser } from "@/db/schemas/auth";
 import { ChatSelect } from "@/db/schemas/chats";
-import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 
 type InjectChatInfoProps = {
   interlocutor: ContactUser | null;
@@ -12,7 +12,7 @@ type InjectChatInfoProps = {
 export function InjectChatInfo({ interlocutor, chat }: InjectChatInfoProps) {
   const { setInterlocutor, setChat } = useChat();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setInterlocutor(interlocutor);
     setChat(chat);
   }, [interlocutor, chat, setInterlocutor, setChat]);
