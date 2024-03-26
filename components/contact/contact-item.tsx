@@ -36,9 +36,9 @@ export function ContactItem({
 
   useEffect(() => {
     if (selected && ref.current && chat) {
-      ref.current?.scrollIntoView({ behavior: "auto", block: "center" });
+      ref.current?.scrollIntoView({ behavior: "auto", block: "nearest" });
     }
-  }, [chat, selected, ref.current]);
+  }, [chat, selected]);
 
   return (
     <Link

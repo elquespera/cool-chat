@@ -4,7 +4,9 @@ import { createContext, useContext } from "react";
 
 type ChatContextType = {
   interlocutor: ContactUser | null;
+  setInterlocutor: (interlocutor: ContactUser | null) => void;
   chat: ChatSelect | null;
+  setChat: (chat: ChatSelect | null) => void;
 
   openChats?: OpenChat[];
   refetchOpenChats: () => Promise<OpenChat[] | void | undefined>;
@@ -13,6 +15,8 @@ type ChatContextType = {
 export const ChatContext = createContext<ChatContextType>({
   interlocutor: null,
   chat: null,
+  setInterlocutor: () => {},
+  setChat: () => {},
   refetchOpenChats: () => Promise.resolve(),
 });
 

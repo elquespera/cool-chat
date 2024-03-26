@@ -9,9 +9,13 @@ import {
   SettingsProvider,
 } from "./settings/settings-provider";
 import { SocketProvider } from "./socket/socket-provider";
+import { getAssistantUser } from "@/db/actions/users";
+import { ChatProvider } from "./chat/chat-provider";
+import { AssistantProvider } from "./assistant/assistant-provider";
 
 export async function ChatProviders({ children }: PropsWithChildren) {
   const { user } = await getAuth();
+  const assistant = await getAssistantUser();
 
   let settings: InitialSettings = { color: defaultColor };
 
@@ -26,7 +30,13 @@ export async function ChatProviders({ children }: PropsWithChildren) {
     <AuthProvider user={user}>
       <SettingsProvider initialSettings={settings}>
         <ChatWindowProvider>
-          <SocketProvider>{children}</SocketProvider>
+          <SocketProvider>
+            <ChatProvider>
+              <AssistantProvider assistant={assistant}>
+                {children}
+              </AssistantProvider>
+            </ChatProvider>
+          </SocketProvider>
         </ChatWindowProvider>
       </SettingsProvider>
     </AuthProvider>
