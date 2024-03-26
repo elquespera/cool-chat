@@ -17,10 +17,7 @@ export const updateSettings = async (data: Omit<SettingsInsert, "userId">) =>
       .values({ userId: user.id, ...data })
       .onConflictDoUpdate({
         target: settings.userId,
-        set: {
-          color: data.color,
-          status: data.status,
-        },
+        set: data,
       })
       .returning()
       .get(),

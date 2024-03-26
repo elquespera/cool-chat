@@ -2,35 +2,37 @@
 
 import { and, count, desc, eq, isNull, ne, or } from "drizzle-orm";
 import { db } from "../db";
-import { MessageInsert, MessageSelect, messages } from "../schemas/messages";
+import {
+  MessageInsert,
+  MessageSelect,
+  MessageWithAuthor,
+  messages,
+} from "../schemas/messages";
 import { findOrCreateChat } from "./chats";
 import { withAuth } from "./with-auth";
 
-// not protected
-export async function getMessagesByChatId(
+export const getMessagesByChatId = async (
   chatId: string,
   pageIndex = 0,
   messagesPerPage = 10,
-) {
-  return db.query.messages.findMany({
-    where: eq(messages.chatId, chatId),
-    with: { author: true },
-    offset: pageIndex * messagesPerPage,
-    limit: messagesPerPage,
-    orderBy: desc(messages.createdAt),
-  });
-}
+) =>
+  withAuth<MessageWithAuthor[]>(async () =>
+    db.query.messages.findMany({
+      where: eq(messages.chatId, chatId),
+      with: { author: true },
+      offset: pageIndex * messagesPerPage,
+      limit: messagesPerPage,
+      orderBy: desc(messages.createdAt),
+    }),
+  );
 
 export const getLastMessage = async (chatId: string) =>
-  withAuth<MessageSelect>(async () => {
-    const result = await db.query.messages.findMany({
+  withAuth<MessageSelect>(async () =>
+    db.query.messages.findFirst({
       where: eq(messages.chatId, chatId),
-      limit: 1,
       orderBy: desc(messages.createdAt),
-    });
-
-    return result[0];
-  });
+    }),
+  );
 
 export const createMessage = async (data: MessageInsert) =>
   withAuth<MessageSelect>(async () =>

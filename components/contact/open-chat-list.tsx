@@ -1,12 +1,12 @@
-import { OpenChat } from "@/db/schemas/chats";
-import { useOpenChats } from "../providers/open-chats/open-chats-context";
-import { ContactItem } from "./contact-item";
-import { useAuth } from "../providers/auth/auth-context";
-import { Timestamp } from "../common/timestamp";
 import { routes } from "@/constants/routes";
+import { OpenChat } from "@/db/schemas/chats";
+import { Timestamp } from "../common/timestamp";
+import { useAuth } from "../providers/auth/auth-context";
+import { useChat } from "../providers/chat/chat-context";
+import { ContactItem } from "./contact-item";
 
 export function OpenChatList() {
-  const { openChats, selectedChat } = useOpenChats();
+  const { chat, openChats } = useChat();
 
   return openChats?.length ? (
     <>
@@ -15,7 +15,7 @@ export function OpenChatList() {
           key={data.id}
           contact={data.interlocutor}
           href={`${routes.chat}/${data.id}`}
-          selected={data.id === selectedChat?.id}
+          selected={data.id === chat?.id}
           status={data.status}
           secondLine={<SecondLine data={data} />}
           endDecoration={<EndDecoration data={data} />}

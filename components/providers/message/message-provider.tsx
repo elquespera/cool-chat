@@ -20,8 +20,14 @@ export function MessageProvider({ children }: PropsWithChildren) {
         if (!chat || (previousData && !previousData.length)) return null;
         return { chatId: chat.id, pageIndex };
       },
-      ({ chatId, pageIndex }) =>
-        getMessagesByChatId(chatId, pageIndex, messagesPerPage),
+      async ({ chatId, pageIndex }) => {
+        const result = await getMessagesByChatId(
+          chatId,
+          pageIndex,
+          messagesPerPage,
+        );
+        return result.ok ? result.data : [];
+      },
     );
 
   const refetchMessages = useMemo(

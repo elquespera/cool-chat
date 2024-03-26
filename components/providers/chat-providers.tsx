@@ -1,23 +1,27 @@
-import { defaultColor } from "@/constants";
+import { defaultBackground, defaultColor, defaultSound } from "@/constants";
 import { getSettings } from "@/db/actions/settings";
-import { getAssistantUser } from "@/db/actions/users";
 import { getAuth } from "@/lib/auth/get-auth";
 import { PropsWithChildren } from "react";
-import { AssistantProvider } from "./assistant/assistant-provider";
 import { AuthProvider } from "./auth/auth-provider";
 import { ChatWindowProvider } from "./chat-window/chat-window-provider";
-import { OpenChatsProvider } from "./open-chats/open-chats-provider";
 import {
   InitialSettings,
   SettingsProvider,
 } from "./settings/settings-provider";
 import { SocketProvider } from "./socket/socket-provider";
+import { getAssistantUser } from "@/db/actions/users";
+import { ChatProvider } from "./chat/chat-provider";
+import { AssistantProvider } from "./assistant/assistant-provider";
 
 export async function ChatProviders({ children }: PropsWithChildren) {
   const { user } = await getAuth();
-
   const assistant = await getAssistantUser();
-  let settings: InitialSettings = { color: defaultColor };
+
+  let settings: InitialSettings = {
+    color: defaultColor,
+    sound: defaultSound,
+    background: defaultBackground,
+  };
 
   if (user) {
     const settingsResult = await getSettings(user.id);
@@ -31,11 +35,11 @@ export async function ChatProviders({ children }: PropsWithChildren) {
       <SettingsProvider initialSettings={settings}>
         <ChatWindowProvider>
           <SocketProvider>
-            <OpenChatsProvider>
+            <ChatProvider>
               <AssistantProvider assistant={assistant}>
                 {children}
               </AssistantProvider>
-            </OpenChatsProvider>
+            </ChatProvider>
           </SocketProvider>
         </ChatWindowProvider>
       </SettingsProvider>

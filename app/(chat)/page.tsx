@@ -1,17 +1,14 @@
 import { CenteredMessage } from "@/components/common/centered-message";
-import { routes } from "@/constants/routes";
-import { getAuth } from "@/lib/auth/get-auth";
-import { redirect } from "next/navigation";
+import { ChatInfoWrapper } from "./_inject-chat-info/chat-info-wrapper";
 
-export default async function HomePage() {
-  const { user } = await getAuth();
-  if (!user) redirect(routes.welcome);
-
+export default async function ChatPage() {
   return (
-    <CenteredMessage>
-      Select a contact to start or continue a conversation.
-      <br />
-      Use search input to find new users.
-    </CenteredMessage>
+    <ChatInfoWrapper interlocutorId={null} chatId={null}>
+      <CenteredMessage>
+        Please select from one of your contacts to start chatting.
+        <br />
+        Use search to looks for new contacts.
+      </CenteredMessage>
+    </ChatInfoWrapper>
   );
 }

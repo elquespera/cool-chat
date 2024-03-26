@@ -67,8 +67,8 @@
 
 @layer base {
   :root {
-    --message: var(--accent) / 0.7;
-    --message-foreground: var(--accent-foreground);
+    --message: var(--card-background) / 0.7;
+    --message-foreground: var(--card-foreground);
     --message-accent: var(--accent-foreground) / 0.5;
 
     --message-own: var(--primary) / 0.15;

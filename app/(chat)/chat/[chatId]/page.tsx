@@ -1,12 +1,14 @@
 import { TextRoom } from "@/components/room/text-room";
-import { RoomWrapper } from "../../room-wrapper";
+import { ChatInfoWrapper } from "../../_inject-chat-info/chat-info-wrapper";
 
 export default async function TextChatPage({
   params: { chatId },
 }: ChatPageProps) {
   return (
-    <RoomWrapper chatId={chatId}>
+    <ChatInfoWrapper interlocutorId={null} chatId={chatId}>
       <TextRoom />
-    </RoomWrapper>
+    </ChatInfoWrapper>
   );
 }
+
+export const dynamic = "force-dynamic";

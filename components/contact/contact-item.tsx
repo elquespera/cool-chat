@@ -1,10 +1,11 @@
-import { routes } from "@/constants/routes";
 import { ContactUser } from "@/db/schemas/auth";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { MouseEventHandler, ReactNode, useEffect, useRef } from "react";
-import { useOpenChats } from "../providers/open-chats/open-chats-context";
+
+import { routes } from "@/constants/routes";
+import { useRouter } from "next/navigation";
 import { UserInfo } from "../user/user-info";
+import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 
 type ContactItemProps = {
   contact: ContactUser;
@@ -23,19 +24,22 @@ export function ContactItem({
   secondLine,
   endDecoration,
 }: ContactItemProps) {
+  const router = useRouter();
   const ref = useRef<HTMLAnchorElement>(null);
-  const { selectedChat, selectedContact, clearNavigate } = useOpenChats();
+  const playClick = useSoundEffect("click");
 
   const handleClick: MouseEventHandler = (event) => {
+    playClick();
     if (!selected) return;
     event.preventDefault();
-    clearNavigate();
+    router.push(routes.home);
   };
 
   useEffect(() => {
-    if (selected)
-      ref.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [selectedChat, selectedContact, selected]);
+    if (selected && ref.current) {
+      ref.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [selected]);
 
   return (
     <Link
@@ -43,7 +47,7 @@ export function ContactItem({
       href={selected ? "#" : href}
       role="option"
       aria-selected={selected}
-      className="group block w-full px-3 py-1 sm:px-5"
+      className="group block w-full px-3 py-1"
       onClickCapture={handleClick}
     >
       <div className="relative flex items-center justify-between gap-8 rounded-lg bg-message px-4 py-3 transition-colors group-hover:bg-accent group-hover:text-accent-foreground group-aria-selected:bg-message-own group-aria-selected:text-message-own-foreground">

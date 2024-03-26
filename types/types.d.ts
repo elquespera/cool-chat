@@ -11,6 +11,8 @@ type ProviderUser = {
   avatarUrl?: string | null;
 };
 
+type PropsWithClassName = { className?: string };
+
 type AuthPageProps = {
   searchParams: {
     redirectURI?: string;
@@ -20,9 +22,7 @@ type AuthPageProps = {
 
 type ChatPageProps = { params: { chatId: string } };
 
-type PropsWithClassName = {
-  className?: string;
-};
+type RoomType = "text" | "video" | "audio";
 
 type DBActionResult<DataType> =
   | { ok: true; data: DataType }

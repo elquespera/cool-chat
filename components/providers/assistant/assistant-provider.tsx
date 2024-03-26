@@ -5,8 +5,8 @@ import { ContactUser, UserSelect } from "@/db/schemas/auth";
 import { MessageWithAuthor } from "@/db/schemas/messages";
 import { dispatchCustomEvent } from "@/lib/custom-event";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
-import { useOpenChats } from "../open-chats/open-chats-context";
 import { AssistantContext } from "./assistant-context";
+import { useChat } from "@/components/providers/chat/chat-context";
 
 const maxMessages = 10;
 
@@ -20,13 +20,13 @@ export function AssistantProvider({
   assistant,
   children,
 }: AssistantProviderProps) {
-  const { selectedChat, selectedContact } = useOpenChats();
+  const { chat, interlocutor } = useChat();
   const [isStreaming, setIsStreaming] = useState(false);
   const [response, setResponse] = useState("");
   const [messageId, setMessageId] = useState("");
   const [reader, setReader] =
     useState<ReadableStreamDefaultReader<Uint8Array>>();
-  const isAssistant = selectedContact?.role === "assistant";
+  const isAssistant = interlocutor?.role === "assistant";
 
   const generateResponse = useCallback(
     async (chatId: string, regenerate = false) => {
@@ -85,7 +85,7 @@ export function AssistantProvider({
   const streamedMessage: MessageWithAuthor = useMemo(
     () => ({
       id: messageId || "streaming-response",
-      chatId: selectedChat?.id ?? "",
+      chatId: chat?.id ?? "",
       author: assistant as UserSelect,
       authorId: assistant?.id ?? "",
       content: response,
@@ -93,7 +93,7 @@ export function AssistantProvider({
       createdAt: new Date(),
       updatedAt: new Date(),
     }),
-    [messageId, response, assistant, selectedChat?.id],
+    [messageId, response, assistant, chat?.id],
   );
 
   const value = useMemo(

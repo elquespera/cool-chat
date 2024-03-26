@@ -1,10 +1,11 @@
+import { CenteredMessage } from "@/components/common/centered-message";
 import { Spinner } from "@/components/common/spinner";
 import { ContactList } from "@/components/contact/contact-list";
 import { ContactScrollProvider } from "@/components/contact/contact-scroll-context";
 import { ContactSearchInput } from "@/components/contact/contact-search-input";
 import { ChatProviders } from "@/components/providers/chat-providers";
 import { SearchContactsProvider } from "@/components/providers/search-contacts/search-contacts-provider";
-import { UserPanel } from "@/components/user/user-panel";
+import { UserSettings } from "@/components/user/user-settings";
 import dynamic from "next/dynamic";
 import { PropsWithChildren } from "react";
 
@@ -19,28 +20,26 @@ const ChatWrapper = dynamic(
 export default function ChatLayout({ children }: PropsWithChildren) {
   return (
     <ChatProviders>
-      <main className="flex max-h-[100%] grow flex-col">
-        <ChatWrapper
-          leftPanel={
-            <ContactScrollProvider>
-              <SearchContactsProvider>
-                <ContactList />
-                <ContactSearchInput />
-              </SearchContactsProvider>
-              <UserPanel />
-            </ContactScrollProvider>
-          }
-          rightPanel={children}
-        />
-      </main>
+      <ChatWrapper
+        leftPanel={
+          <ContactScrollProvider>
+            <SearchContactsProvider>
+              <ContactList />
+              <ContactSearchInput />
+            </SearchContactsProvider>
+            <UserSettings />
+          </ContactScrollProvider>
+        }
+        rightPanel={children}
+      />
     </ChatProviders>
   );
 }
 
 function Loading() {
   return (
-    <div className="flex grow flex-col items-center justify-center">
+    <CenteredMessage>
       <Spinner className="w-6" />
-    </div>
+    </CenteredMessage>
   );
 }

@@ -11,12 +11,14 @@ import { useMessages } from "../providers/message/message-context";
 import { ScrollArea } from "../ui/scroll-area";
 import { ArrowUpIcon } from "../icons/arrow-up-icon";
 import { useCustomEvent } from "@/lib/hooks/use-custom-event";
+import { Background } from "../background/background";
+import { useSettings } from "../providers/settings/settings-context";
 
 const scrollButtonMargin = 250;
 const scrollButtonTimeout = 3000;
 
 export function ChatWindow() {
-  const { interlocutor } = useChat();
+  const { interlocutor, chat } = useChat();
   const {
     messages,
     fetchNextPage,
@@ -28,6 +30,7 @@ export function ChatWindow() {
     isValidating,
   } = useMessages();
   const { isAssistant, isStreaming, streamedMessage } = useAssistant();
+  const { background } = useSettings();
 
   const listRef = useRef<HTMLUListElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -36,9 +39,12 @@ export function ChatWindow() {
     threshold: 0.5,
   });
 
-  const [justMounted, setJustMounted] = useState(true);
   const [scrollHeight, setScrollHeight] = useState(0);
   const [scrollButtonVisible, setScrollButtonVisible] = useState(false);
+
+  const streamingMsgVisible =
+    isAssistant && isStreaming && chat?.id === streamedMessage?.chatId;
+  streamedMessage?.id !== messages?.[0].id;
 
   const updateScrollButtonVisible = () => {
     const scrollArea = scrollAreaRef.current;
@@ -58,10 +64,7 @@ export function ChatWindow() {
 
   useEffect(() => {
     if (!messages) return;
-    if (justMounted) {
-      setJustMounted(false);
-      scrollToBottom("instant");
-    }
+
     updateScrollButtonVisible();
 
     if (scrollBehavior) {
@@ -74,7 +77,6 @@ export function ChatWindow() {
       scrollArea.scrollTo({ top: scrollArea.scrollHeight - scrollHeight });
       setTimeout(() => setScrollHeight(0));
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
@@ -84,7 +86,6 @@ export function ChatWindow() {
 
   useEffect(() => {
     if (
-      justMounted ||
       !isIntersecting ||
       isValidating ||
       isReachingEnd ||
@@ -96,7 +97,6 @@ export function ChatWindow() {
     setScrollHeight(scrollAreaRef.current?.scrollHeight ?? 0);
     fetchNextPage();
   }, [
-    justMounted,
     isIntersecting,
     isValidating,
     isReachingEnd,
@@ -119,20 +119,18 @@ export function ChatWindow() {
   ]);
 
   return interlocutor && messages?.length ? (
-    <ScrollArea
-      ref={scrollAreaRef}
-      className="inset-0"
-      style={{ position: "absolute" }}
-      onScrollCapture={() => updateScrollButtonVisible()}
-    >
-      <ul
-        ref={listRef}
-        className="mx-auto flex max-w-[48rem] flex-col-reverse px-4 pb-16 pt-28 md:px-8"
+    <Background asChild type={background}>
+      <ScrollArea
+        ref={scrollAreaRef}
+        className="inset-0"
+        style={{ position: "absolute" }}
+        onScrollCapture={() => updateScrollButtonVisible()}
       >
-        {isAssistant &&
-          isStreaming &&
-          streamedMessage &&
-          streamedMessage.id !== messages[0]?.id && (
+        <ul
+          ref={listRef}
+          className="mx-auto flex max-w-[48rem] flex-col-reverse px-4 pb-16 pt-28 md:px-8"
+        >
+          {streamingMsgVisible && (
             <MessageItem
               key={streamedMessage.id}
               message={streamedMessage}
@@ -142,41 +140,44 @@ export function ChatWindow() {
                   : "only"
               }
               streaming
+              autoScroll
             />
           )}
 
-        {messages.map((message, index) => (
-          <MessageItem
-            key={message.id}
-            message={message}
-            type={
-              message.authorId === messages[index - 1]?.authorId &&
-              message.authorId === messages[index + 1]?.authorId
-                ? "middle"
-                : message.authorId === messages[index - 1]?.authorId
-                  ? "first"
-                  : message.authorId === messages[index + 1]?.authorId
-                    ? "last"
-                    : "only"
-            }
-          />
-        ))}
+          {messages.map((message, index) => (
+            <MessageItem
+              key={message.id}
+              message={message}
+              type={
+                message.authorId === messages[index - 1]?.authorId &&
+                message.authorId === messages[index + 1]?.authorId
+                  ? "middle"
+                  : message.authorId === messages[index - 1]?.authorId
+                    ? "first"
+                    : message.authorId === messages[index + 1]?.authorId
+                      ? "last"
+                      : "only"
+              }
+              autoScroll={!streamingMsgVisible && index === 0}
+            />
+          ))}
 
-        <li ref={loadMoreRef} />
-      </ul>
+          <li ref={loadMoreRef} />
+        </ul>
 
-      <IconButton
-        className={cn(
-          "absolute bottom-24 right-12 h-10 w-10 opacity-70 transition-opacity",
-          !scrollButtonVisible && "scale-0 opacity-0",
+        <IconButton
+          className={cn(
+            "absolute bottom-24 right-12 h-10 w-10 opacity-70 transition-opacity",
+            !scrollButtonVisible && "scale-0 opacity-0",
+          )}
+          variant="outline"
+          icon={<ArrowUpIcon className="h-5 w-5 rotate-180" />}
+          onClick={() => scrollToBottom("smooth")}
+        />
+        {isLoading && (
+          <Spinner className="-translate-[50%] absolute left-[50%] top-24 w-6" />
         )}
-        variant="outline"
-        icon={<ArrowUpIcon className="h-5 w-5 rotate-180" />}
-        onClick={() => scrollToBottom("smooth")}
-      />
-      {isLoading && (
-        <Spinner className="-translate-[50%] absolute left-[50%] top-24 w-6" />
-      )}
-    </ScrollArea>
+      </ScrollArea>
+    </Background>
   ) : null;
 }
