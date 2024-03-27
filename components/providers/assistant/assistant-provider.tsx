@@ -1,19 +1,15 @@
 "use client";
 
 import { useChat } from "@/components/providers/chat/chat-context";
+import { AssistantType, assistantInfo } from "@/constants/assistants";
 import { routes } from "@/constants/routes";
 import { ContactUser, UserSelect } from "@/db/schemas/auth";
+import { ChatSelect } from "@/db/schemas/chats";
 import { MessageWithAuthor } from "@/db/schemas/messages";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
-import { AssistantContext } from "./assistant-context";
-import {
-  AssistantStreamReader,
-  readAssistantStream,
-  AssistantError,
-} from "./assistant-utils";
-import { AssistantType, assistantInfo } from "@/constants/assistants";
-import { ChatSelect } from "@/db/schemas/chats";
 import { useAuth } from "../auth/auth-context";
+import { AssistantContext } from "./assistant-context";
+import { AssistantError, readAssistantStream } from "./assistant-utils";
 
 const maxMessages = 10;
 
@@ -32,7 +28,7 @@ export function AssistantProvider({
   const [error, setError] = useState<string>();
   const [response, setResponse] = useState("");
   const [messageId, setMessageId] = useState("");
-  const [reader, setReader] = useState<AssistantStreamReader>();
+  const [controller, setController] = useState<AbortController>();
   const [assistantType, setAssistantType] = useState<AssistantType>("qwen");
 
   const assistant = assistants?.[assistantType];
@@ -69,8 +65,12 @@ export function AssistantProvider({
 
         setIsStreaming(true);
         try {
+          const controller = new AbortController();
+          setController(controller);
+
           const response = await fetch(routes.apiAssistant, {
             method: "POST",
+            signal: controller.signal,
             body: JSON.stringify({
               chatId: chat.id,
               model,
@@ -78,12 +78,12 @@ export function AssistantProvider({
               maxMessages,
             }),
           });
+
           if (!response.ok) throw new AssistantError("network-issue");
 
           refechMessages("instant");
 
           const reader = response.body?.getReader();
-          setReader(reader);
           if (!reader) throw new AssistantError("network-issue");
 
           await readAssistantStream(reader, setResponse, setMessageId);
@@ -91,7 +91,7 @@ export function AssistantProvider({
           await refechMessages("instant");
           await refechChats();
         } finally {
-          setReader(undefined);
+          setController(undefined);
           setIsStreaming(false);
         }
       };
@@ -104,8 +104,6 @@ export function AssistantProvider({
       } catch (e) {
         if (e instanceof AssistantError) {
           setError(e.message);
-        } else {
-          console.error(e);
         }
       }
     },
@@ -134,7 +132,7 @@ export function AssistantProvider({
       assistantChat,
       error,
       generateResponse,
-      abortResponse: () => reader?.cancel(),
+      abortResponse: () => controller?.abort(),
       setError,
     }),
     [
@@ -143,7 +141,7 @@ export function AssistantProvider({
       streamedMessage,
       assistantChat,
       error,
-      reader,
+      controller,
       generateResponse,
     ],
   );
