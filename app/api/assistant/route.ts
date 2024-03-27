@@ -1,4 +1,4 @@
-import { assistantId } from "@/constants";
+import { AssistantType } from "@/constants/assistants";
 import { ollamaURL } from "@/constants/routes";
 import {
   createMessage,
@@ -15,6 +15,7 @@ type OllamaMessage = {
 
 type AssistantOptions = {
   chatId: string;
+  model: AssistantType;
   regenerate?: boolean;
   maxMessages: number;
 };
@@ -24,13 +25,11 @@ type AssistantReply = {
   message: { content: string };
 };
 
-const model = "stablelm2";
-
 export const POST = async (request: Request) => {
   const { user } = await getAuth();
   if (!user) return new Response("Not Authorized", { status: 401 });
 
-  const { chatId, maxMessages, regenerate } =
+  const { chatId, model, maxMessages, regenerate } =
     (await request.json()) as AssistantOptions;
 
   const messageResponse = await getMessagesByChatId(chatId, 0, maxMessages);
@@ -40,7 +39,7 @@ export const POST = async (request: Request) => {
 
   const rawMessages = messageResponse.data;
 
-  if (regenerate && rawMessages[0]?.authorId === assistantId) {
+  if (regenerate && rawMessages[0]?.authorId === model) {
     await deleteMessage(rawMessages[0].id);
   }
 
@@ -79,7 +78,7 @@ export const POST = async (request: Request) => {
           await createMessage({
             id: messageId,
             chatId,
-            authorId: assistantId,
+            authorId: model,
             content: sanitazeResponse(message),
           });
           controller.close();
@@ -113,6 +112,7 @@ function decodeChunk<T>(chunk?: Uint8Array) {
     return JSON.parse(decoder.decode(chunk)) as T;
   } catch (e) {
     console.error(String(e));
+    return null;
   }
 }
 

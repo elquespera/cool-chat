@@ -7,7 +7,7 @@ import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 
 export function useChatEvents(
   openChats: OpenChat[] | undefined,
-  refetchOpenChats: () => Promise<OpenChat[] | undefined | void>,
+  refetchOpenChats: () => Promise<void>,
 ) {
   const { user } = useAuth();
   const { socket } = useSocket();

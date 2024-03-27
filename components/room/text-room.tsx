@@ -1,9 +1,8 @@
 "use client";
 
 import { ChatInput } from "@/components/chat/chat-input";
-import { MessageProvider } from "@/components/providers/message/message-provider";
-import { ChatUser } from "../chat/chat-user";
 import dynamic from "next/dynamic";
+import { ChatUser } from "../chat/chat-user";
 
 const ChatWindow = dynamic(() =>
   import("@/components/chat/chat-window").then((module) => ({
@@ -13,10 +12,10 @@ const ChatWindow = dynamic(() =>
 
 export function TextRoom() {
   return (
-    <MessageProvider>
+    <>
       <ChatWindow />
       <ChatInput />
       <ChatUser />
-    </MessageProvider>
+    </>
   );
 }

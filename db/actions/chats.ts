@@ -50,13 +50,15 @@ export const findOrCreateChat = async (userOneId: string, userTwoId: string) =>
     return db.insert(chats).values({ userOneId, userTwoId }).returning().get();
   });
 
-export async function addChat(data: ChatInsert) {
-  return db.insert(chats).values(data).returning().get();
-}
+export const addChat = async (data: ChatInsert) =>
+  withAuth<ChatSelect>(async () =>
+    db.insert(chats).values(data).returning().get(),
+  );
 
-export async function deleteChat(chatId: string) {
-  return db.delete(chats).where(eq(chats.id, chatId)).returning().get();
-}
+export const deleteChat = async (chatId: string) =>
+  withAuth<ChatSelect>(async () =>
+    db.delete(chats).where(eq(chats.id, chatId)).returning().get(),
+  );
 
 export const getOpenChats = async () =>
   withAuth<OpenChat[]>(async (user) => {

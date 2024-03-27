@@ -6,11 +6,13 @@ import {
   MessageInsert,
   MessageSelect,
   MessageWithAuthor,
+  MessageWithChat,
   messages,
 } from "../schemas/messages";
-import { findOrCreateChat } from "./chats";
+import { findOrCreateChat, getChatById } from "./chats";
 import { withAuth } from "./with-auth";
 import { decryptText, encryptText } from "@/lib/encrypt-text";
+import { chats } from "../schemas/chats";
 
 export const getMessagesByChatId = async (
   chatId: string,
@@ -99,21 +101,32 @@ export const countUnreadMesages = async (chatId: string) =>
     return result?.value ?? 0;
   });
 
-export const sendMessage = async (contactId: string, message: string) =>
-  withAuth<MessageSelect>(async (user) => {
-    const chat = await findOrCreateChat(user.id, contactId);
+export const sendMessage = async (
+  message: string,
+  contactId: string,
+  chatId?: string,
+) =>
+  withAuth<MessageWithChat>(async (user) => {
+    const chatResponse = chatId
+      ? await getChatById(chatId)
+      : await findOrCreateChat(user.id, contactId);
 
-    if (!chat.ok) return;
+    if (!chatResponse.ok) return;
 
-    return await db
+    const messageResponse = await db
       .insert(messages)
       .values({
         authorId: user.id,
-        chatId: chat.data.id,
+        chatId: chatResponse.data.id,
         content: encryptText(message),
       })
       .returning()
       .get();
+
+    return db.query.messages.findFirst({
+      where: eq(messages.id, messageResponse.id),
+      with: { chat: true },
+    });
   });
 
 const decryptMessage = <T extends MessageSelect>({

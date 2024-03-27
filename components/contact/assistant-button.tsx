@@ -1,16 +1,15 @@
 import { routes } from "@/constants/routes";
+import { cn } from "@/lib/utils";
 import { IconButton } from "../common/icon-button";
 import { AssistantIcon } from "../icons/assistant-icon";
-import { assistantId } from "@/constants";
 import { useContactScroll } from "./contact-scroll-context";
-import { cn } from "@/lib/utils";
 
 export function AssistantButton() {
   const { isScrolledDown } = useContactScroll();
 
   return (
     <IconButton
-      href={`${routes.user}/${assistantId}`}
+      href={`${routes.assistant}`}
       aria-label="Assistant"
       toolTip="Assistant"
       toolTipSide="left"

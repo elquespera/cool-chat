@@ -54,18 +54,20 @@ export function MessageEditForm({
   const handleCancel = () => setEditingId(undefined);
 
   return (
-    <form ref={formRef} className="grow" onSubmit={handleSubmit}>
-      <div className="flex grow">
-        <MultiTextArea
-          value={value}
-          onValueChange={setValue}
-          className="grow"
-          formRef={formRef}
-          autoFocus
-          autoSelectAll
-          onEscape={handleCancel}
-        />
-      </div>
+    <form
+      ref={formRef}
+      className="flex w-full flex-col"
+      onSubmit={handleSubmit}
+    >
+      <MultiTextArea
+        value={value}
+        onValueChange={setValue}
+        className="@lg:text-base w-full text-sm"
+        formRef={formRef}
+        autoFocus
+        autoSelectAll
+        onEscape={handleCancel}
+      />
       <div className="mt-2 flex flex-wrap justify-end gap-2">
         <IconButton
           type="submit"

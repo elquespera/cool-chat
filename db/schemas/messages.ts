@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import { relations, sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { UserSelect, users } from "./auth";
-import { chats } from "./chats";
+import { ChatSelect, chats } from "./chats";
 import { randomId } from "@/lib/random-id";
 
 const MessageStatuses = ["deleted", "delivered", "read"] as const;
@@ -49,3 +49,4 @@ export type MessageInsert = typeof messages.$inferInsert;
 export type MessageSelect = typeof messages.$inferSelect;
 
 export type MessageWithAuthor = MessageSelect & { author: UserSelect };
+export type MessageWithChat = MessageSelect & { chat: ChatSelect };

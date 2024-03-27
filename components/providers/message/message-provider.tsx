@@ -2,7 +2,7 @@
 import { getMessagesByChatId } from "@/db/actions/messages";
 import { MessageWithAuthor } from "@/db/schemas/messages";
 import { useCustomEvent } from "@/lib/hooks/use-custom-event";
-import { PropsWithChildren, useMemo, useState } from "react";
+import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import useSWRInfinite from "swr/infinite";
 import { useChat } from "../chat/chat-context";
 import { MessageContext } from "./message-context";
@@ -30,8 +30,10 @@ export function MessageProvider({ children }: PropsWithChildren) {
       },
     );
 
-  const refetchMessages = useMemo(
-    () => async (scrollBehavior?: ScrollBehavior) => {
+  const messages = useMemo(() => data?.flat(), [data]);
+
+  const refetchMessages = useCallback(
+    async (scrollBehavior?: ScrollBehavior) => {
       setScrollBehavior(scrollBehavior);
       await mutate();
     },
@@ -50,8 +52,6 @@ export function MessageProvider({ children }: PropsWithChildren) {
     [refetchMessages],
   );
 
-  const messages = useMemo(() => (data ? data.flat() : undefined), [data]);
-
   const value = useMemo(
     () => ({
       messages,
@@ -62,6 +62,7 @@ export function MessageProvider({ children }: PropsWithChildren) {
       isLoading:
         isLoading || (size > 0 && !!data && data[size - 1] === undefined),
       editingId,
+      scrollBehavior,
       setScrollBehavior,
       refetchMessages,
       fetchNextPage: () => setSize(size + 1),
@@ -73,8 +74,9 @@ export function MessageProvider({ children }: PropsWithChildren) {
       size,
       isValidating,
       isLoading,
-      setSize,
       editingId,
+      scrollBehavior,
+      setSize,
       refetchMessages,
     ],
   );

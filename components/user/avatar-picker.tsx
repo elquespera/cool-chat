@@ -6,6 +6,7 @@ import { UserAvatar } from "./user-avatar";
 import { generateAvatarURLs } from "@/lib/generate-avatar-url";
 import { RefreshIcon } from "../icons/refresh-icon";
 import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
+import { ToggleOutlineItem } from "../common/toggle-outline-item";
 
 type AvatarPickerProps = {
   count?: number;
@@ -58,13 +59,9 @@ export function AvatarPicker({
         onClick={() => playClick()}
       >
         {avatars.map((url) => (
-          <ToggleGroupItem
-            key={url}
-            value={url}
-            className="h-8 w-8 rounded-full outline outline-2 outline-offset-4 outline-accent aria-checked:outline-primary"
-          >
+          <ToggleOutlineItem key={url} value={url}>
             <UserAvatar avatarUrl={url} className="w-8" />
-          </ToggleGroupItem>
+          </ToggleOutlineItem>
         ))}
       </ToggleGroup>
     </div>

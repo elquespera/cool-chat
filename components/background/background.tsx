@@ -27,7 +27,7 @@ export function Background({
     <Component {...props} className={cn("relative overflow-hidden", className)}>
       <>
         <BackgroundInternal type={type} preview={preview} />
-        {children}
+        <div className="absolute inset-0 flex grow flex-col">{children}</div>
       </>
     </Component>
   );

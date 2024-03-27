@@ -1,13 +1,12 @@
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { ToggleGroup } from "@/components/ui/toggle-group";
 import {
   ThemeBackground,
   themeBackgroundInfo,
 } from "@/constants/theme-background";
-import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 import { cn } from "@/lib/utils";
 import { ComponentProps } from "react";
-import { Hint } from "../common/hint";
 import { Background } from "../background/background";
+import { ToggleOutlineItem } from "../common/toggle-outline-item";
 
 type BackgroundPickerProps = {
   background: ThemeBackground;
@@ -20,8 +19,6 @@ export function BackgroundPicker({
   className,
   ...props
 }: BackgroundPickerProps) {
-  const playSound = useSoundEffect("click");
-
   return (
     <div
       className={cn(
@@ -38,21 +35,18 @@ export function BackgroundPicker({
         onValueChange={setBackground}
       >
         {Object.entries(themeBackgroundInfo).map(([key, { name }]) => (
-          <Hint key={key} value={name} sideOffset={10} side="top">
-            <ToggleGroupItem
-              value={key}
-              aria-label={name}
-              className="group relative h-8 w-8 overflow-hidden rounded-full p-0 outline outline-2 outline-offset-4 outline-accent aria-checked:outline-primary"
-              onClick={() => playSound()}
-            >
-              <Background
-                key={key}
-                preview
-                type={key as ThemeBackground}
-                className="absolute inset-0"
-              />
-            </ToggleGroupItem>
-          </Hint>
+          <ToggleOutlineItem
+            key={key}
+            value={key}
+            aria-label={name}
+            toolTip={name}
+          >
+            <Background
+              type={key as ThemeBackground}
+              preview
+              className="absolute inset-0"
+            />
+          </ToggleOutlineItem>
         ))}
       </ToggleGroup>
     </div>

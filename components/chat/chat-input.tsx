@@ -40,7 +40,7 @@ export function ChatInput() {
 
     setPending(true);
     try {
-      const result = await sendMessage(interlocutor.id, message);
+      const result = await sendMessage(message, interlocutor.id, chat?.id);
       if (result.ok) {
         setMessage("");
         playSound();
@@ -60,7 +60,12 @@ export function ChatInput() {
         }
         await refetchOpenChats();
 
-        generateResponse(result.data.chatId, refetchMessages);
+        generateResponse(
+          result.data.chat,
+          null,
+          refetchMessages,
+          refetchOpenChats,
+        );
       }
     } finally {
       setPending(false);

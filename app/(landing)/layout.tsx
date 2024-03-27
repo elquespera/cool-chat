@@ -27,7 +27,6 @@ export default function LandingLayout({
       <footer className="mt-8 p-4">
         <IconButton
           variant="link"
-          target="_blank"
           href="https://pavelgrinkevich.com"
           navTransition={false}
         >
@@ -36,7 +35,6 @@ export default function LandingLayout({
         <span className="text-muted-foreground">{`/`}</span>
         <IconButton
           variant="link"
-          target="_blank"
           href="https://github.com/elquespera/cool-chat"
           navTransition={false}
         >

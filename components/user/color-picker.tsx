@@ -1,10 +1,10 @@
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { ToggleGroup } from "@/components/ui/toggle-group";
 import { ThemeColor, themeColorInfo } from "@/constants/theme-color";
 import { cn } from "@/lib/utils";
 import { ComponentProps } from "react";
 import { Hint } from "../common/hint";
+import { ToggleOutlineItem } from "../common/toggle-outline-item";
 import { CheckIcon } from "../icons/check-icon";
-import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 
 type ColorPickerProps = {
   color: ThemeColor;
@@ -17,8 +17,6 @@ export function ColorPicker({
   className,
   ...props
 }: ColorPickerProps) {
-  const playSound = useSoundEffect("click");
-
   return (
     <div
       className={cn(
@@ -42,12 +40,11 @@ export function ColorPicker({
             side="top"
             style={{ background: color }}
           >
-            <ToggleGroupItem
+            <ToggleOutlineItem
               value={key}
               aria-label={name}
-              className="group h-5 w-5 overflow-auto rounded-full p-0 outline-2 outline-offset-4 aria-checked:outline"
+              className="h-5 w-5 outline-0 aria-checked:outline-2"
               style={{ outlineColor: color }}
-              onClick={() => playSound()}
             >
               <div
                 className="flex h-5 w-5 items-center justify-center rounded-full"
@@ -59,7 +56,7 @@ export function ColorPicker({
                   )}
                 />
               </div>
-            </ToggleGroupItem>
+            </ToggleOutlineItem>
           </Hint>
         ))}
       </ToggleGroup>
