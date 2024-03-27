@@ -12,6 +12,7 @@ import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSettings } from "../providers/settings/settings-context";
 import { ScrollArea } from "../ui/scroll-area";
+import { MessageSelect, MessageWithAuthor } from "@/db/schemas/messages";
 
 const scrollButtonMargin = 250;
 const scrollButtonTimeout = 3000;
@@ -142,16 +143,11 @@ export function ChatWindow() {
             <MessageItem
               key={message.id}
               message={message}
-              type={
-                message.authorId === messages[index - 1]?.authorId &&
-                message.authorId === messages[index + 1]?.authorId
-                  ? "middle"
-                  : message.authorId === messages[index - 1]?.authorId
-                    ? "first"
-                    : message.authorId === messages[index + 1]?.authorId
-                      ? "last"
-                      : "only"
-              }
+              type={getMessageType(
+                message,
+                messages[index - 1],
+                messages[index + 1],
+              )}
               autoScroll={!streamingMsgVisible && index === 0}
             />
           ))}
@@ -175,3 +171,16 @@ export function ChatWindow() {
     </Background>
   ) : null;
 }
+
+const getMessageType = <T extends MessageSelect>(
+  message: T,
+  previous?: T,
+  next?: T,
+) =>
+  message.authorId === previous?.authorId && message.authorId === next?.authorId
+    ? "middle"
+    : message.authorId === previous?.authorId
+      ? "first"
+      : message.authorId === next?.authorId
+        ? "last"
+        : "only";
