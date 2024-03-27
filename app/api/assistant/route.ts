@@ -112,6 +112,7 @@ function decodeChunk<T>(chunk?: Uint8Array) {
     return JSON.parse(decoder.decode(chunk)) as T;
   } catch (e) {
     console.error(String(e));
+    return null;
   }
 }
 

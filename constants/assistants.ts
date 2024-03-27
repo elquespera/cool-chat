@@ -4,6 +4,8 @@ export const assistants = ["tinydolphin", "tinyllama", "qwen"] as const;
 
 export type AssistantType = (typeof assistants)[number];
 
+export const defaultAssistantType = "tinyllama";
+
 export const assistantInfo: Record<
   AssistantType,
   {

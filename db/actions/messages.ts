@@ -9,7 +9,7 @@ import {
   MessageWithChat,
   messages,
 } from "../schemas/messages";
-import { findOrCreateChat } from "./chats";
+import { findOrCreateChat, getChatById } from "./chats";
 import { withAuth } from "./with-auth";
 import { decryptText, encryptText } from "@/lib/encrypt-text";
 import { chats } from "../schemas/chats";
@@ -101,17 +101,23 @@ export const countUnreadMesages = async (chatId: string) =>
     return result?.value ?? 0;
   });
 
-export const sendMessage = async (contactId: string, message: string) =>
+export const sendMessage = async (
+  message: string,
+  contactId: string,
+  chatId?: string,
+) =>
   withAuth<MessageWithChat>(async (user) => {
-    const chat = await findOrCreateChat(user.id, contactId);
+    const chatResponse = chatId
+      ? await getChatById(chatId)
+      : await findOrCreateChat(user.id, contactId);
 
-    if (!chat.ok) return;
+    if (!chatResponse.ok) return;
 
     const messageResponse = await db
       .insert(messages)
       .values({
         authorId: user.id,
-        chatId: chat.data.id,
+        chatId: chatResponse.data.id,
         content: encryptText(message),
       })
       .returning()

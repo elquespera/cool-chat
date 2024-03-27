@@ -1,5 +1,9 @@
 "use client";
-import { AssistantType, assistantInfo } from "@/constants/assistants";
+import {
+  AssistantType,
+  assistantInfo,
+  defaultAssistantType,
+} from "@/constants/assistants";
 import { useState } from "react";
 import { IconButton } from "../common/icon-button";
 import { ChatConversationIcon } from "../icons/chat-conversation-icon";
@@ -15,7 +19,8 @@ export function AssistantWelcome() {
   const router = useRouter();
   const { user } = useAuth();
   const { refetchOpenChats } = useChat();
-  const [assistantType, setAssistantType] = useState<AssistantType>("qwen");
+  const [assistantType, setAssistantType] =
+    useState<AssistantType>(defaultAssistantType);
   const assistant = assistantInfo[assistantType];
 
   const handleAssistantChange = (value: AssistantType) => {
@@ -38,31 +43,36 @@ export function AssistantWelcome() {
   };
 
   return (
-    <div className="flex grow flex-col items-center justify-center gap-12 p-4">
-      <h2 className="text-center text-3xl font-semibold uppercase tracking-tighter">
+    <div className="@container flex grow flex-col items-center justify-center p-4">
+      <h2 className="mb-2 text-center text-3xl font-semibold uppercase tracking-tighter">
         Choose a Model
       </h2>
-      <AssistantPicker
-        assistant={assistantType}
-        onAssistantChange={handleAssistantChange}
-      />
-      <div className="flex max-w-md gap-4 rounded-lg border bg-card px-6 py-4 shadow-md">
-        <UserAvatar className="h-20 w-20" avatarUrl={assistant.avatarUrl} />
-        <div className="flex min-h-48 flex-col">
-          <h3 className="text-xl font-semibold">{assistant.username}</h3>
-          <p className="mt-2 text-sm font-medium text-muted-foreground">
-            {assistant.description}
-          </p>
-          <div className="ml-auto mt-auto flex items-end gap-2">
-            <IconButton variant="link" href={assistant.url}>
-              Reference
-            </IconButton>
-            <IconButton
-              icon={<ChatConversationIcon />}
-              onClick={handleChatClick}
-            >
-              Chat
-            </IconButton>
+      <p className="mb-8 font-medium text-muted-foreground">
+        Chat with an AI Assistant
+      </p>
+      <div className="@lg:p-8 flex max-w-lg flex-col gap-8 rounded-lg border bg-card p-6 shadow-md">
+        <AssistantPicker
+          assistant={assistantType}
+          onAssistantChange={handleAssistantChange}
+        />
+        <div className="flex gap-4">
+          <UserAvatar className="h-20 w-20" avatarUrl={assistant.avatarUrl} />
+          <div className="flex min-h-44 flex-col">
+            <h3 className="text-xl font-semibold">{assistant.username}</h3>
+            <p className="mb-6 mt-2 text-sm font-medium text-muted-foreground">
+              {assistant.description}
+            </p>
+            <div className="mt-auto flex justify-between gap-2">
+              <IconButton variant="link" href={assistant.url}>
+                Reference
+              </IconButton>
+              <IconButton
+                icon={<ChatConversationIcon />}
+                onClick={handleChatClick}
+              >
+                Start a Chat
+              </IconButton>
+            </div>
           </div>
         </div>
       </div>

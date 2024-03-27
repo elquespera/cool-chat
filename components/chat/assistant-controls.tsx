@@ -1,16 +1,14 @@
-import { assistantId } from "@/constants";
 import { routes } from "@/constants/routes";
 import { deleteChat } from "@/db/actions/chats";
 import { useRouter } from "next/navigation";
 import ConfirmDialog from "../common/confirm-dialog";
 import { IconButton } from "../common/icon-button";
 import { MagicIcon } from "../icons/magic-icon";
-import { RefreshIcon } from "../icons/refresh-icon";
 import { StopIcon } from "../icons/stop-icon";
+import { TrashIcon } from "../icons/trash-icon";
 import { useAssistant } from "../providers/assistant/assistant-context";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
-import { TrashIcon } from "../icons/trash-icon";
 
 export function AssistantControls() {
   const router = useRouter();

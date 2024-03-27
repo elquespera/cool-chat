@@ -40,7 +40,7 @@ export function ChatInput() {
 
     setPending(true);
     try {
-      const result = await sendMessage(interlocutor.id, message);
+      const result = await sendMessage(message, interlocutor.id, chat?.id);
       if (result.ok) {
         setMessage("");
         playSound();

@@ -9,11 +9,3 @@ export const passwordMatcher =
 export const defaultSound = true;
 export const defaultColor = "blue";
 export const defaultBackground = "circuit-board";
-
-export const defaultAssistantUser = {
-  id: "assistant",
-  role: "assistant",
-  username: "Assistant",
-} as const;
-
-export const assistantId = defaultAssistantUser.id;

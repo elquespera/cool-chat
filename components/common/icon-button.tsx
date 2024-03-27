@@ -19,7 +19,6 @@ type IconButtonProps = {
   href?: string | UrlObject;
   prefetch?: boolean;
   icon?: ReactNode;
-  target?: string;
   reverse?: boolean;
   pending?: boolean;
   pendingIcon?: ReactNode;
@@ -34,7 +33,6 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
     {
       href,
       prefetch,
-      target,
       icon,
       reverse,
       pending,
@@ -53,8 +51,10 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   ) => {
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
+    const isExternal = href && !href.toString().startsWith("/");
+
     const handleClick: MouseEventHandler<HTMLButtonElement> = (event) => {
-      if (navTransition && href) {
+      if (navTransition && href && !isExternal) {
         startTransition(() => router.push(href.toString()));
       }
       if (onClick) onClick(event);
@@ -105,8 +105,8 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
             <Link
               prefetch={prefetch}
               href={href}
-              target={target}
-              rel={target === "_blank" ? "noopener" : undefined}
+              target={isExternal ? "_blank" : undefined}
+              rel={isExternal ? "noopener" : undefined}
             >
               {content}
             </Link>
