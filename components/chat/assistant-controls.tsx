@@ -23,10 +23,17 @@ export function AssistantControls() {
     generateResponse(chat.id, refetchMessages, refetchOpenChats, true);
   };
 
+  const handleAbortResponse = () => {
+    abortResponse();
+    refetchOpenChats();
+    refetchMessages();
+  };
+
   const handleResetChat = async () => {
     if (!isAssistant || !chat) return;
     await deleteChat(chat.id);
     router.push(`${routes.user}/${assistantId}`);
+    refetchOpenChats();
   };
 
   return (
@@ -38,7 +45,7 @@ export function AssistantControls() {
             variant="destructive"
             reverse
             icon={<StopIcon className="h-6 w-6" />}
-            onClick={abortResponse}
+            onClick={handleAbortResponse}
           >
             Stop
           </IconButton>

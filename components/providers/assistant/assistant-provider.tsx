@@ -11,15 +11,16 @@ import {
   readAssistantStream,
   AssistantError,
 } from "./assistant-utils";
+import { AssistantType } from "@/constants/assistants";
 
 const maxMessages = 10;
 
 type AssistantProviderProps = {
-  assistant: ContactUser | null;
+  assistants: Record<AssistantType, ContactUser> | null;
 } & PropsWithChildren;
 
 export function AssistantProvider({
-  assistant,
+  assistants,
   children,
 }: AssistantProviderProps) {
   const { interlocutor } = useChat();
@@ -30,6 +31,7 @@ export function AssistantProvider({
   const [messageId, setMessageId] = useState("");
   const [reader, setReader] = useState<AssistantStreamReader>();
 
+  const assistant = assistants?.qwen;
   const isAssistant = interlocutor?.role === "assistant";
 
   const generateResponse = useCallback(
@@ -71,7 +73,7 @@ export function AssistantProvider({
         }
       };
 
-      if (!isAssistant || !assistant) return;
+      if (!isAssistant || !assistants) return;
 
       setError(undefined);
       try {
@@ -84,7 +86,7 @@ export function AssistantProvider({
         }
       }
     },
-    [assistant, isAssistant, isStreaming],
+    [assistants, isAssistant, isStreaming],
   );
 
   const streamedMessage: MessageWithAuthor = useMemo(
