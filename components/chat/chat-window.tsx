@@ -73,13 +73,13 @@ export function ChatWindow() {
 
     if (scrollBehavior) {
       scrollToBottom(scrollBehavior);
-      setTimeout(() => setScrollBehavior(undefined), 10);
+      setTimeout(() => setScrollBehavior(undefined), 100);
     }
 
     const scrollArea = scrollAreaRef.current;
     if (scrollHeight && scrollArea) {
       scrollArea.scrollTo({ top: scrollArea.scrollHeight - scrollHeight });
-      setTimeout(() => setScrollHeight(0));
+      setTimeout(() => setScrollHeight(0), 100);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);

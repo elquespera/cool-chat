@@ -62,7 +62,7 @@ export function AssistantWelcome() {
             <p className="mb-6 mt-2 text-sm font-medium text-muted-foreground">
               {assistant.description}
             </p>
-            <div className="mt-auto flex justify-between gap-2">
+            <div className="mt-auto flex flex-wrap justify-between gap-2">
               <IconButton variant="link" href={assistant.url}>
                 Reference
               </IconButton>

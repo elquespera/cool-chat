@@ -2,14 +2,8 @@
 import { MessageWithAuthor } from "@/db/schemas/messages";
 import { cn } from "@/lib/utils";
 import Markdown from "markdown-to-jsx";
-import {
-  ElementRef,
-  forwardRef,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useIntersectionObserver } from "usehooks-ts";
 import { Timestamp } from "../common/timestamp";
 import { useAuth } from "../providers/auth/auth-context";
 import { useMessages } from "../providers/message/message-context";
@@ -18,7 +12,6 @@ import { UserText } from "../user/user-text";
 import { MessageEditForm } from "./message-edit-form";
 import { MessageMenu } from "./message-menu";
 import { MessageStatus } from "./message-status";
-import { useIntersectionObserver } from "usehooks-ts";
 import { useMessageStatus } from "./use-message-status";
 
 type MessageType = "only" | "first" | "middle" | "last";
@@ -35,10 +28,11 @@ export const MessageItem = ({
   streaming,
   autoScroll,
 }: MessageItemProps) => {
-  const { editingId } = useMessages();
   const { id, content, author, authorId, status, createdAt, updatedAt } =
     message;
+
   const { user } = useAuth();
+  const { editingId, scrollBehavior } = useMessages();
   const { isIntersecting, ref: observerRef } = useIntersectionObserver({
     threshold: 0.5,
   });
@@ -51,11 +45,6 @@ export const MessageItem = ({
   const isLast = type === "last" || type === "only";
   const isFirst = type === "first" || type === "only";
   const isEdited = Math.abs(createdAt.getTime() - updatedAt.getTime()) > 1000;
-
-  const borderRadius = useMemo(
-    () => calculateBorderRadius(type, ownMessage),
-    [type, ownMessage],
-  );
 
   useEffect(() => {
     if (
@@ -79,8 +68,8 @@ export const MessageItem = ({
 
   useEffect(() => {
     if (!autoScroll) return;
-    msgRef.current?.scrollIntoView();
-  }, [autoScroll, content, msgRef]);
+    msgRef.current?.scrollIntoView({ behavior: scrollBehavior });
+  }, [autoScroll, content, msgRef, scrollBehavior]);
 
   return (
     <li
@@ -127,15 +116,14 @@ export const MessageItem = ({
       <div
         ref={observerRef}
         className={cn(
-          "shadow-msg hover:shadow-msg-hover group relative isolate flex flex-wrap gap-x-6 overflow-hidden bg-background px-4 py-3 transition-shadow before:absolute before:inset-0 before:-z-10 before:bg-background after:absolute after:inset-0 after:-z-10",
-          (type !== "only" || id === editingId) &&
-            "w-[calc(100%-1.5em)] lg:w-[calc(100%-2em)]",
+          "group relative isolate flex flex-wrap gap-x-6 overflow-hidden bg-background px-4 py-3 shadow-msg transition-shadow before:absolute before:inset-0 before:-z-10 before:bg-background after:absolute after:inset-0 after:-z-10 hover:shadow-msg-hover",
+          id === editingId && "w-[calc(100%-1.5em)] lg:w-[calc(100%-2em)]",
           ownMessage
             ? "mr-[1.5rem] border border-primary/25 text-message-own-foreground after:bg-message-own lg:mr-[2rem]"
             : "ml-[1.5rem] text-message-foreground after:bg-message lg:ml-[2rem]",
           status === "deleted" && "opacity-50",
         )}
-        style={{ borderRadius }}
+        style={{ borderRadius: borderRadii[type][Number(ownMessage)] }}
         onContextMenu={(event) => {
           event.preventDefault();
           setMenuOpen(true);
@@ -170,18 +158,22 @@ export const MessageItem = ({
 };
 MessageItem.displayName = "MessageItem";
 
-const radius = "16px";
-const smallRadius = "2px";
+const round = "16px";
+const notRound = "2px";
 
-const calculateBorderRadius = (type: MessageType, ownMessage: boolean) =>
-  type === "first"
-    ? ownMessage
-      ? `${radius} ${smallRadius} ${smallRadius} ${smallRadius}`
-      : `${smallRadius} ${radius} ${smallRadius} ${smallRadius}`
-    : type === "last"
-      ? `${smallRadius} ${smallRadius} ${radius} ${radius}`
-      : type === "middle"
-        ? `${smallRadius} ${smallRadius} ${smallRadius} ${smallRadius}`
-        : ownMessage
-          ? `${radius} ${smallRadius} ${radius} ${radius}`
-          : `${smallRadius} ${radius} ${radius} ${radius}`;
+const firstAndMiddle = [
+  `${notRound} ${round} ${round} ${notRound}`,
+  `${round} ${notRound} ${notRound} ${round}`,
+];
+
+const lastAndOnly = [
+  `${notRound} ${round} ${round} ${round}`,
+  `${round} ${notRound} ${round} ${round}`,
+];
+
+const borderRadii: Record<MessageType, string[]> = {
+  first: firstAndMiddle,
+  middle: firstAndMiddle,
+  last: lastAndOnly,
+  only: lastAndOnly,
+};
