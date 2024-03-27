@@ -127,7 +127,7 @@ export function ChatWindow() {
     >
       <ul
         ref={listRef}
-        className="mx-auto flex max-w-[48rem] flex-col-reverse px-4 pb-16 pt-28 md:px-8"
+        className="@container mx-auto flex max-w-[48rem] flex-col-reverse px-4 pb-16 pt-28 md:px-8"
       >
         {chat?.id === assistantChat?.id && assistantError && (
           <ChatError>{assistantError}</ChatError>

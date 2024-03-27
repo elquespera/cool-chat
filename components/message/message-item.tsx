@@ -135,7 +135,7 @@ export const MessageItem = ({
           <MessageEditForm message={message} />
         ) : (
           <>
-            <div className="prose:max-w-0 prose prose-sm prose-zinc dark:prose-invert lg:prose-base">
+            <div className="prose:max-w-0 @lg:prose-base prose prose-sm prose-zinc dark:prose-invert">
               {streaming && !content && (
                 <span className="italic text-muted-foreground">{`waiting for response...`}</span>
               )}

@@ -62,7 +62,7 @@ export function MessageEditForm({
       <MultiTextArea
         value={value}
         onValueChange={setValue}
-        className="w-full"
+        className="@lg:text-base w-full text-sm"
         formRef={formRef}
         autoFocus
         autoSelectAll
