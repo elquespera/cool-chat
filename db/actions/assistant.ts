@@ -20,8 +20,8 @@ export const getAssistantUsers = async () =>
     );
 
     return {
-      qwen: assistants[0],
+      tinydolphin: assistants[0],
       tinyllama: assistants[1],
-      tinydolphin: assistants[2],
+      qwen: assistants[2],
     };
   });
