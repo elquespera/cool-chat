@@ -7,6 +7,7 @@ import { AssistantProvider } from "./assistant/assistant-provider";
 import { AuthProvider } from "./auth/auth-provider";
 import { ChatWindowProvider } from "./chat-window/chat-window-provider";
 import { ChatProvider } from "./chat/chat-provider";
+import { MessageProvider } from "./message/message-provider";
 import {
   InitialSettings,
   SettingsProvider,
@@ -38,7 +39,7 @@ export async function ChatProviders({ children }: PropsWithChildren) {
           <SocketProvider>
             <ChatProvider>
               <AssistantProvider assistants={assistants}>
-                {children}
+                <MessageProvider>{children}</MessageProvider>
               </AssistantProvider>
             </ChatProvider>
           </SocketProvider>

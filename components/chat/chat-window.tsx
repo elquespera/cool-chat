@@ -10,7 +10,6 @@ import { MessageItem } from "../message/message-item";
 import { useAssistant } from "../providers/assistant/assistant-context";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
-import { useSettings } from "../providers/settings/settings-context";
 import { ScrollArea } from "../ui/scroll-area";
 import { ChatError } from "./chat-error";
 
@@ -35,7 +34,6 @@ export function ChatWindow() {
     error: assistantError,
     assistantChat,
   } = useAssistant();
-  const { background } = useSettings();
 
   const listRef = useRef<HTMLUListElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);

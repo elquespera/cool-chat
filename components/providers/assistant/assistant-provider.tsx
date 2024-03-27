@@ -11,7 +11,7 @@ import {
   readAssistantStream,
   AssistantError,
 } from "./assistant-utils";
-import { AssistantType } from "@/constants/assistants";
+import { AssistantType, assistantInfo } from "@/constants/assistants";
 import { ChatSelect } from "@/db/schemas/chats";
 import { useAuth } from "../auth/auth-context";
 
@@ -42,7 +42,7 @@ export function AssistantProvider({
     ({ userOneId, userTwoId }: ChatSelect, model: AssistantType | null) => {
       if (model) return model;
       const anotherUserId = userOneId === user?.id ? userTwoId : userOneId;
-      return assistants?.[anotherUserId as AssistantType]?.id ?? null;
+      return assistantInfo?.[anotherUserId as AssistantType]?.id ?? null;
     },
     [user],
   );
@@ -109,7 +109,7 @@ export function AssistantProvider({
         }
       }
     },
-    [assistants, isAssistant, isStreaming],
+    [assistants, isAssistant, isStreaming, getAssistantFromChat],
   );
 
   const streamedMessage: MessageWithAuthor = useMemo(
