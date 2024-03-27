@@ -8,6 +8,7 @@ import { getAuth } from "@/lib/auth/get-auth";
 import { redirect } from "next/navigation";
 import { PropsWithChildren } from "react";
 import { InjectChatInfo } from "./inject-chat-info";
+import { BackButton } from "@/components/chat/back-button";
 
 type ChatInfoWrapperProps = {
   interlocutorId: string | null;
@@ -56,6 +57,7 @@ export async function ChatInfoWrapper({
     <>
       <InjectChatInfo chat={chat} interlocutor={interlocutor} />
       {body}
+      <BackButton />
     </>
   );
 }
