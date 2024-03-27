@@ -37,7 +37,10 @@ export function ContactItem({
 
   useEffect(() => {
     if (selected && ref.current) {
-      ref.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      ref.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
     }
   }, [selected]);
 
