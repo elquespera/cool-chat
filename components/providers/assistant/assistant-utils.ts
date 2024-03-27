@@ -1,4 +1,18 @@
 export type AssistantStreamReader = ReadableStreamDefaultReader<Uint8Array>;
+
+export const assistantErrorMessages = {
+  alreadyInUse:
+    "An assistant is already in use, please wait until it finishes responding.",
+  network: "Assisant could not respond because of a network issue.",
+};
+
+export class AssistantError extends Error {
+  constructor(code: keyof typeof assistantErrorMessages) {
+    super(assistantErrorMessages[code]);
+    this.name = "AssistantEror";
+  }
+}
+
 type StreamEntry = { content?: string; message_id?: string };
 
 export async function readAssistantStream(

@@ -6,7 +6,11 @@ import { ContactUser, UserSelect } from "@/db/schemas/auth";
 import { MessageWithAuthor } from "@/db/schemas/messages";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { AssistantContext } from "./assistant-context";
-import { AssistantStreamReader, readAssistantStream } from "./assistant-utils";
+import {
+  AssistantStreamReader,
+  readAssistantStream,
+  AssistantError,
+} from "./assistant-utils";
 
 const maxMessages = 10;
 
@@ -18,8 +22,10 @@ export function AssistantProvider({
   assistant,
   children,
 }: AssistantProviderProps) {
-  const { chat, interlocutor } = useChat();
+  const { interlocutor } = useChat();
   const [isStreaming, setIsStreaming] = useState(false);
+  const [chatId, setChatId] = useState<string>();
+  const [error, setError] = useState<string>();
   const [response, setResponse] = useState("");
   const [messageId, setMessageId] = useState("");
   const [reader, setReader] = useState<AssistantStreamReader>();
@@ -29,35 +35,53 @@ export function AssistantProvider({
   const generateResponse = useCallback(
     async (
       chatId: string,
-      messageCallback: (scrollBehavior?: ScrollBehavior) => Promise<void>,
+      refechMessages: (scrollBehavior?: ScrollBehavior) => Promise<void>,
+      refechChats: () => Promise<void>,
       regenerate = false,
     ) => {
-      if (!isAssistant || !assistant || isStreaming) return;
-      setResponse("");
-      setIsStreaming(true);
+      const doGenerate = async () => {
+        if (isStreaming) throw new AssistantError("alreadyInUse");
+        setResponse("");
+        setChatId(chatId);
+        setIsStreaming(true);
+        try {
+          const response = await fetch(routes.apiAssistant, {
+            method: "POST",
+            body: JSON.stringify({
+              chatId,
+              regenerate,
+              maxMessages,
+            }),
+          });
+          if (!response.ok) throw new AssistantError("network");
+
+          refechMessages("instant");
+
+          const reader = response.body?.getReader();
+          setReader(reader);
+          if (!reader) throw new AssistantError("network");
+
+          await readAssistantStream(reader, setResponse, setMessageId);
+
+          await refechMessages("instant");
+          await refechChats();
+        } finally {
+          setReader(undefined);
+          setIsStreaming(false);
+        }
+      };
+
+      if (!isAssistant || !assistant) return;
+
+      setError(undefined);
       try {
-        const response = await fetch(routes.assistant, {
-          method: "POST",
-          body: JSON.stringify({
-            chatId,
-            regenerate,
-            maxMessages,
-          }),
-        });
-        if (!response.ok) return;
-
-        messageCallback("instant");
-
-        const reader = response.body?.getReader();
-        setReader(reader);
-        if (!reader) return;
-
-        await readAssistantStream(reader, setResponse, setMessageId);
-
-        await messageCallback("instant");
-      } finally {
-        setReader(undefined);
-        setIsStreaming(false);
+        await doGenerate();
+      } catch (e) {
+        if (e instanceof AssistantError) {
+          setError(e.message);
+        } else {
+          console.error(e);
+        }
       }
     },
     [assistant, isAssistant, isStreaming],
@@ -66,7 +90,7 @@ export function AssistantProvider({
   const streamedMessage: MessageWithAuthor = useMemo(
     () => ({
       id: messageId || "streaming-response",
-      chatId: chat?.id ?? "",
+      chatId: chatId ?? "",
       author: assistant as UserSelect,
       authorId: assistant?.id ?? "",
       content: response,
@@ -74,7 +98,7 @@ export function AssistantProvider({
       createdAt: new Date(),
       updatedAt: new Date(),
     }),
-    [messageId, response, assistant, chat?.id],
+    [messageId, response, assistant, chatId],
   );
 
   const value = useMemo(
@@ -82,10 +106,21 @@ export function AssistantProvider({
       isAssistant,
       isStreaming,
       streamedMessage,
+      chatId,
+      error,
       generateResponse,
       abortResponse: () => reader?.cancel(),
+      setError,
     }),
-    [isAssistant, isStreaming, streamedMessage, reader, generateResponse],
+    [
+      isAssistant,
+      isStreaming,
+      streamedMessage,
+      chatId,
+      error,
+      reader,
+      generateResponse,
+    ],
   );
 
   return (

@@ -5,7 +5,13 @@ import { ChatContext } from "./chat-context";
 import { getOpenChats } from "@/db/actions/chats";
 import { markMessagesDelivered } from "@/db/actions/messages";
 import { OpenChat } from "@/db/schemas/chats";
-import { PropsWithChildren, useEffect, useMemo, useState } from "react";
+import {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import useSWR from "swr";
 import { useAuth } from "../auth/auth-context";
 import { useSocket } from "../socket/socket-context";
@@ -14,13 +20,14 @@ import { useChatEvents } from "./use-chat-events";
 export function ChatProvider({ children }: PropsWithChildren) {
   const { user } = useAuth();
   const { socket } = useSocket();
-  const { data: openChats, mutate: refetchOpenChats } = useSWR<OpenChat[]>(
-    user?.id,
-    async () => {
-      const result = await getOpenChats();
-      return result.ok ? result.data : [];
-    },
-  );
+  const { data: openChats, mutate } = useSWR<OpenChat[]>(user?.id, async () => {
+    const result = await getOpenChats();
+    return result.ok ? result.data : [];
+  });
+
+  const refetchOpenChats = useCallback(async () => {
+    await mutate();
+  }, [mutate]);
 
   const [chat, setChat] = useState<ChatSelect | null>(null);
   const [interlocutor, setInterlocutor] = useState<ContactUser | null>(null);

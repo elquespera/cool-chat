@@ -60,7 +60,7 @@ export function ChatInput() {
         }
         await refetchOpenChats();
 
-        generateResponse(result.data.chatId, refetchMessages);
+        generateResponse(result.data.chatId, refetchMessages, refetchOpenChats);
       }
     } finally {
       setPending(false);

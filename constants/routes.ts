@@ -11,10 +11,11 @@ export const privateRoutes = {
   home: "/",
   user: "/user",
   chat: "/chat",
+  // assistant: "/assistant",
   chatVideo: "/chat/video",
   chatAudio: "/chat/audio",
 
-  assistant: "/api/assistant",
+  apiAssistant: "/api/assistant",
   getLivekitToken: "/api/get-livekit-token",
 } as const;
 

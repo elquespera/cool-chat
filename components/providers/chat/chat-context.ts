@@ -9,7 +9,7 @@ type ChatContextType = {
   setChat: (chat: ChatSelect | null) => void;
 
   openChats?: OpenChat[];
-  refetchOpenChats: () => Promise<OpenChat[] | void | undefined>;
+  refetchOpenChats: () => Promise<void>;
 };
 
 export const ChatContext = createContext<ChatContextType>({

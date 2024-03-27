@@ -5,9 +5,13 @@ type AssistantContextType = {
   isAssistant: boolean;
   isStreaming: boolean;
   streamedMessage: MessageWithAuthor;
+  chatId?: string;
+  error?: string;
+  setError: (error?: string) => void;
   generateResponse: (
     chatId: string,
-    messageCallback: (scrollBehavior?: ScrollBehavior) => Promise<void>,
+    refetchMessages: (scrollBehavior?: ScrollBehavior) => Promise<void>,
+    refetchChats: () => Promise<void>,
     regenerate?: boolean,
   ) => Promise<void>;
   abortResponse: () => void;
@@ -19,6 +23,7 @@ export const AssistantContext = createContext<AssistantContextType>({
   streamedMessage: {} as MessageWithAuthor,
   generateResponse: () => Promise.resolve(),
   abortResponse: () => {},
+  setError: () => {},
 });
 
 export const useAssistant = () => useContext(AssistantContext);

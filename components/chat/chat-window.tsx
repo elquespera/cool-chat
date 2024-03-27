@@ -1,4 +1,5 @@
 "use client";
+import { MessageSelect } from "@/db/schemas/messages";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
@@ -12,7 +13,7 @@ import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSettings } from "../providers/settings/settings-context";
 import { ScrollArea } from "../ui/scroll-area";
-import { MessageSelect, MessageWithAuthor } from "@/db/schemas/messages";
+import { ChatError } from "./chat-error";
 
 const scrollButtonMargin = 250;
 const scrollButtonTimeout = 3000;
@@ -28,7 +29,13 @@ export function ChatWindow() {
     isLoading,
     isValidating,
   } = useMessages();
-  const { isAssistant, isStreaming, streamedMessage } = useAssistant();
+  const {
+    isAssistant,
+    isStreaming,
+    streamedMessage,
+    error: assistantError,
+    chatId: assistantChatId,
+  } = useAssistant();
   const { background } = useSettings();
 
   const listRef = useRef<HTMLUListElement>(null);
@@ -42,8 +49,9 @@ export function ChatWindow() {
   const [scrollButtonVisible, setScrollButtonVisible] = useState(false);
 
   const streamingMsgVisible =
-    isAssistant && isStreaming && chat?.id === streamedMessage?.chatId;
-  streamedMessage?.id !== messages?.[0].id;
+    isStreaming &&
+    chat?.id === streamedMessage?.chatId &&
+    streamedMessage?.id !== messages?.[0].id;
 
   const updateScrollButtonVisible = () => {
     const scrollArea = scrollAreaRef.current;
@@ -125,6 +133,9 @@ export function ChatWindow() {
           ref={listRef}
           className="mx-auto flex max-w-[48rem] flex-col-reverse px-4 pb-16 pt-28 md:px-8"
         >
+          {chat?.id === assistantChatId && assistantError && (
+            <ChatError>{assistantError}</ChatError>
+          )}
           {streamingMsgVisible && (
             <MessageItem
               key={streamedMessage.id}
