@@ -7,6 +7,8 @@ import {
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 import { useChatWindow } from "../providers/chat-window/chat-window-context";
+import { useSettings } from "../providers/settings/settings-context";
+import { Background } from "../background/background";
 
 type ChatWrapperProps = {
   leftPanel: ReactNode;
@@ -15,6 +17,7 @@ type ChatWrapperProps = {
 
 export function ChatWrapper({ leftPanel, rightPanel }: ChatWrapperProps) {
   const { page, isMobile } = useChatWindow();
+  const { background } = useSettings();
 
   return isMobile ? (
     <div className="relative flex w-[100vw] grow flex-col overflow-clip">
@@ -30,14 +33,15 @@ export function ChatWrapper({ leftPanel, rightPanel }: ChatWrapperProps) {
         >
           {leftPanel}
         </div>
-        <div
+        <Background
+          type={background}
           key="right-panel"
           className={cn(
             "absolute inset-0 flex w-[100vw] grow translate-x-[100%] flex-col",
           )}
         >
           {rightPanel}
-        </div>
+        </Background>
       </div>
     </div>
   ) : (
@@ -48,27 +52,27 @@ export function ChatWrapper({ leftPanel, rightPanel }: ChatWrapperProps) {
       autoSaveId="chat-window-resizable"
     >
       <ResizablePanel
+        key="left-panel"
         id="sidebar"
         order={1}
         defaultSize={35}
         minSize={10}
-        className="flex grow flex-col"
+        className="relative flex grow flex-col"
       >
-        <div key="left-panel" className="relative flex grow flex-col">
-          {leftPanel}
-        </div>
+        {leftPanel}
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel
+        key="right-panel"
         id="chat"
         order={2}
         defaultSize={65}
         minSize={20}
         className="flex grow flex-col"
       >
-        <div key="right-panel" className="relative flex grow flex-col">
+        <Background type={background} className="flex grow flex-col">
           {rightPanel}
-        </div>
+        </Background>
       </ResizablePanel>
     </ResizablePanelGroup>
   );

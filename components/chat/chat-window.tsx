@@ -3,7 +3,6 @@ import { MessageSelect } from "@/db/schemas/messages";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
-import { Background } from "../background/background";
 import { IconButton } from "../common/icon-button";
 import { Spinner } from "../common/spinner";
 import { ArrowUpIcon } from "../icons/arrow-up-icon";
@@ -122,64 +121,62 @@ export function ChatWindow() {
   }, [scrollButtonVisible]);
 
   return messages?.length ? (
-    <Background asChild type={background}>
-      <ScrollArea
-        ref={scrollAreaRef}
-        className="inset-0"
-        style={{ position: "absolute" }}
-        onScrollCapture={() => updateScrollButtonVisible()}
+    <ScrollArea
+      ref={scrollAreaRef}
+      className="inset-0"
+      style={{ position: "absolute" }}
+      onScrollCapture={() => updateScrollButtonVisible()}
+    >
+      <ul
+        ref={listRef}
+        className="mx-auto flex max-w-[48rem] flex-col-reverse px-4 pb-16 pt-28 md:px-8"
       >
-        <ul
-          ref={listRef}
-          className="mx-auto flex max-w-[48rem] flex-col-reverse px-4 pb-16 pt-28 md:px-8"
-        >
-          {chat?.id === assistantChat?.id && assistantError && (
-            <ChatError>{assistantError}</ChatError>
-          )}
-          {streamingMsgVisible && (
-            <MessageItem
-              key={streamedMessage.id}
-              message={streamedMessage}
-              type={
-                streamedMessage.authorId === messages[0]?.authorId
-                  ? "first"
-                  : "only"
-              }
-              streaming
-              autoScroll
-            />
-          )}
-
-          {messages.map((message, index) => (
-            <MessageItem
-              key={message.id}
-              message={message}
-              type={getMessageType(
-                message,
-                messages[index - 1],
-                messages[index + 1],
-              )}
-              autoScroll={!streamingMsgVisible && index === 0}
-            />
-          ))}
-
-          <li ref={loadMoreRef} />
-        </ul>
-
-        <IconButton
-          className={cn(
-            "absolute bottom-24 right-12 h-10 w-10 opacity-70 transition-opacity",
-            !scrollButtonVisible && "scale-0 opacity-0",
-          )}
-          variant="outline"
-          icon={<ArrowUpIcon className="h-5 w-5 rotate-180" />}
-          onClick={() => scrollToBottom("smooth")}
-        />
-        {isLoading && (
-          <Spinner className="-translate-[50%] absolute left-[50%] top-24 w-6" />
+        {chat?.id === assistantChat?.id && assistantError && (
+          <ChatError>{assistantError}</ChatError>
         )}
-      </ScrollArea>
-    </Background>
+        {streamingMsgVisible && (
+          <MessageItem
+            key={streamedMessage.id}
+            message={streamedMessage}
+            type={
+              streamedMessage.authorId === messages[0]?.authorId
+                ? "first"
+                : "only"
+            }
+            streaming
+            autoScroll
+          />
+        )}
+
+        {messages.map((message, index) => (
+          <MessageItem
+            key={message.id}
+            message={message}
+            type={getMessageType(
+              message,
+              messages[index - 1],
+              messages[index + 1],
+            )}
+            autoScroll={!streamingMsgVisible && index === 0}
+          />
+        ))}
+
+        <li ref={loadMoreRef} />
+      </ul>
+
+      <IconButton
+        className={cn(
+          "absolute bottom-24 right-12 h-10 w-10 opacity-70 transition-opacity",
+          !scrollButtonVisible && "scale-0 opacity-0",
+        )}
+        variant="outline"
+        icon={<ArrowUpIcon className="h-5 w-5 rotate-180" />}
+        onClick={() => scrollToBottom("smooth")}
+      />
+      {isLoading && (
+        <Spinner className="-translate-[50%] absolute left-[50%] top-24 w-6" />
+      )}
+    </ScrollArea>
   ) : null;
 }
 
