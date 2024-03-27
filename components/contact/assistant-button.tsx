@@ -10,7 +10,7 @@ export function AssistantButton() {
 
   return (
     <IconButton
-      href={`${routes.user}/${assistantId}`}
+      href={`${routes.assistant}`}
       aria-label="Assistant"
       toolTip="Assistant"
       toolTipSide="left"

@@ -17,7 +17,8 @@ export const assistantInfo: Record<
   qwen: {
     id: "qwen",
     username: "Qwen",
-    description: "",
+    description:
+      "Qwen is a series of transformer-based large language models by Alibaba Cloud, pre-trained on a large volume of data, including web texts, books, code, etc.",
     avatarUrl: "/assistants/qwen.webp",
     url: "https://github.com/QwenLM/Qwen",
   },

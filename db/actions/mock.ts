@@ -22,10 +22,14 @@ export const createMockConversation = async () =>
 
     const mockUser = mockUserResponse.data;
 
-    const mockChat = await addChat({
+    const mockChatResponse = await addChat({
       userOneId: user.id,
       userTwoId: mockUser.id,
     });
+
+    if (!mockChatResponse.ok) return;
+
+    const mockChat = mockChatResponse.data;
 
     let now = Date.now();
 

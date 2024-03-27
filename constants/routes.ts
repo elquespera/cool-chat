@@ -11,7 +11,7 @@ export const privateRoutes = {
   home: "/",
   user: "/user",
   chat: "/chat",
-  // assistant: "/assistant",
+  assistant: "/assistant",
   chatVideo: "/chat/video",
   chatAudio: "/chat/audio",
 

@@ -41,7 +41,7 @@ export function UserAvatar({
         <img
           alt="Avatar"
           src={src}
-          className="absolute left-[10%] top-[10%] h-[80%] w-[80%] overflow-hidden object-cover"
+          className="absolute overflow-hidden object-cover"
           onError={() => setSrc(null)}
         />
       ) : (
