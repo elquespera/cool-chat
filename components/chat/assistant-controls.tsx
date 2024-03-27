@@ -10,6 +10,7 @@ import { StopIcon } from "../icons/stop-icon";
 import { useAssistant } from "../providers/assistant/assistant-context";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
+import { TrashIcon } from "../icons/trash-icon";
 
 export function AssistantControls() {
   const router = useRouter();
@@ -29,11 +30,13 @@ export function AssistantControls() {
     refetchMessages();
   };
 
-  const handleResetChat = async () => {
+  const handleDeleteChat = async () => {
     if (!isAssistant || !chat) return;
-    await deleteChat(chat.id);
-    router.push(`${routes.user}/${assistantId}`);
-    refetchOpenChats();
+    const result = await deleteChat(chat.id);
+    if (result.ok) {
+      router.push(`${routes.home}`);
+      refetchOpenChats();
+    }
   };
 
   return (
@@ -62,17 +65,17 @@ export function AssistantControls() {
         )}
 
         <ConfirmDialog
-          title="Reset Chat with Assistant"
-          description="Are you sure you want to reset your conversation with Assistant by deleting its contents? This action cannot be undone."
-          onSuccess={handleResetChat}
+          title="Delete Chat"
+          description="Are you sure you want to delete this conversation with the assistant? This action cannot be undone."
+          onSuccess={handleDeleteChat}
         >
           <IconButton
             className="group"
             variant="ghost"
-            aria-label="Reset chat"
-            toolTip="Reset chat"
+            aria-label="Delete chat"
+            toolTip="Delete chat"
             toolTipOffset={10}
-            icon={<RefreshIcon className="h-5 w-5 group-hover:text-primary" />}
+            icon={<TrashIcon className="h-5 w-5 group-hover:text-primary" />}
           />
         </ConfirmDialog>
       </>

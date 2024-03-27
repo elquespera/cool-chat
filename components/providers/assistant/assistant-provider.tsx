@@ -61,9 +61,11 @@ export function AssistantProvider({
 
         if (isStreaming) throw new AssistantError("already-in-se");
 
-        const model = getAssistantFromChat(chat, defautModel);
+        const model = getAssistantFromChat(chat, defautModel) as AssistantType;
 
         if (!model) throw new AssistantError("model-not-defined");
+
+        setAssistantType(model);
 
         setIsStreaming(true);
         try {

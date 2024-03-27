@@ -1,6 +1,6 @@
 /*** THEME BACKGROUNDS ***/
 
-export const assistants = ["qwen", "tinyllama", "tinydolphin"] as const;
+export const assistants = ["tinydolphin", "tinyllama", "qwen"] as const;
 
 export type AssistantType = (typeof assistants)[number];
 
@@ -14,13 +14,13 @@ export const assistantInfo: Record<
     url: string;
   }
 > = {
-  qwen: {
-    id: "qwen",
-    username: "Qwen",
+  tinydolphin: {
+    id: "tinydolphin",
+    username: "TinyDolphin",
     description:
-      "Qwen is a series of transformer-based large language models by Alibaba Cloud, pre-trained on a large volume of data, including web texts, books, code, etc.",
-    avatarUrl: "/assistants/qwen.webp",
-    url: "https://github.com/QwenLM/Qwen",
+      "TinyDolphin is an experimental model from training the TinyLlama model on the popular Dolphin dataset by Eric Hartford.",
+    avatarUrl: "/assistants/tinydolphin.jpg",
+    url: "https://huggingface.co/cognitivecomputations/TinyDolphin-2.8-1.1b",
   },
   tinyllama: {
     id: "tinyllama",
@@ -30,12 +30,12 @@ export const assistantInfo: Record<
     avatarUrl: "/assistants/tinyllama.jpg",
     url: "https://github.com/jzhang38/TinyLlama",
   },
-  tinydolphin: {
-    id: "tinydolphin",
-    username: "TinyDolphin",
+  qwen: {
+    id: "qwen",
+    username: "Qwen",
     description:
-      "TinyDolphin is an experimental model from training the TinyLlama model on the popular Dolphin dataset by Eric Hartford.",
-    avatarUrl: "/assistants/tinydolphin.jpg",
-    url: "https://huggingface.co/cognitivecomputations/TinyDolphin-2.8-1.1b",
+      "Qwen is a series of transformer-based large language models by Alibaba Cloud, pre-trained on a large volume of data, including web texts, books, code, etc.",
+    avatarUrl: "/assistants/qwen.webp",
+    url: "https://github.com/QwenLM/Qwen",
   },
 } as const;

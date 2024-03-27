@@ -9,10 +9,12 @@ import { addChat, findOrCreateChat } from "@/db/actions/chats";
 import { useAuth } from "../providers/auth/auth-context";
 import { useRouter } from "next/navigation";
 import { routes } from "@/constants/routes";
+import { useChat } from "../providers/chat/chat-context";
 
 export function AssistantWelcome() {
   const router = useRouter();
   const { user } = useAuth();
+  const { refetchOpenChats } = useChat();
   const [assistantType, setAssistantType] = useState<AssistantType>("qwen");
   const assistant = assistantInfo[assistantType];
 
@@ -30,6 +32,7 @@ export function AssistantWelcome() {
     });
 
     if (result.ok) {
+      refetchOpenChats();
       router.push(`${routes.chat}/${result.data.id}`);
     }
   };
