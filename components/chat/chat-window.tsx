@@ -17,7 +17,7 @@ const scrollButtonMargin = 250;
 const scrollButtonTimeout = 3000;
 
 export function ChatWindow() {
-  const { interlocutor, chat } = useChat();
+  const { chat } = useChat();
   const {
     messages,
     fetchNextPage,
@@ -112,7 +112,7 @@ export function ChatWindow() {
     return () => clearTimeout(timer);
   }, [scrollButtonVisible]);
 
-  return interlocutor && messages?.length ? (
+  return messages?.length ? (
     <Background asChild type={background}>
       <ScrollArea
         ref={scrollAreaRef}
