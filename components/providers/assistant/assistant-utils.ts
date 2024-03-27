@@ -1,5 +1,3 @@
-export type AssistantStreamReader = ReadableStreamDefaultReader<Uint8Array>;
-
 export const assistantErrorMessages = {
   "already-in-se":
     "An assistant is already in use, please wait until it finishes responding.",
@@ -14,6 +12,7 @@ export class AssistantError extends Error {
   }
 }
 
+type AssistantStreamReader = ReadableStreamDefaultReader<Uint8Array>;
 type StreamEntry = { content?: string; message_id?: string };
 
 export async function readAssistantStream(
