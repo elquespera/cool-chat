@@ -7,7 +7,7 @@ export type AssistantType = (typeof assistants)[number];
 export const assistantInfo: Record<
   AssistantType,
   {
-    id: string;
+    id: AssistantType;
     username: string;
     description: string;
     avatarUrl: string;

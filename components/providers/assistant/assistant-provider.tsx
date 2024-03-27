@@ -12,6 +12,8 @@ import {
   AssistantError,
 } from "./assistant-utils";
 import { AssistantType } from "@/constants/assistants";
+import { ChatSelect } from "@/db/schemas/chats";
+import { useAuth } from "../auth/auth-context";
 
 const maxMessages = 10;
 
@@ -23,45 +25,64 @@ export function AssistantProvider({
   assistants,
   children,
 }: AssistantProviderProps) {
+  const { user } = useAuth();
   const { interlocutor } = useChat();
   const [isStreaming, setIsStreaming] = useState(false);
-  const [chatId, setChatId] = useState<string>();
+  const [assistantChat, setAssistantChat] = useState<ChatSelect>();
   const [error, setError] = useState<string>();
   const [response, setResponse] = useState("");
   const [messageId, setMessageId] = useState("");
   const [reader, setReader] = useState<AssistantStreamReader>();
+  const [assistantType, setAssistantType] = useState<AssistantType>("qwen");
 
-  const assistant = assistants?.qwen;
+  const assistant = assistants?.[assistantType];
   const isAssistant = interlocutor?.role === "assistant";
+
+  const getAssistantFromChat = useCallback(
+    ({ userOneId, userTwoId }: ChatSelect, model: AssistantType | null) => {
+      if (model) return model;
+      const anotherUserId = userOneId === user?.id ? userTwoId : userOneId;
+      return assistants?.[anotherUserId as AssistantType]?.id ?? null;
+    },
+    [user],
+  );
 
   const generateResponse = useCallback(
     async (
-      chatId: string,
+      chat: ChatSelect,
+      defautModel: AssistantType | null,
       refechMessages: (scrollBehavior?: ScrollBehavior) => Promise<void>,
       refechChats: () => Promise<void>,
       regenerate = false,
     ) => {
       const doGenerate = async () => {
-        if (isStreaming) throw new AssistantError("alreadyInUse");
         setResponse("");
-        setChatId(chatId);
+        setAssistantChat(chat);
+
+        if (isStreaming) throw new AssistantError("already-in-se");
+
+        const model = getAssistantFromChat(chat, defautModel);
+
+        if (!model) throw new AssistantError("model-not-defined");
+
         setIsStreaming(true);
         try {
           const response = await fetch(routes.apiAssistant, {
             method: "POST",
             body: JSON.stringify({
-              chatId,
+              chatId: chat.id,
+              model,
               regenerate,
               maxMessages,
             }),
           });
-          if (!response.ok) throw new AssistantError("network");
+          if (!response.ok) throw new AssistantError("network-issue");
 
           refechMessages("instant");
 
           const reader = response.body?.getReader();
           setReader(reader);
-          if (!reader) throw new AssistantError("network");
+          if (!reader) throw new AssistantError("network-issue");
 
           await readAssistantStream(reader, setResponse, setMessageId);
 
@@ -92,7 +113,7 @@ export function AssistantProvider({
   const streamedMessage: MessageWithAuthor = useMemo(
     () => ({
       id: messageId || "streaming-response",
-      chatId: chatId ?? "",
+      chatId: assistantChat?.id ?? "",
       author: assistant as UserSelect,
       authorId: assistant?.id ?? "",
       content: response,
@@ -100,7 +121,7 @@ export function AssistantProvider({
       createdAt: new Date(),
       updatedAt: new Date(),
     }),
-    [messageId, response, assistant, chatId],
+    [messageId, response, assistant, assistantChat],
   );
 
   const value = useMemo(
@@ -108,7 +129,7 @@ export function AssistantProvider({
       isAssistant,
       isStreaming,
       streamedMessage,
-      chatId,
+      assistantChat,
       error,
       generateResponse,
       abortResponse: () => reader?.cancel(),
@@ -118,7 +139,7 @@ export function AssistantProvider({
       isAssistant,
       isStreaming,
       streamedMessage,
-      chatId,
+      assistantChat,
       error,
       reader,
       generateResponse,

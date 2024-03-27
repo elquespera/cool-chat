@@ -20,7 +20,7 @@ export function AssistantControls() {
 
   const handleRegenerateResponse = () => {
     if (!chat) return;
-    generateResponse(chat.id, refetchMessages, refetchOpenChats, true);
+    generateResponse(chat, null, refetchMessages, refetchOpenChats, true);
   };
 
   const handleAbortResponse = () => {

@@ -34,7 +34,7 @@ export function ChatWindow() {
     isStreaming,
     streamedMessage,
     error: assistantError,
-    chatId: assistantChatId,
+    assistantChat,
   } = useAssistant();
   const { background } = useSettings();
 
@@ -133,7 +133,7 @@ export function ChatWindow() {
           ref={listRef}
           className="mx-auto flex max-w-[48rem] flex-col-reverse px-4 pb-16 pt-28 md:px-8"
         >
-          {chat?.id === assistantChatId && assistantError && (
+          {chat?.id === assistantChat?.id && assistantError && (
             <ChatError>{assistantError}</ChatError>
           )}
           {streamingMsgVisible && (
