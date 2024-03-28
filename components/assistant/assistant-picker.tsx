@@ -23,11 +23,10 @@ export function AssistantPicker({
         <ToggleOutlineItem
           key={id}
           value={id}
-          className="h-10 w-10 gap-1 px-3 py-1 @lg:w-auto"
+          className="h-10 w-10 flex-col gap-1 px-3 py-1"
           toolTip={username}
         >
           <UserAvatar avatarUrl={avatarUrl} />
-          <span className="hidden @lg:inline">{username}</span>
         </ToggleOutlineItem>
       ))}
     </ToggleGroup>
