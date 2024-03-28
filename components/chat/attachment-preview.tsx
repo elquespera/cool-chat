@@ -10,12 +10,15 @@ import { TrashIcon } from "../icons/trash-icon";
 
 type AttanchmentPreviewProps = {
   url: string;
+  fileName?: string;
   onReset: () => void;
 } & PropsWithChildren;
 
 export function AttanchmentPreview({
   url,
+  fileName,
   children,
+
   onReset,
 }: AttanchmentPreviewProps) {
   const [open, setOpen] = useState(false);
@@ -33,15 +36,21 @@ export function AttanchmentPreview({
           side="top"
           align="start"
           sideOffset={16}
-          className="flex w-auto flex-col items-start gap-4"
+          className="flex w-auto flex-col items-start gap-2"
         >
+          {fileName && (
+            <div className="text-sm font-medium text-muted-foreground">
+              {fileName}
+            </div>
+          )}
           <img
             alt="Preview"
             src={url}
             className="max-h-80 max-w-[min(100vw-5rem,420px)]"
           />
           <IconButton
-            variant="destructive"
+            className="self-end"
+            variant="outline"
             size="sm"
             icon={<TrashIcon />}
             onClick={onReset}

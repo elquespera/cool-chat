@@ -13,6 +13,7 @@ import { findOrCreateChat, getChatById } from "./chats";
 import { withAuth } from "./with-auth";
 import { decryptText, encryptText } from "@/lib/encrypt-text";
 import { chats } from "../schemas/chats";
+import { saveFile } from "@/lib/save-file";
 
 export const getMessagesByChatId = async (
   chatId: string,
@@ -105,6 +106,7 @@ export const sendMessage = async (
   message: string,
   contactId: string,
   chatId?: string,
+  attachmentForm?: FormData,
 ) =>
   withAuth<MessageWithChat>(async (user) => {
     const chatResponse = chatId
@@ -112,6 +114,10 @@ export const sendMessage = async (
       : await findOrCreateChat(user.id, contactId);
 
     if (!chatResponse.ok) return;
+
+    const attachment = await saveFile(
+      attachmentForm?.get("attachment") as File,
+    );
 
     const messageResponse = await db
       .insert(messages)

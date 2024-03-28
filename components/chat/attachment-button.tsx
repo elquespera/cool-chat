@@ -2,32 +2,44 @@ import { cn } from "@/lib/utils";
 import { Hint } from "../common/hint";
 import { buttonVariants } from "../ui/button";
 import { PaperClipIcon } from "../icons/paper-clip-icon";
-import { ChangeEventHandler, useEffect, useState } from "react";
+import { ChangeEventHandler, useEffect, useRef, useState } from "react";
 import { AttanchmentPreview } from "./attachment-preview";
 
 type AttachmentButtonProps = {
-  // onUrlChange: (url: string) => void;
+  file?: File;
+  onFileChange: (file?: File) => void;
 };
 
-export function AttachmentButton({}: AttachmentButtonProps) {
+export function AttachmentButton({
+  file,
+  onFileChange,
+}: AttachmentButtonProps) {
   const [url, setUrl] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleReset = () => {
+    const input = inputRef.current;
+    if (!input) return;
+    input.value = "";
     URL.revokeObjectURL(url);
     setUrl("");
   };
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const file = event.target.files?.[0];
+    onFileChange(file);
+  };
+
+  useEffect(() => {
     if (file) {
       setUrl(URL.createObjectURL(file));
     } else {
       handleReset();
     }
-  };
+  }, [file]);
 
   return (
-    <AttanchmentPreview url={url} onReset={handleReset}>
+    <AttanchmentPreview url={url} fileName={file?.name} onReset={handleReset}>
       <div className="flex items-end self-stretch">
         <Hint value="Attach file" sideOffset={10}>
           <label
@@ -40,6 +52,7 @@ export function AttachmentButton({}: AttachmentButtonProps) {
           >
             <PaperClipIcon className="h-5 w-5 shrink-0" />
             <input
+              ref={inputRef}
               name="attachment"
               type="file"
               accept="image/*,.pdf,.doc,.docx,.txt"
