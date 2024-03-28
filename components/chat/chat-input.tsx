@@ -16,6 +16,11 @@ import { useSocket } from "../providers/socket/socket-context";
 import { EmojiPicker } from "./emoji-picker";
 import { useInsertEmoji } from "./use-insert-emoji";
 import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
+import { PaperClipIcon } from "../icons/paper-clip-icon";
+import { Button, buttonVariants } from "../ui/button";
+import { cn } from "@/lib/utils";
+import { Hint } from "../common/hint";
+import { AttachmentButton } from "./attachment-button";
 
 export function ChatInput() {
   const router = useRouter();
@@ -80,18 +85,21 @@ export function ChatInput() {
   return interlocutor ? (
     <GlassPanel position="bottom" className="shadow-top">
       <form ref={formRef} onSubmit={handleSubmit}>
-        <InputWrapper>
+        <InputWrapper className="items-end">
+          <AttachmentButton />
+
           <MultiTextArea
             ref={inputRef}
             formRef={formRef}
             value={message}
             onValueChange={setMessage}
-            className="ps-1"
+            className="pb-1 ps-1"
             placeholder="Write a message..."
             clearButton
           />
 
           <EmojiPicker onEmojiChange={handleInsertEmoji} />
+
           <IconButton
             toolTip="Send"
             aria-label="Send"
