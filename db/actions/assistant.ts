@@ -22,6 +22,7 @@ export const getAssistantUsers = async () =>
     return {
       tinydolphin: assistants[0],
       tinyllama: assistants[1],
-      qwen: assistants[2],
+      "gemma:2b": assistants[2],
+      qwen: assistants[3],
     };
   });
