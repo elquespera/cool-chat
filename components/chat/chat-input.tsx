@@ -24,14 +24,19 @@ export function ChatInput() {
   const { socket } = useSocket();
   const { user } = useAuth();
   const { interlocutor, chat, refetchOpenChats } = useChat();
-  const { isStreaming, generateResponse } = useAssistant();
+  const { isAssistant, isStreaming, generateResponse } = useAssistant();
   const { refetchMessages } = useMessages();
   const playSound = useSoundEffect("blip");
 
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
 
-  const isValid = interlocutor && user && message && !pending && !isStreaming;
+  const isValid =
+    interlocutor &&
+    user &&
+    message &&
+    !pending &&
+    !(isStreaming && isAssistant);
   const handleInsertEmoji = useInsertEmoji(inputRef, message, setMessage);
 
   const handleSubmit: FormEventHandler = async (event) => {

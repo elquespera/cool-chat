@@ -13,9 +13,16 @@ import { useMessages } from "../providers/message/message-context";
 export function AssistantControls() {
   const router = useRouter();
   const { chat, refetchOpenChats } = useChat();
-  const { isAssistant, isStreaming, generateResponse, abortResponse } =
-    useAssistant();
+  const {
+    isAssistant,
+    isStreaming,
+    assistantChat,
+    generateResponse,
+    abortResponse,
+  } = useAssistant();
   const { refetchMessages } = useMessages();
+
+  const isOwnChat = assistantChat?.id === chat?.id;
 
   const handleRegenerateResponse = () => {
     if (!chat) return;
@@ -40,7 +47,7 @@ export function AssistantControls() {
   return (
     isAssistant && (
       <>
-        {isStreaming ? (
+        {isOwnChat && isStreaming ? (
           <IconButton
             size="sm"
             variant="destructive"
@@ -51,31 +58,35 @@ export function AssistantControls() {
             Stop
           </IconButton>
         ) : (
-          <IconButton
-            className="group"
-            aria-label="Regenerate response"
-            toolTip="Regenerate response"
-            toolTipOffset={10}
-            variant="ghost"
-            onClick={handleRegenerateResponse}
-            icon={<MagicIcon className="h-5 w-5 group-hover:text-primary" />}
-          />
+          <>
+            <IconButton
+              className="group"
+              aria-label="Regenerate response"
+              toolTip="Regenerate response"
+              toolTipOffset={10}
+              disabled={isStreaming}
+              variant="ghost"
+              onClick={handleRegenerateResponse}
+              icon={<MagicIcon className="h-5 w-5 group-hover:text-primary" />}
+            />
+            <ConfirmDialog
+              title="Delete Chat"
+              description="Are you sure you want to delete this conversation with the assistant? This action cannot be undone."
+              onSuccess={handleDeleteChat}
+            >
+              <IconButton
+                className="group"
+                variant="ghost"
+                aria-label="Delete chat"
+                toolTip="Delete chat"
+                toolTipOffset={10}
+                icon={
+                  <TrashIcon className="h-5 w-5 group-hover:text-primary" />
+                }
+              />
+            </ConfirmDialog>
+          </>
         )}
-
-        <ConfirmDialog
-          title="Delete Chat"
-          description="Are you sure you want to delete this conversation with the assistant? This action cannot be undone."
-          onSuccess={handleDeleteChat}
-        >
-          <IconButton
-            className="group"
-            variant="ghost"
-            aria-label="Delete chat"
-            toolTip="Delete chat"
-            toolTipOffset={10}
-            icon={<TrashIcon className="h-5 w-5 group-hover:text-primary" />}
-          />
-        </ConfirmDialog>
       </>
     )
   );

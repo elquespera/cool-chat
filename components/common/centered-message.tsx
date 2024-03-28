@@ -8,7 +8,7 @@ export function CenteredMessage({
   return (
     <div
       className={cn(
-        "flex grow flex-col items-center justify-center p-4 text-center text-sm font-medium text-muted-foreground",
+        "flex grow select-none flex-col items-center justify-center p-4 text-center text-sm font-medium text-muted-foreground",
         className,
       )}
     >

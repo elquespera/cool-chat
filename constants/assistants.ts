@@ -1,6 +1,11 @@
 /*** THEME BACKGROUNDS ***/
 
-export const assistants = ["tinydolphin", "tinyllama", "qwen"] as const;
+export const assistants = [
+  "tinydolphin",
+  "tinyllama",
+  "gemma:2b",
+  "qwen",
+] as const;
 
 export type AssistantType = (typeof assistants)[number];
 
@@ -31,6 +36,14 @@ export const assistantInfo: Record<
       "The TinyLlama project is an open endeavor to train a compact 1.1B Llama model on 3 trillion tokens.",
     avatarUrl: "/assistants/tinyllama.jpg",
     url: "https://github.com/jzhang38/TinyLlama",
+  },
+  "gemma:2b": {
+    id: "gemma:2b",
+    username: "Gemma",
+    description:
+      "Gemma is a new open model developed by Google and its DeepMind team. It’s inspired by Gemini models at Google.",
+    avatarUrl: "/assistants/gemma.png",
+    url: "https://ai.google.dev/gemma/docs/model_card",
   },
   qwen: {
     id: "qwen",

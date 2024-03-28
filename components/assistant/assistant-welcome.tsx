@@ -43,14 +43,14 @@ export function AssistantWelcome() {
   };
 
   return (
-    <div className="@container flex grow flex-col items-center justify-center p-4">
-      <h2 className="mb-2 text-center text-3xl font-semibold uppercase tracking-tighter">
+    <div className="flex grow flex-col items-center justify-center p-4 @container">
+      <h2 className="mb-2 select-none text-center text-3xl font-semibold uppercase tracking-tighter">
         Choose a Model
       </h2>
-      <p className="mb-8 font-medium text-muted-foreground">
+      <p className="mb-8 select-none font-medium text-muted-foreground">
         Chat with an AI Assistant
       </p>
-      <div className="@lg:p-8 flex max-w-lg flex-col gap-8 rounded-lg border bg-card p-6 shadow-md">
+      <div className="flex max-w-lg flex-col gap-8 rounded-lg border bg-card p-6 shadow-md @lg:p-8">
         <AssistantPicker
           assistant={assistantType}
           onAssistantChange={handleAssistantChange}
