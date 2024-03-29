@@ -1,5 +1,6 @@
 export const publicRoutes = {
   welcome: "/welcome",
+  attachments: "/attachments",
 
   signIn: "/signin",
   signUp: "/signup",
