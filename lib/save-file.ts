@@ -2,6 +2,7 @@ import { appendFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import { nanoid } from "nanoid";
 import path from "path";
+import { attachmentDir } from "@/constants";
 
 const attachmentFolder = "attachments";
 
@@ -14,7 +15,7 @@ export async function saveFile(file?: File): Promise<string | null> {
       ext: path.parse(file.name).ext,
     });
 
-    const dirName = path.join(process.cwd(), "public", attachmentFolder);
+    const dirName = path.join(process.cwd(), attachmentDir);
     if (!existsSync(dirName)) {
       await mkdir(dirName);
     }
