@@ -1,6 +1,7 @@
 "use client";
 import { routes } from "@/constants/routes";
 import { sendMessage } from "@/db/actions/messages";
+import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 import { useRouter } from "next/navigation";
 import { FormEventHandler, useRef, useState } from "react";
 import { GlassPanel } from "../common/glass-panel";
@@ -13,9 +14,9 @@ import { useAuth } from "../providers/auth/auth-context";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
+import { AttachmentButton } from "./attachment-button";
 import { EmojiPicker } from "./emoji-picker";
 import { useInsertEmoji } from "./use-insert-emoji";
-import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 
 export function ChatInput() {
   const router = useRouter();
@@ -29,12 +30,13 @@ export function ChatInput() {
   const playSound = useSoundEffect("blip");
 
   const [message, setMessage] = useState("");
+  const [attachment, setAttachment] = useState<File>();
   const [pending, setPending] = useState(false);
 
   const isValid =
     interlocutor &&
     user &&
-    message &&
+    (message || attachment) &&
     !pending &&
     !(isStreaming && isAssistant);
   const handleInsertEmoji = useInsertEmoji(inputRef, message, setMessage);
@@ -45,9 +47,21 @@ export function ChatInput() {
 
     setPending(true);
     try {
-      const result = await sendMessage(message, interlocutor.id, chat?.id);
+      const formData = new FormData();
+      if (attachment) {
+        formData.append("attachment", attachment);
+      }
+
+      const result = await sendMessage(
+        message,
+        interlocutor.id,
+        chat?.id,
+        formData,
+      );
+
       if (result.ok) {
         setMessage("");
+        setAttachment(undefined);
         playSound();
 
         socket?.emit("messageUpdate", {
@@ -80,18 +94,21 @@ export function ChatInput() {
   return interlocutor ? (
     <GlassPanel position="bottom" className="shadow-top">
       <form ref={formRef} onSubmit={handleSubmit}>
-        <InputWrapper>
+        <InputWrapper className="items-end">
+          <AttachmentButton file={attachment} onFileChange={setAttachment} />
+
           <MultiTextArea
             ref={inputRef}
             formRef={formRef}
             value={message}
             onValueChange={setMessage}
-            className="ps-1"
+            className="pb-1 ps-1"
             placeholder="Write a message..."
             clearButton
           />
 
           <EmojiPicker onEmojiChange={handleInsertEmoji} />
+
           <IconButton
             toolTip="Send"
             aria-label="Send"

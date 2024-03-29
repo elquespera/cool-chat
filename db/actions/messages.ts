@@ -1,5 +1,7 @@
 "use server";
 
+import { decryptText, encryptText } from "@/lib/encrypt-text";
+import { saveFile } from "@/lib/save-file";
 import { and, count, desc, eq, isNull, ne, or } from "drizzle-orm";
 import { db } from "../db";
 import {
@@ -11,8 +13,6 @@ import {
 } from "../schemas/messages";
 import { findOrCreateChat, getChatById } from "./chats";
 import { withAuth } from "./with-auth";
-import { decryptText, encryptText } from "@/lib/encrypt-text";
-import { chats } from "../schemas/chats";
 
 export const getMessagesByChatId = async (
   chatId: string,
@@ -105,6 +105,7 @@ export const sendMessage = async (
   message: string,
   contactId: string,
   chatId?: string,
+  attachmentForm?: FormData,
 ) =>
   withAuth<MessageWithChat>(async (user) => {
     const chatResponse = chatId
@@ -113,12 +114,17 @@ export const sendMessage = async (
 
     if (!chatResponse.ok) return;
 
+    const attachment = await saveFile(
+      attachmentForm?.get("attachment") as File,
+    );
+
     const messageResponse = await db
       .insert(messages)
       .values({
         authorId: user.id,
         chatId: chatResponse.data.id,
         content: encryptText(message),
+        attachment,
       })
       .returning()
       .get();

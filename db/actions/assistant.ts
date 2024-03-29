@@ -24,5 +24,6 @@ export const getAssistantUsers = async () =>
       tinyllama: assistants[1],
       "gemma:2b": assistants[2],
       qwen: assistants[3],
+      "knoopx/llava-phi-2:3b-q8_0": assistants[4],
     };
   });

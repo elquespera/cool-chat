@@ -117,6 +117,7 @@ export function AssistantProvider({
       author: assistant as UserSelect,
       authorId: assistant?.id ?? "",
       content: response,
+      attachment: null,
       status: "delivered",
       createdAt: new Date(),
       updatedAt: new Date(),
