@@ -42,7 +42,8 @@ export function AttachmentButton({
     } else {
       handleReset();
     }
-  }, [file, handleReset]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [file]);
 
   return (
     <AttanchmentPreview url={url} fileName={file?.name} onReset={handleReset}>
