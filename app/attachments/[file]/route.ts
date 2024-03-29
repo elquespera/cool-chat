@@ -8,7 +8,7 @@ export const GET = async (
   { params: { file } }: { params: { file: string } },
 ) => {
   try {
-    const filePath = path.join(process.cwd(), attachmentDir, file);
+    const filePath = path.join(attachmentDir, file);
     console.log(`Reading file ${filePath}`);
 
     const result = await readFile(filePath);
