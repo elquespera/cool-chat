@@ -5,8 +5,8 @@ import path from "path";
 
 const attachmentFolder = "attachments";
 
-export async function saveFile(file?: File) {
-  if (!file) return;
+export async function saveFile(file?: File): Promise<string | null> {
+  if (!file) return null;
 
   try {
     const fileName = path.format({
@@ -27,4 +27,6 @@ export async function saveFile(file?: File) {
   } catch (error) {
     console.error(error);
   }
+
+  return null;
 }

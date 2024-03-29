@@ -125,6 +125,7 @@ export const sendMessage = async (
         authorId: user.id,
         chatId: chatResponse.data.id,
         content: encryptText(message),
+        attachment,
       })
       .returning()
       .get();

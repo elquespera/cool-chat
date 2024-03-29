@@ -14,6 +14,7 @@ export const messages = sqliteTable("message", {
     .primaryKey()
     .$defaultFn(() => randomId()),
   content: text("content").notNull(),
+  attachment: text("attachment"),
 
   status: text("status", { enum: MessageStatuses }),
 
