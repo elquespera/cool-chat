@@ -13,8 +13,9 @@ import { MessageEditForm } from "./message-edit-form";
 import { MessageMenu } from "./message-menu";
 import { MessageStatus } from "./message-status";
 import { useMessageStatus } from "./use-message-status";
+import { MessageType, messageBorderRadii } from "./message-utils";
+import Image from "next/image";
 
-type MessageType = "only" | "first" | "middle" | "last";
 type MessageItemProps = {
   message: MessageWithAuthor;
   type: MessageType;
@@ -28,8 +29,16 @@ export const MessageItem = ({
   streaming,
   autoScroll,
 }: MessageItemProps) => {
-  const { id, content, author, authorId, status, createdAt, updatedAt } =
-    message;
+  const {
+    id,
+    content,
+    attachment,
+    author,
+    authorId,
+    status,
+    createdAt,
+    updatedAt,
+  } = message;
 
   const { user } = useAuth();
   const { editingId, scrollBehavior } = useMessages();
@@ -116,64 +125,58 @@ export const MessageItem = ({
       <div
         ref={observerRef}
         className={cn(
-          "group relative isolate flex flex-wrap gap-x-6 overflow-hidden bg-background px-4 py-3 shadow-msg transition-shadow before:absolute before:inset-0 before:-z-10 before:bg-background after:absolute after:inset-0 after:-z-10 hover:shadow-msg-hover",
+          "group relative isolate flex flex-col overflow-hidden bg-background shadow-msg transition-shadow before:absolute before:inset-0 before:-z-10 before:bg-background after:absolute after:inset-0 after:-z-10 hover:shadow-msg-hover",
           id === editingId && "w-[calc(100%-1.5em)] lg:w-[calc(100%-2em)]",
           ownMessage
-            ? "mr-[1.5rem] border border-primary/25 text-message-own-foreground after:bg-message-own lg:mr-[2rem]"
+            ? "mr-[1.5rem] text-message-own-foreground after:bg-message-own lg:mr-[2rem]"
             : "ml-[1.5rem] text-message-foreground after:bg-message lg:ml-[2rem]",
           status === "deleted" && "opacity-50",
         )}
-        style={{ borderRadius: borderRadii[type][Number(ownMessage)] }}
+        style={{ borderRadius: messageBorderRadii[type][Number(ownMessage)] }}
         onContextMenu={(event) => {
           event.preventDefault();
           setMenuOpen(true);
         }}
       >
-        {status === "deleted" ? (
-          <p className="select-none italic">(deleted)</p>
-        ) : id === editingId ? (
-          <MessageEditForm message={message} />
-        ) : (
-          <>
-            <div className="prose:max-w-0 prose prose-sm prose-zinc @lg:prose-base dark:prose-invert">
-              {streaming && !content && (
-                <span className="italic text-muted-foreground">{`waiting for response...`}</span>
-              )}
-              <Markdown>{`${content}${streaming ? " •" : ""}`}</Markdown>
-            </div>
-            <div className="ml-auto flex items-center gap-2">
-              {ownMessage && <MessageStatus status={status} />}
-            </div>
+        <>
+          {attachment && (
+            <img
+              className="max-w-auto"
+              alt="Attachment message"
+              src={attachment}
+            />
+          )}
+
+          <div className="flex flex-wrap gap-x-6 px-4 py-3 ">
+            {status === "deleted" ? (
+              <p className="select-none italic">(deleted)</p>
+            ) : id === editingId ? (
+              <MessageEditForm message={message} />
+            ) : (
+              <>
+                <div className="prose:max-w-0 prose prose-sm prose-zinc @lg:prose-base dark:prose-invert">
+                  {streaming && !content && (
+                    <span className="italic text-muted-foreground">{`waiting for response...`}</span>
+                  )}
+                  <Markdown>{`${content}${streaming ? " •" : ""}`}</Markdown>
+                </div>
+                <div className="ml-auto flex items-center gap-2">
+                  {ownMessage && <MessageStatus status={status} />}
+                </div>
+              </>
+            )}
+          </div>
+          {editingId !== id && (
             <MessageMenu
               open={menuOpen}
               setOpen={setMenuOpen}
               message={message}
               ownMessage={ownMessage}
             />
-          </>
-        )}
+          )}
+        </>
       </div>
     </li>
   );
 };
 MessageItem.displayName = "MessageItem";
-
-const round = "16px";
-const notRound = "2px";
-
-const firstAndMiddle = [
-  `${notRound} ${round} ${round} ${notRound}`,
-  `${round} ${notRound} ${notRound} ${round}`,
-];
-
-const lastAndOnly = [
-  `${notRound} ${round} ${round} ${round}`,
-  `${round} ${notRound} ${round} ${round}`,
-];
-
-const borderRadii: Record<MessageType, string[]> = {
-  first: firstAndMiddle,
-  middle: firstAndMiddle,
-  last: lastAndOnly,
-  only: lastAndOnly,
-};
