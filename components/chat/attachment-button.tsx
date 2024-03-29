@@ -2,7 +2,13 @@ import { cn } from "@/lib/utils";
 import { Hint } from "../common/hint";
 import { buttonVariants } from "../ui/button";
 import { PaperClipIcon } from "../icons/paper-clip-icon";
-import { ChangeEventHandler, useEffect, useRef, useState } from "react";
+import {
+  ChangeEventHandler,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { AttanchmentPreview } from "./attachment-preview";
 
 type AttachmentButtonProps = {
@@ -17,13 +23,13 @@ export function AttachmentButton({
   const [url, setUrl] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     const input = inputRef.current;
     if (!input) return;
     input.value = "";
     URL.revokeObjectURL(url);
     setUrl("");
-  };
+  }, [inputRef, url]);
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const file = event.target.files?.[0];
@@ -36,7 +42,7 @@ export function AttachmentButton({
     } else {
       handleReset();
     }
-  }, [file]);
+  }, [file, handleReset]);
 
   return (
     <AttanchmentPreview url={url} fileName={file?.name} onReset={handleReset}>
@@ -55,7 +61,7 @@ export function AttachmentButton({
               ref={inputRef}
               name="attachment"
               type="file"
-              accept="image/*,.pdf,.doc,.docx,.txt"
+              accept="image/*"
               id="file-upload"
               className="hidden"
               onChange={handleChange}

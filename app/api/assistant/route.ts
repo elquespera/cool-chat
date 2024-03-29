@@ -7,10 +7,13 @@ import {
 } from "@/db/actions/messages";
 import { getAuth } from "@/lib/auth/get-auth";
 import { randomId } from "@/lib/random-id";
+import path from "path";
+import { readFileSync } from "fs";
 
 type OllamaMessage = {
-  content: string;
   role: string;
+  content: string;
+  images?: string[] | Uint8Array[];
 };
 
 type AssistantOptions = {
@@ -49,15 +52,18 @@ export const POST = async (request: Request) => {
   const messageId = randomId();
 
   const messages: OllamaMessage[] = rawMessages
-    .map(({ content, author }) => ({
+    .map(({ content, author, attachment }) => ({
       content,
       role: author.role === "assistant" ? "assistant" : "user",
+      images: attachment ? readFileBuffer(attachment) : undefined,
     }))
     .toReversed();
 
+  // return new Response("Error");
+
   const response = await fetch(ollamaURL, {
     method: "POST",
-    body: JSON.stringify({ model, messages }),
+    body: JSON.stringify({ model, messages, stream: true }),
   });
 
   if (!response.body)
@@ -125,4 +131,14 @@ function sanitazeResponse(response: string) {
     .replaceAll("<|system|>", "")
     .replaceAll("<|assistant|>", "")
     .replaceAll("<|user|>", "");
+}
+
+function readFileBuffer(attachment: string) {
+  const fileName = path.join(process.cwd(), "public", attachment);
+  try {
+    const buffer = readFileSync(fileName).buffer;
+    return [Buffer.from(buffer).toString("base64")];
+  } catch (error) {
+    console.error(error);
+  }
 }

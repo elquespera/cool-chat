@@ -1,5 +1,7 @@
 "use server";
 
+import { decryptText, encryptText } from "@/lib/encrypt-text";
+import { saveFile } from "@/lib/save-file";
 import { and, count, desc, eq, isNull, ne, or } from "drizzle-orm";
 import { db } from "../db";
 import {
@@ -11,9 +13,6 @@ import {
 } from "../schemas/messages";
 import { findOrCreateChat, getChatById } from "./chats";
 import { withAuth } from "./with-auth";
-import { decryptText, encryptText } from "@/lib/encrypt-text";
-import { chats } from "../schemas/chats";
-import { saveFile } from "@/lib/save-file";
 
 export const getMessagesByChatId = async (
   chatId: string,
