@@ -9,3 +9,5 @@ export const passwordMatcher =
 export const defaultSound = true;
 export const defaultColor = "blue";
 export const defaultBackground = "circuit-board";
+
+export const attachmentDir = process.env.ATTACHMENT_DIR!;
