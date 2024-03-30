@@ -22,9 +22,21 @@ export const GET = async (
 
     return new Response(result, { status: 200 });
   } catch (error) {
-    console.log(String(error));
-    new Response(JSON.stringify({ error: `Failed to read file ${file}` }), {
-      status: 500,
-    });
+    //@ts-ignore
+    if (error.code === "ENOENT") {
+      return new Response(
+        JSON.stringify({ error: `File not found on server.` }),
+        {
+          status: 404,
+        },
+      );
+    }
+
+    return new Response(
+      JSON.stringify({ error: `Failed to read file ${file}` }),
+      {
+        status: 500,
+      },
+    );
   }
 };
