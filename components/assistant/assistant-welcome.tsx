@@ -4,16 +4,16 @@ import {
   assistantInfo,
   defaultAssistantType,
 } from "@/constants/assistants";
+import { routes } from "@/constants/routes";
+import { addChat } from "@/db/actions/chats";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { IconButton } from "../common/icon-button";
 import { ChatConversationIcon } from "../icons/chat-conversation-icon";
+import { useAuth } from "../providers/auth/auth-context";
+import { useChat } from "../providers/chat/chat-context";
 import { UserAvatar } from "../user/user-avatar";
 import { AssistantPicker } from "./assistant-picker";
-import { addChat, findOrCreateChat } from "@/db/actions/chats";
-import { useAuth } from "../providers/auth/auth-context";
-import { useRouter } from "next/navigation";
-import { routes } from "@/constants/routes";
-import { useChat } from "../providers/chat/chat-context";
 
 export function AssistantWelcome() {
   const router = useRouter();
@@ -62,18 +62,15 @@ export function AssistantWelcome() {
             <p className="mb-6 mt-2 text-sm font-medium text-muted-foreground">
               {assistant.description}
             </p>
-            <div className="mt-auto flex flex-wrap justify-between gap-2">
-              <IconButton variant="link" href={assistant.url}>
-                Reference
-              </IconButton>
-              <IconButton
-                icon={<ChatConversationIcon />}
-                onClick={handleChatClick}
-              >
-                Start a Chat
-              </IconButton>
-            </div>
           </div>
+        </div>
+        <div className="mt-auto flex flex-wrap justify-between gap-2">
+          <IconButton variant="link" href={assistant.url}>
+            Reference
+          </IconButton>
+          <IconButton icon={<ChatConversationIcon />} onClick={handleChatClick}>
+            Start a Chat
+          </IconButton>
         </div>
       </div>
     </div>
