@@ -9,7 +9,7 @@ export function encryptText(
   encoding: BufferEncoding = "hex",
   separator = ":",
 ) {
-  if (!algorithm || !encryptionKey) return text;
+  if (!algorithm || !encryptionKey || !text) return text;
 
   const iv = crypto.randomBytes(ivLength);
   const cipher = crypto.createCipheriv(
@@ -29,7 +29,7 @@ export function decryptText(
   encoding: BufferEncoding = "hex",
   separator = ":",
 ) {
-  if (!algorithm || !encryptionKey) return text;
+  if (!algorithm || !encryptionKey || !text) return text;
 
   const [ivText, ...textParts] = text.split(separator);
 
