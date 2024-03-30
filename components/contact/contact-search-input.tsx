@@ -20,7 +20,7 @@ export function ContactSearchInput() {
     <GlassPanel
       className={cn("overflow-hidden", isScrolledDown && "h-32 shadow-sm")}
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className="relative flex items-center justify-between gap-2">
         <h1
           className={cn(
             "text-5 gap- mb-6 flex origin-top-left select-none items-center px-2 text-5xl font-semibold tracking-tighter transition-all",

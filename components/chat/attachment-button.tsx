@@ -14,11 +14,13 @@ import { AttanchmentPreview } from "./attachment-preview";
 type AttachmentButtonProps = {
   file?: File;
   onFileChange: (file?: File) => void;
+  onSend: () => void;
 };
 
 export function AttachmentButton({
   file,
   onFileChange,
+  onSend,
 }: AttachmentButtonProps) {
   const [url, setUrl] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -46,7 +48,12 @@ export function AttachmentButton({
   }, [file]);
 
   return (
-    <AttanchmentPreview url={url} fileName={file?.name} onReset={handleReset}>
+    <AttanchmentPreview
+      url={url}
+      fileName={file?.name}
+      onSend={onSend}
+      onReset={handleReset}
+    >
       <div className="flex items-end self-stretch">
         <Hint value="Attach file" sideOffset={10}>
           <label

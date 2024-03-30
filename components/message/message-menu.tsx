@@ -37,8 +37,8 @@ export function MessageMenu({
   const { isMobile } = useChatWindow();
   const { setEditingId } = useMessages();
   const setStatus = useMessageStatus(message);
-  const handleDelete = () => ownMessage && setStatus("deleted");
   const { handleCopy, copySuccess } = useCopyMessage(message);
+  const handleDelete = () => ownMessage && setStatus("deleted");
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -65,6 +65,8 @@ export function MessageMenu({
             </DropdownMenuItem>
 
             <ConfirmDialog
+              title="Are you sure you want to delete this message?"
+              description="This action will delete message and its attachments. Are you sure you want to continue?"
               onSuccess={async () => {
                 await handleDelete();
                 setOpen(false);

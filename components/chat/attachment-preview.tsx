@@ -7,18 +7,21 @@ import {
 } from "../ui/popover";
 import { IconButton } from "../common/icon-button";
 import { TrashIcon } from "../icons/trash-icon";
+import { SendIcon } from "../icons/send-icon";
+import { XMarkIcon } from "../icons/x-mark-icon";
 
 type AttanchmentPreviewProps = {
   url: string;
   fileName?: string;
   onReset: () => void;
+  onSend: () => void;
 } & PropsWithChildren;
 
 export function AttanchmentPreview({
   url,
   fileName,
   children,
-
+  onSend,
   onReset,
 }: AttanchmentPreviewProps) {
   const [open, setOpen] = useState(false);
@@ -48,15 +51,31 @@ export function AttanchmentPreview({
             src={url}
             className="max-h-80 max-w-[min(100vw-5rem,420px)]"
           />
+          <div className="mt-2 flex gap-2 self-end">
+            <IconButton
+              className="self-end"
+              variant="destructive"
+              size="sm"
+              icon={<TrashIcon />}
+              onClick={onReset}
+            >
+              Delete
+            </IconButton>
+            <IconButton
+              className="self-end"
+              size="sm"
+              icon={<SendIcon />}
+              onClick={onSend}
+            >
+              Send
+            </IconButton>
+          </div>
           <IconButton
-            className="self-end"
-            variant="outline"
-            size="sm"
-            icon={<TrashIcon />}
+            className="absolute right-0 top-0"
+            variant="ghost"
+            icon={<XMarkIcon />}
             onClick={onReset}
-          >
-            Delete
-          </IconButton>
+          />
         </PopoverContent>
       </Popover>
     </>

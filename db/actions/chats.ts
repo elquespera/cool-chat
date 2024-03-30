@@ -80,12 +80,19 @@ export const getOpenChats = async () =>
 
         const lastData = lastMessage.ok ? lastMessage.data : null;
 
+        const lastContent =
+          lastData?.status === "deleted"
+            ? "(deleted)"
+            : lastData?.attachment
+              ? `(image) ${lastData?.content}`
+              : lastData?.content;
+
         return {
           ...chat,
           interlocutor,
           status: settings.ok ? settings.data.status : null,
           unreadCount: unreadCount.ok ? unreadCount.data : 0,
-          lastMessage: lastData?.content,
+          lastMessage: lastContent,
           lastTimestamp: lastData?.createdAt,
           lastAuthor: lastData?.authorId,
         };

@@ -1,7 +1,6 @@
 "use server";
 
 import { decryptText, encryptText } from "@/lib/encrypt-text";
-import { saveFile } from "@/lib/save-file";
 import { and, count, desc, eq, isNull, ne, or } from "drizzle-orm";
 import { db } from "../db";
 import {
@@ -13,6 +12,7 @@ import {
 } from "../schemas/messages";
 import { findOrCreateChat, getChatById } from "./chats";
 import { withAuth } from "./with-auth";
+import { createAttachment, removeAttachment } from "@/lib/attachment";
 
 export const getMessagesByChatId = async (
   chatId: string,
@@ -29,6 +29,14 @@ export const getMessagesByChatId = async (
     });
 
     return result.map(decryptMessage);
+  });
+
+export const getMessageById = async (messageId: string) =>
+  withAuth<MessageSelect>(async () => {
+    const result = await db.query.messages.findFirst({
+      where: eq(messages.id, messageId),
+    });
+    return result ? decryptMessage(result) : undefined;
   });
 
 export const getLastMessage = async (chatId: string) =>
@@ -66,6 +74,26 @@ export const deleteMessage = async (messageId: string) =>
   withAuth<MessageSelect>(async () =>
     db.delete(messages).where(eq(messages.id, messageId)).returning().get(),
   );
+
+export const markMessageDeleted = async (messageId: string) =>
+  withAuth<MessageSelect>(async () => {
+    const messageResponse = await getMessageById(messageId);
+    if (!messageResponse.ok) return;
+    const message = messageResponse.data;
+
+    if (message.attachment) {
+      await removeAttachment(message.attachment);
+    }
+    const result = await updateMessage(messageId, {
+      status: "deleted",
+      content: encryptText(""),
+      attachment: null,
+    });
+
+    if (!result.ok) return;
+
+    return result.data;
+  });
 
 export const markMessagesDelivered = async (chatId: string) =>
   withAuth<MessageSelect>(async (user) => {
@@ -114,7 +142,7 @@ export const sendMessage = async (
 
     if (!chatResponse.ok) return;
 
-    const attachment = await saveFile(
+    const attachment = await createAttachment(
       attachmentForm?.get("attachment") as File,
     );
 

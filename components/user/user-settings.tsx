@@ -43,7 +43,7 @@ export function UserSettings() {
   const playClickOn = useSoundEffect("click-on");
   const playClickOff = useSoundEffect("click-off");
 
-  const touched =
+  const isTouched =
     !!avatarUrl || savedColor !== color || savedBackground !== background;
 
   const handleSubmit: FormEventHandler = async (event) => {
@@ -136,9 +136,9 @@ export function UserSettings() {
               variant="secondary"
               onClick={() => setOpen(false)}
             >
-              Restore
+              {isTouched ? "Restore" : "Close"}
             </IconButton>
-            {touched && (
+            {isTouched && (
               <IconButton
                 type="submit"
                 size="sm"

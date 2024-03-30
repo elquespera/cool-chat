@@ -95,7 +95,18 @@ export function ChatInput() {
     <GlassPanel position="bottom" className="shadow-top">
       <form ref={formRef} onSubmit={handleSubmit}>
         <InputWrapper className="items-end">
-          <AttachmentButton file={attachment} onFileChange={setAttachment} />
+          <AttachmentButton
+            file={attachment}
+            onFileChange={(file) => {
+              setAttachment(file);
+              setTimeout(() => inputRef.current?.focus(), 0);
+            }}
+            onSend={() => {
+              formRef.current?.dispatchEvent(
+                new Event("submit", { bubbles: true, cancelable: true }),
+              );
+            }}
+          />
 
           <MultiTextArea
             ref={inputRef}

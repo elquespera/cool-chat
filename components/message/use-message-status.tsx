@@ -1,5 +1,5 @@
 "use client";
-import { updateMessage } from "@/db/actions/messages";
+import { markMessageDeleted, updateMessage } from "@/db/actions/messages";
 import { MessageSelect, MessageStatus } from "@/db/schemas/messages";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
@@ -12,7 +12,11 @@ export function useMessageStatus({ id, chatId, authorId }: MessageSelect) {
 
   const setStatus = async (status: MessageStatus) => {
     if (!interlocutor) return;
-    const result = await updateMessage(id, { status });
+
+    const result =
+      status === "deleted"
+        ? await markMessageDeleted(id)
+        : await updateMessage(id, { status });
 
     if (result.ok) {
       socket?.emit("messageUpdate", {

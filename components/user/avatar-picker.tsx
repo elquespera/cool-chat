@@ -42,6 +42,7 @@ export function AvatarPicker({
       <div className="flex items-center gap-1">
         <p className="text-sm font-medium text-muted-foreground">Avatar</p>
         <IconButton
+          type="button"
           icon={<RefreshIcon />}
           toolTip="Regenerate"
           aria-label="Regenerate"
