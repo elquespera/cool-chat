@@ -69,44 +69,48 @@ export const POST = async (request: Request) => {
   if (!response.body)
     return new Response("No response from Ollama", { status: 500 });
 
-  const reader = response.body.getReader();
-  let message = "";
+  try {
+    const reader = response.body.getReader();
+    let message = "";
 
-  const stream = new ReadableStream(
-    {
-      async start(controller) {
-        controller.enqueue(encodeChunk({ message_id: messageId }));
-      },
+    const stream = new ReadableStream(
+      {
+        async start(controller) {
+          controller.enqueue(encodeChunk({ message_id: messageId }));
+        },
 
-      async pull(controller) {
-        const { done, value } = await reader.read();
+        async pull(controller) {
+          const { done, value } = await reader.read();
 
-        if (done) {
-          await createMessage({
-            id: messageId,
-            chatId,
-            authorId: model,
-            content: sanitazeResponse(message),
-          });
-          controller.close();
-          request.signal.dispatchEvent(new Event("abort"));
-        } else {
-          const parsed = decodeChunk<AssistantReply>(value);
-          const content = parsed?.message?.content;
+          if (done) {
+            await createMessage({
+              id: messageId,
+              chatId,
+              authorId: model,
+              content: sanitazeResponse(message),
+            });
+            controller.close();
+            request.signal.dispatchEvent(new Event("abort"));
+          } else {
+            const parsed = decodeChunk<AssistantReply>(value);
+            const content = parsed?.message?.content;
 
-          if (content) {
-            message += content;
-            controller.enqueue(encodeChunk({ content }));
+            if (content) {
+              message += content;
+              controller.enqueue(encodeChunk({ content }));
+            }
           }
-        }
+        },
       },
-    },
-    { highWaterMark: 10 },
-  );
+      { highWaterMark: 10 },
+    );
 
-  request.signal.addEventListener("abort", () => reader.cancel());
+    request.signal.addEventListener("abort", () => reader.cancel());
 
-  return new Response(stream);
+    return new Response(stream);
+  } catch (error) {
+    return new Response("Server error", { status: 500 });
+  }
 };
 
 const decoder = new TextDecoder("utf-8");

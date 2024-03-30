@@ -105,6 +105,9 @@ export function AssistantProvider({
         if (e instanceof AssistantError) {
           setError(e.message);
         }
+        setError(
+          "There was an issue with the assistant. Please try again later.",
+        );
       }
     },
     [assistants, isAssistant, isStreaming, getAssistantFromChat],
