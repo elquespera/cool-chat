@@ -80,6 +80,12 @@ export const MessageItem = ({
     msgRef.current?.scrollIntoView({ behavior: scrollBehavior });
   }, [autoScroll, content, msgRef, scrollBehavior]);
 
+  const messageContent = content ? (
+    <Markdown>{`${content}${streaming ? " •" : ""}`}</Markdown>
+  ) : streaming ? (
+    <span className="italic text-muted-foreground">{`waiting for response...`}</span>
+  ) : null;
+
   return (
     <li
       ref={msgRef}
@@ -125,7 +131,8 @@ export const MessageItem = ({
       <div
         ref={observerRef}
         className={cn(
-          "group relative isolate flex flex-col overflow-hidden bg-background shadow-msg transition-shadow before:absolute before:inset-0 before:-z-10 before:bg-background after:absolute after:inset-0 after:-z-10 hover:shadow-msg-hover",
+          "group relative isolate flex flex-wrap gap-x-6 overflow-hidden bg-background px-4 py-3 shadow-msg transition-shadow before:absolute before:inset-0 before:-z-10 before:bg-background after:absolute after:inset-0 after:-z-10 hover:shadow-msg-hover",
+          attachment && "flex-col",
           id === editingId && "w-[calc(100%-1.5em)] lg:w-[calc(100%-2em)]",
           ownMessage
             ? "mr-[1.5rem] text-message-own-foreground after:bg-message-own lg:mr-[2rem]"
@@ -139,33 +146,33 @@ export const MessageItem = ({
         }}
       >
         <>
-          {attachment && (
-            <img
-              className="max-w-auto"
-              alt="Attachment message"
-              src={attachment}
-            />
-          )}
-
-          <div className="flex flex-wrap gap-x-6 px-4 py-3 ">
-            {status === "deleted" ? (
-              <p className="select-none italic">(deleted)</p>
-            ) : id === editingId ? (
-              <MessageEditForm message={message} />
-            ) : (
-              <>
+          {status === "deleted" ? (
+            <p className="select-none italic">(deleted)</p>
+          ) : id === editingId ? (
+            <MessageEditForm message={message} />
+          ) : (
+            <>
+              {attachment && (
+                <div className={cn("mb-2 flex", ownMessage && "justify-end")}>
+                  <Image
+                    width={300}
+                    height={300}
+                    className="rounded-sm"
+                    alt="Attachment image"
+                    src={attachment}
+                  />
+                </div>
+              )}
+              {messageContent && (
                 <div className="prose:max-w-0 prose prose-sm prose-zinc @lg:prose-base dark:prose-invert">
-                  {streaming && !content && (
-                    <span className="italic text-muted-foreground">{`waiting for response...`}</span>
-                  )}
-                  <Markdown>{`${content}${streaming ? " •" : ""}`}</Markdown>
+                  {messageContent}
                 </div>
-                <div className="ml-auto flex items-center gap-2">
-                  {ownMessage && <MessageStatus status={status} />}
-                </div>
-              </>
-            )}
-          </div>
+              )}
+              <div className="ml-auto flex items-center gap-2">
+                {ownMessage && <MessageStatus status={status} />}
+              </div>
+            </>
+          )}
           {editingId !== id && (
             <MessageMenu
               open={menuOpen}
