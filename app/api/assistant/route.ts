@@ -1,14 +1,15 @@
 import { AssistantType } from "@/constants/assistants";
-import { ollamaURL } from "@/constants/routes";
+import { ollamaApiURL } from "@/constants/routes";
 import {
   createMessage,
   deleteMessage,
   getMessagesByChatId,
 } from "@/db/actions/messages";
 import { getAuth } from "@/lib/auth/get-auth";
+import { fetchHMAC } from "@/lib/hmac";
 import { randomId } from "@/lib/random-id";
-import path from "path";
 import { readFileSync } from "fs";
+import path from "path";
 
 type OllamaMessage = {
   role: string;
@@ -59,15 +60,14 @@ export const POST = async (request: Request) => {
     }))
     .toReversed();
 
-  // return new Response("Error");
-
-  const response = await fetch(ollamaURL, {
+  const response = await fetchHMAC(ollamaApiURL, {
     method: "POST",
     body: JSON.stringify({ model, messages, stream: true }),
   });
 
   if (!response.body)
     return new Response("No response from Ollama", { status: 500 });
+
   const reader = response.body.getReader();
   let message = "";
 
