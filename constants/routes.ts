@@ -16,8 +16,9 @@ export const privateRoutes = {
   chatVideo: "/chat/video",
   chatAudio: "/chat/audio",
 
-  apiAssistant: "/api/assistant",
   getLivekitToken: "/api/get-livekit-token",
+
+  apiAssistant: "/api/assistant",
 } as const;
 
 export const routes = {
@@ -25,4 +26,4 @@ export const routes = {
   ...privateRoutes,
 } as const;
 
-export const ollamaURL = "http://localhost:11434/api/chat";
+export const ollamaApiURL = process.env.OLLAMA_API_URL!;
