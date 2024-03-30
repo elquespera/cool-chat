@@ -1,8 +1,9 @@
 export const assistantErrorMessages = {
   "already-in-se":
     "An assistant is already in use, please wait until it finishes responding.",
-  "network-issue": "Assisant could not respond because of a network issue.",
-  "model-not-defined": "Assistant model not defined",
+  "network-issue":
+    "Assisant could not respond because of a network issue. Please try again later.",
+  "model-not-defined": "Assistant model not defined.",
 };
 
 export class AssistantError extends Error {

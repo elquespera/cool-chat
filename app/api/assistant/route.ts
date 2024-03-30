@@ -5,11 +5,10 @@ import {
   deleteMessage,
   getMessagesByChatId,
 } from "@/db/actions/messages";
+import { readAttachment } from "@/lib/attachment";
 import { getAuth } from "@/lib/auth/get-auth";
 import { fetchHMAC } from "@/lib/hmac";
 import { randomId } from "@/lib/random-id";
-import { readFileSync } from "fs";
-import path from "path";
 
 type OllamaMessage = {
   role: string;
@@ -52,13 +51,15 @@ export const POST = async (request: Request) => {
 
   const messageId = randomId();
 
-  const messages: OllamaMessage[] = rawMessages
-    .map(({ content, author, attachment }) => ({
+  const messages: OllamaMessage[] = await Promise.all(
+    rawMessages.map(async ({ content, author, attachment }) => ({
       content,
       role: author.role === "assistant" ? "assistant" : "user",
-      images: attachment ? readFileBuffer(attachment) : undefined,
-    }))
-    .toReversed();
+      images: attachment ? await readAttachment(attachment) : undefined,
+    })),
+  );
+
+  messages.reverse();
 
   const response = await fetchHMAC(ollamaApiURL, {
     method: "POST",
@@ -68,44 +69,48 @@ export const POST = async (request: Request) => {
   if (!response.body)
     return new Response("No response from Ollama", { status: 500 });
 
-  const reader = response.body.getReader();
-  let message = "";
+  try {
+    const reader = response.body.getReader();
+    let message = "";
 
-  const stream = new ReadableStream(
-    {
-      async start(controller) {
-        controller.enqueue(encodeChunk({ message_id: messageId }));
-      },
+    const stream = new ReadableStream(
+      {
+        async start(controller) {
+          controller.enqueue(encodeChunk({ message_id: messageId }));
+        },
 
-      async pull(controller) {
-        const { done, value } = await reader.read();
+        async pull(controller) {
+          const { done, value } = await reader.read();
 
-        if (done) {
-          await createMessage({
-            id: messageId,
-            chatId,
-            authorId: model,
-            content: sanitazeResponse(message),
-          });
-          controller.close();
-          request.signal.dispatchEvent(new Event("abort"));
-        } else {
-          const parsed = decodeChunk<AssistantReply>(value);
-          const content = parsed?.message?.content;
+          if (done) {
+            await createMessage({
+              id: messageId,
+              chatId,
+              authorId: model,
+              content: sanitazeResponse(message),
+            });
+            controller.close();
+            request.signal.dispatchEvent(new Event("abort"));
+          } else {
+            const parsed = decodeChunk<AssistantReply>(value);
+            const content = parsed?.message?.content;
 
-          if (content) {
-            message += content;
-            controller.enqueue(encodeChunk({ content }));
+            if (content) {
+              message += content;
+              controller.enqueue(encodeChunk({ content }));
+            }
           }
-        }
+        },
       },
-    },
-    { highWaterMark: 10 },
-  );
+      { highWaterMark: 10 },
+    );
 
-  request.signal.addEventListener("abort", () => reader.cancel());
+    request.signal.addEventListener("abort", () => reader.cancel());
 
-  return new Response(stream);
+    return new Response(stream);
+  } catch (error) {
+    return new Response("Server error", { status: 500 });
+  }
 };
 
 const decoder = new TextDecoder("utf-8");
@@ -131,14 +136,4 @@ function sanitazeResponse(response: string) {
     .replaceAll("<|system|>", "")
     .replaceAll("<|assistant|>", "")
     .replaceAll("<|user|>", "");
-}
-
-function readFileBuffer(attachment: string) {
-  const fileName = path.join(process.cwd(), "public", attachment);
-  try {
-    const buffer = readFileSync(fileName).buffer;
-    return [Buffer.from(buffer).toString("base64")];
-  } catch (error) {
-    console.error(error);
-  }
 }
