@@ -171,15 +171,15 @@ export const MessageItem = ({
               <div className="ml-auto flex items-center gap-2">
                 {ownMessage && <MessageStatus status={status} />}
               </div>
+              {editingId !== id && (
+                <MessageMenu
+                  open={menuOpen}
+                  setOpen={setMenuOpen}
+                  message={message}
+                  ownMessage={ownMessage}
+                />
+              )}
             </>
-          )}
-          {editingId !== id && (
-            <MessageMenu
-              open={menuOpen}
-              setOpen={setMenuOpen}
-              message={message}
-              ownMessage={ownMessage}
-            />
           )}
         </>
       </div>
