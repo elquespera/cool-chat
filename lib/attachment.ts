@@ -1,7 +1,7 @@
 import { attachmentDir } from "@/constants";
 import { routes } from "@/constants/routes";
 import { existsSync } from "fs";
-import { appendFile, mkdir, unlink } from "fs/promises";
+import { appendFile, mkdir, unlink, readFile } from "fs/promises";
 import { nanoid } from "nanoid";
 import path from "path";
 
@@ -15,7 +15,7 @@ export async function createAttachment(file?: File): Promise<string | null> {
     });
 
     if (!existsSync(attachmentDir)) {
-      await mkdir(attachmentDir);
+      await mkdir(attachmentDir, { recursive: true });
     }
 
     const data = await file.arrayBuffer();
@@ -30,14 +30,28 @@ export async function createAttachment(file?: File): Promise<string | null> {
   return null;
 }
 
-export async function removeAttachment(url: string) {
+export async function readAttachment(url: string) {
   try {
-    const segments = url.split("/");
-    const fileName = segments[segments.length - 1];
-    console.log(fileName);
-
-    await unlink(path.join(attachmentDir, fileName));
+    const buffer = await readFile(getAttachmentPath(url));
+    return [Buffer.from(buffer).toString("base64")];
   } catch (error) {
     console.error(error);
   }
+}
+
+export async function removeAttachment(url: string) {
+  try {
+    await unlink(getAttachmentPath(url));
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function getAttachmentPath(attachmentURL: string) {
+  const segments = attachmentURL.split("/");
+  const fileName = segments[segments.length - 1];
+  const filePath = path.join(attachmentDir, fileName);
+  console.log(filePath);
+
+  return filePath;
 }

@@ -5,11 +5,10 @@ import {
   deleteMessage,
   getMessagesByChatId,
 } from "@/db/actions/messages";
+import { readAttachment } from "@/lib/attachment";
 import { getAuth } from "@/lib/auth/get-auth";
 import { fetchHMAC } from "@/lib/hmac";
 import { randomId } from "@/lib/random-id";
-import { readFileSync } from "fs";
-import path from "path";
 
 type OllamaMessage = {
   role: string;
@@ -52,13 +51,15 @@ export const POST = async (request: Request) => {
 
   const messageId = randomId();
 
-  const messages: OllamaMessage[] = rawMessages
-    .map(({ content, author, attachment }) => ({
+  const messages: OllamaMessage[] = await Promise.all(
+    rawMessages.map(async ({ content, author, attachment }) => ({
       content,
       role: author.role === "assistant" ? "assistant" : "user",
-      images: attachment ? readFileBuffer(attachment) : undefined,
-    }))
-    .toReversed();
+      images: attachment ? await readAttachment(attachment) : undefined,
+    })),
+  );
+
+  messages.reverse();
 
   const response = await fetchHMAC(ollamaApiURL, {
     method: "POST",
@@ -131,14 +132,4 @@ function sanitazeResponse(response: string) {
     .replaceAll("<|system|>", "")
     .replaceAll("<|assistant|>", "")
     .replaceAll("<|user|>", "");
-}
-
-function readFileBuffer(attachment: string) {
-  const fileName = path.join(process.cwd(), "public", attachment);
-  try {
-    const buffer = readFileSync(fileName).buffer;
-    return [Buffer.from(buffer).toString("base64")];
-  } catch (error) {
-    console.error(error);
-  }
 }
