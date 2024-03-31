@@ -1,12 +1,11 @@
 import { Server as NetServer, Socket } from "net";
 
+import { db } from "@/db/db";
+import { users } from "@/db/schemas/auth";
+import { eq } from "drizzle-orm";
 import { Server as HttpServer } from "http";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Server as SocketIOServer } from "socket.io";
-import { db } from "@/db/db";
-import { settings } from "@/db/schemas/settings";
-import { users } from "@/db/schemas/auth";
-import { eq } from "drizzle-orm";
 
 type NextApiResponseServerIO = NextApiResponse & {
   socket: Socket & {
@@ -47,15 +46,14 @@ export default function handler(
           status: "offline",
         });
 
-        updateStatus(userId, "offline");
+        updateUserStatus(userId, "offline");
       });
 
       socket.on("userStatusChange", ({ userId, status }) => {
         socket.data.userId = userId;
         socket.broadcast.emit("userStatusChange", { userId, status });
-        if (status === "offline" || status === "online") {
-          updateStatus(userId, status);
-        }
+
+        updateUserStatus(userId, status);
       });
 
       socket.on("messageUpdate", async (args) => {
@@ -69,7 +67,10 @@ export default function handler(
   response.end();
 }
 
-async function updateStatus(userId: string, status: "offline" | "online") {
+async function updateUserStatus(userId: string, status: UserStatus) {
   console.log(`User status: ${userId} => ${status}`);
-  await db.update(users).set({ status }).where(eq(users.id, userId));
+  await db
+    .update(users)
+    .set({ status: status === "offline" ? "offline" : "online" })
+    .where(eq(users.id, userId));
 }

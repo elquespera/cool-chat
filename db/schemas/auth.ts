@@ -10,6 +10,9 @@ import {
 const UserRoles = ["user", "assistant", "admin"] as const;
 export type UserRole = (typeof UserRoles)[number];
 
+const UserStatuses = ["online", "offline"] as const;
+export type UserStatusDB = (typeof UserStatuses)[number];
+
 export const users = sqliteTable("user", {
   id: text("id")
     .notNull()
@@ -17,9 +20,7 @@ export const users = sqliteTable("user", {
     .$defaultFn(() => randomId()),
 
   role: text("role", { enum: UserRoles }).default("user").notNull(),
-  status: text("status", { enum: ["offline", "online"] })
-    .default("offline")
-    .notNull(),
+  status: text("status", { enum: UserStatuses }).default("offline").notNull(),
 
   username: text("username"),
   email: text("email").unique(),

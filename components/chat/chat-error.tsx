@@ -6,9 +6,9 @@ export function ChatError({
   children,
   className,
   ...props
-}: ComponentProps<"div">) {
+}: ComponentProps<"li">) {
   return (
-    <div
+    <li
       {...props}
       className={cn(
         "mb-12 flex items-center gap-2 self-center rounded-md border border-destructive bg-destructive-foreground px-4 py-3 text-sm font-medium text-destructive",
@@ -17,6 +17,6 @@ export function ChatError({
     >
       <ExclamationTriangleIcon className="h-6 w-6 shrink-0" />
       {children}
-    </div>
+    </li>
   );
 }

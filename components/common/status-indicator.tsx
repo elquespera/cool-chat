@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { ComponentProps } from "react";
 import { GearAnimatedIcon } from "../icons/gear-animated-icon";
+import { FadingCirclesIcon } from "../icons/fading-circles-icon";
 
 export type StatusIndicatorStatus =
   | UserStatus
@@ -36,9 +37,11 @@ export const StatusIndicator = ({
         className,
       )}
     >
-      {status === "streaming" && (
+      {status === "streaming" ? (
         <GearAnimatedIcon className="h-full w-full scale-150 text-primary" />
-      )}
+      ) : status === "typing" ? (
+        <FadingCirclesIcon className="h-full w-full scale-[2] text-primary" />
+      ) : null}
     </div>
   );
 };

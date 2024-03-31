@@ -9,6 +9,7 @@ import {
 import { UserAvatar } from "./user-avatar";
 import { UserText } from "./user-text";
 import { useAssistant } from "../providers/assistant/assistant-context";
+import { useChat } from "../providers/chat/chat-context";
 
 type UserInfoProps = {
   user: ContactUser;
@@ -33,6 +34,7 @@ export function UserInfo({
   className,
   ...props
 }: UserInfoProps) {
+  const { typingContacts } = useChat();
   const { assistantChat, isStreaming } = useAssistant();
 
   const indicatorCn = cn(
@@ -48,6 +50,8 @@ export function UserInfo({
     } else {
       status = "online";
     }
+  } else if (typingContacts.includes(user.id)) {
+    status = "typing";
   }
 
   return (

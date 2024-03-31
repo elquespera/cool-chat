@@ -3,7 +3,7 @@ import { routes } from "@/constants/routes";
 import { sendMessage } from "@/db/actions/send-message";
 import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 import { useRouter } from "next/navigation";
-import { FormEventHandler, useRef, useState } from "react";
+import { FormEventHandler, useEffect, useRef, useState } from "react";
 import { GlassPanel } from "../common/glass-panel";
 import { IconButton } from "../common/icon-button";
 import { InputWrapper } from "../common/input-wrapper";
@@ -115,7 +115,14 @@ export function ChatInput() {
             ref={inputRef}
             formRef={formRef}
             value={message}
-            onValueChange={setMessage}
+            onValueChange={(value) => {
+              setMessage(value);
+              if (!user) return;
+              socket?.emit("userStatusChange", {
+                userId: user.id,
+                status: "typing",
+              });
+            }}
             className="pb-1 ps-1"
             placeholder="Write a message..."
             clearButton
