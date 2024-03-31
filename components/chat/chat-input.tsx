@@ -33,13 +33,13 @@ export function ChatInput() {
 
   const [message, setMessage] = useState("");
   const [attachment, setAttachment] = useState<File>();
-  const [pending, setPending] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
   const isValid =
     interlocutor &&
     user &&
     (message || attachment) &&
-    !pending &&
+    !isPending &&
     !(isStreaming && isAssistant);
   const handleInsertEmoji = useInsertEmoji(inputRef, message, setMessage);
 
@@ -47,7 +47,7 @@ export function ChatInput() {
     event.preventDefault();
     if (!isValid) return;
 
-    setPending(true);
+    setIsPending(true);
     try {
       const formData = new FormData();
       if (attachment) {
@@ -90,7 +90,7 @@ export function ChatInput() {
         );
       }
     } finally {
-      setPending(false);
+      setIsPending(false);
     }
   };
 

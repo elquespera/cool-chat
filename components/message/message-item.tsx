@@ -15,6 +15,7 @@ import { MessageStatus } from "./message-status";
 import { useMessageStatus } from "./use-message-status";
 import { MessageType, messageBorderRadii } from "./message-utils";
 import Image from "next/image";
+import { PhotoView } from "react-photo-view";
 
 type MessageItemProps = {
   message: MessageWithAuthor;
@@ -154,14 +155,16 @@ export const MessageItem = ({
             <>
               {attachment && (
                 <div className={cn("mb-2 flex", ownMessage && "justify-end")}>
-                  <Image
-                    width={300}
-                    height={300}
-                    priority
-                    className="h-auto w-auto rounded-sm"
-                    alt="Attachment image"
-                    src={attachment}
-                  />
+                  <PhotoView src={attachment}>
+                    <Image
+                      width={300}
+                      height={300}
+                      priority
+                      className="h-auto w-auto cursor-pointer rounded-sm"
+                      alt="Attachment image"
+                      src={attachment}
+                    />
+                  </PhotoView>
                 </div>
               )}
               {messageContent && (

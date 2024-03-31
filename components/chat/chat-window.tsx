@@ -12,6 +12,8 @@ import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { ScrollArea } from "../ui/scroll-area";
 import { ChatError } from "./chat-error";
+import { PhotoProvider } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 
 const scrollButtonMargin = 250;
 const scrollButtonTimeout = 3000;
@@ -125,42 +127,44 @@ export function ChatWindow() {
       style={{ position: "absolute" }}
       onScrollCapture={() => updateScrollButtonVisible()}
     >
-      <ul
-        ref={listRef}
-        className="@container mx-auto flex max-w-[48rem] flex-col-reverse px-4 pb-16 pt-28 md:px-8"
-      >
-        {chat?.id === assistantChat?.id && assistantError && (
-          <ChatError>{assistantError}</ChatError>
-        )}
-        {streamingMsgVisible && (
-          <MessageItem
-            key={streamedMessage.id}
-            message={streamedMessage}
-            type={
-              streamedMessage.authorId === messages[0]?.authorId
-                ? "first"
-                : "only"
-            }
-            streaming
-            autoScroll
-          />
-        )}
+      <PhotoProvider>
+        <ul
+          ref={listRef}
+          className="mx-auto flex max-w-[48rem] flex-col-reverse px-4 pb-16 pt-28 @container md:px-8"
+        >
+          {chat?.id === assistantChat?.id && assistantError && (
+            <ChatError>{assistantError}</ChatError>
+          )}
+          {streamingMsgVisible && (
+            <MessageItem
+              key={streamedMessage.id}
+              message={streamedMessage}
+              type={
+                streamedMessage.authorId === messages[0]?.authorId
+                  ? "first"
+                  : "only"
+              }
+              streaming
+              autoScroll
+            />
+          )}
 
-        {messages.map((message, index) => (
-          <MessageItem
-            key={message.id}
-            message={message}
-            type={getMessageType(
-              message,
-              messages[index - 1],
-              messages[index + 1],
-            )}
-            autoScroll={!streamingMsgVisible && index === 0}
-          />
-        ))}
+          {messages.map((message, index) => (
+            <MessageItem
+              key={message.id}
+              message={message}
+              type={getMessageType(
+                message,
+                messages[index - 1],
+                messages[index + 1],
+              )}
+              autoScroll={!streamingMsgVisible && index === 0}
+            />
+          ))}
 
-        <li ref={loadMoreRef} />
-      </ul>
+          <li ref={loadMoreRef} />
+        </ul>
+      </PhotoProvider>
 
       <IconButton
         className={cn(
