@@ -39,17 +39,17 @@ export function AttanchmentPreview({
           side="top"
           align="start"
           sideOffset={16}
-          className="flex w-auto flex-col items-start gap-2"
+          className="flex w-auto max-w-[calc(100vw-2rem)] flex-col items-start gap-2 overflow-hidden"
         >
           {fileName && (
-            <div className="text-sm font-medium text-muted-foreground">
+            <span className="max-w-full truncate rounded-sm text-sm font-medium text-muted-foreground">
               {fileName}
-            </div>
+            </span>
           )}
           <img
             alt="Preview"
             src={url}
-            className="max-h-80 max-w-[min(100vw-5rem,420px)]"
+            className="max-h-80 max-w-[min(100vw-5rem,420px)] self-center"
           />
           <div className="mt-2 flex gap-2 self-end">
             <IconButton

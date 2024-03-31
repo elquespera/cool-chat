@@ -157,7 +157,8 @@ export const MessageItem = ({
                   <Image
                     width={300}
                     height={300}
-                    className="rounded-sm"
+                    priority
+                    className="h-auto w-auto rounded-sm"
                     alt="Attachment image"
                     src={attachment}
                   />
