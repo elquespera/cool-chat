@@ -1,6 +1,6 @@
 "use client";
 import { routes } from "@/constants/routes";
-import { sendMessage } from "@/db/actions/messages";
+import { sendMessage } from "@/db/actions/send-message";
 import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 import { useRouter } from "next/navigation";
 import { FormEventHandler, useRef, useState } from "react";
@@ -17,6 +17,7 @@ import { useSocket } from "../providers/socket/socket-context";
 import { AttachmentButton } from "./attachment-button";
 import { EmojiPicker } from "./emoji-picker";
 import { useInsertEmoji } from "./use-insert-emoji";
+import { useSettings } from "../providers/settings/settings-context";
 
 export function ChatInput() {
   const router = useRouter();
@@ -24,6 +25,7 @@ export function ChatInput() {
   const formRef = useRef<HTMLFormElement>(null);
   const { socket } = useSocket();
   const { user } = useAuth();
+  const { resizeAttachments } = useSettings();
   const { interlocutor, chat, refetchOpenChats } = useChat();
   const { isAssistant, isStreaming, generateResponse } = useAssistant();
   const { refetchMessages } = useMessages();
@@ -31,13 +33,13 @@ export function ChatInput() {
 
   const [message, setMessage] = useState("");
   const [attachment, setAttachment] = useState<File>();
-  const [pending, setPending] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
   const isValid =
     interlocutor &&
     user &&
     (message || attachment) &&
-    !pending &&
+    !isPending &&
     !(isStreaming && isAssistant);
   const handleInsertEmoji = useInsertEmoji(inputRef, message, setMessage);
 
@@ -45,7 +47,7 @@ export function ChatInput() {
     event.preventDefault();
     if (!isValid) return;
 
-    setPending(true);
+    setIsPending(true);
     try {
       const formData = new FormData();
       if (attachment) {
@@ -57,6 +59,7 @@ export function ChatInput() {
         interlocutor.id,
         chat?.id,
         formData,
+        resizeAttachments,
       );
 
       if (result.ok) {
@@ -87,7 +90,7 @@ export function ChatInput() {
         );
       }
     } finally {
-      setPending(false);
+      setIsPending(false);
     }
   };
 

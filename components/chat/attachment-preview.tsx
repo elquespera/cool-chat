@@ -9,6 +9,10 @@ import { IconButton } from "../common/icon-button";
 import { TrashIcon } from "../icons/trash-icon";
 import { SendIcon } from "../icons/send-icon";
 import { XMarkIcon } from "../icons/x-mark-icon";
+import { Switch } from "../ui/switch";
+import { Label } from "../ui/label";
+import { useSettings } from "../providers/settings/settings-context";
+import { updateSettings } from "@/db/actions/settings";
 
 type AttanchmentPreviewProps = {
   url: string;
@@ -25,10 +29,18 @@ export function AttanchmentPreview({
   onReset,
 }: AttanchmentPreviewProps) {
   const [open, setOpen] = useState(false);
-
-  useEffect(() => setOpen(url !== ""), [url]);
+  const { resizeAttachments, setResizeAttachments } = useSettings();
 
   const handleOpenChange = () => setOpen(!!url);
+
+  const handleResizeAttachmentsChange = async (value: boolean) => {
+    const result = await updateSettings({ resizeAttachments: value });
+    if (result.ok) {
+      setResizeAttachments(result.data.resizeAttachments);
+    }
+  };
+
+  useEffect(() => setOpen(url !== ""), [url]);
 
   return (
     <>
@@ -39,18 +51,26 @@ export function AttanchmentPreview({
           side="top"
           align="start"
           sideOffset={16}
-          className="flex w-auto flex-col items-start gap-2"
+          className="flex w-auto max-w-[calc(100vw-2rem)] flex-col items-start gap-2 overflow-hidden"
         >
           {fileName && (
-            <div className="text-sm font-medium text-muted-foreground">
+            <span className="max-w-full truncate rounded-sm text-sm font-medium text-muted-foreground">
               {fileName}
-            </div>
+            </span>
           )}
           <img
             alt="Preview"
             src={url}
-            className="max-h-80 max-w-[min(100vw-5rem,420px)]"
+            className="max-h-80 max-w-[min(100vw-5rem,420px)] self-center"
           />
+          <div className="mt-2 flex items-center gap-2">
+            <Switch
+              id="resize"
+              checked={resizeAttachments}
+              onCheckedChange={handleResizeAttachmentsChange}
+            />
+            <Label htmlFor="resize">Resize image</Label>
+          </div>
           <div className="mt-2 flex gap-2 self-end">
             <IconButton
               className="self-end"

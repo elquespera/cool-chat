@@ -1,17 +1,20 @@
 import { ContactUser } from "@/db/schemas/auth";
 import { cn } from "@/lib/utils";
-import { User } from "lucia";
 import { ComponentProps, ReactNode } from "react";
 import { SocketIndicator } from "../common/socket-indicator";
-import { StatusIndicator } from "../common/status-indicator";
+import {
+  StatusIndicator,
+  StatusIndicatorStatus,
+} from "../common/status-indicator";
 import { UserAvatar } from "./user-avatar";
 import { UserText } from "./user-text";
+import { useAssistant } from "../providers/assistant/assistant-context";
 
 type UserInfoProps = {
-  user: User | ContactUser;
+  user: ContactUser;
   size?: "sm" | "md" | "lg";
+  showStatus?: boolean;
   self?: boolean;
-  status?: UserStatus | true;
   avatarUrl?: string;
   oneLine?: boolean;
   secondLine?: ReactNode;
@@ -20,18 +23,36 @@ type UserInfoProps = {
 export function UserInfo({
   user,
   size = "md",
+  avatarUrl,
   oneLine,
   self,
-  avatarUrl,
-  status,
+  showStatus,
   secondLine,
   className,
   ...props
 }: UserInfoProps) {
+  const { assistantChat, isStreaming } = useAssistant();
+
   const indicatorCn = cn(
     "absolute bottom-0 right-0",
     size === "sm" ? "w-2" : size === "lg" ? "w-3" : "w-2.5",
   );
+
+  let status: StatusIndicatorStatus = user.status;
+
+  if (user.role === "assistant") {
+    if (isStreaming) {
+      if (
+        [assistantChat?.userOneId, assistantChat?.userTwoId].includes(user.id)
+      ) {
+        status = "streaming";
+      } else {
+        status = "offline";
+      }
+    } else {
+      status = "online";
+    }
+  }
 
   return (
     <div
@@ -46,15 +67,12 @@ export function UserInfo({
             size === "sm" ? "w-8" : size === "lg" ? "w-12" : "w-10",
           )}
         />
-        {status === true ? (
-          self ? (
+        {showStatus &&
+          (self ? (
             <SocketIndicator className={indicatorCn} />
-          ) : user.role === "assistant" ? (
-            <StatusIndicator status="online" className={indicatorCn} />
-          ) : null
-        ) : (
-          <StatusIndicator status={status} className={indicatorCn} />
-        )}
+          ) : (
+            <StatusIndicator status={status} className={indicatorCn} />
+          ))}
       </div>
       <UserText
         email={user.email}

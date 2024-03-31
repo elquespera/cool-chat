@@ -4,8 +4,14 @@ import { existsSync } from "fs";
 import { appendFile, mkdir, unlink, readFile } from "fs/promises";
 import { nanoid } from "nanoid";
 import path from "path";
+import sharp from "sharp";
 
-export async function createAttachment(file?: File): Promise<string | null> {
+const imageMaxSize = 1200;
+
+export async function createAttachment(
+  file?: File,
+  resize = false,
+): Promise<string | null> {
   if (!file) return null;
 
   try {
@@ -14,13 +20,19 @@ export async function createAttachment(file?: File): Promise<string | null> {
       ext: path.parse(file.name).ext,
     });
 
+    const filePath = path.join(attachmentDir, fileName);
+
     if (!existsSync(attachmentDir)) {
       await mkdir(attachmentDir, { recursive: true });
     }
 
     const data = await file.arrayBuffer();
 
-    await appendFile(path.join(attachmentDir, fileName), Buffer.from(data));
+    if (resize) {
+      await sharp(data).resize(imageMaxSize).toFile(filePath);
+    } else {
+      await appendFile(filePath, Buffer.from(data));
+    }
 
     return `${routes.attachments}/${fileName}`;
   } catch (error) {

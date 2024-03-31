@@ -1,4 +1,4 @@
-import { defaultBackground, defaultColor, defaultSound } from "@/constants";
+import { defaultSettings } from "@/constants";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { users } from "./auth";
 import { themeColors } from "@/constants/theme-color";
@@ -10,14 +10,17 @@ export const settings = sqliteTable("settings", {
     .primaryKey()
     .references(() => users.id, { onDelete: "cascade" }),
 
-  color: text("color", { enum: themeColors }).default(defaultColor).notNull(),
-  background: text("background", { enum: themeBackgrounds })
-    .default(defaultBackground)
+  color: text("color", { enum: themeColors })
+    .default(defaultSettings.color)
     .notNull(),
-  sound: integer("sound", { mode: "boolean" }).default(defaultSound).notNull(),
-
-  status: text("status", { enum: ["offline", "online"] })
-    .default("offline")
+  background: text("background", { enum: themeBackgrounds })
+    .default(defaultSettings.background)
+    .notNull(),
+  sound: integer("sound", { mode: "boolean" })
+    .default(defaultSettings.sound)
+    .notNull(),
+  resizeAttachments: integer("resize_attachments", { mode: "boolean" })
+    .default(defaultSettings.resizeAttachments)
     .notNull(),
 });
 

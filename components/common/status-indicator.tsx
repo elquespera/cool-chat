@@ -1,30 +1,44 @@
 import { cn } from "@/lib/utils";
 import { ComponentProps } from "react";
+import { GearAnimatedIcon } from "../icons/gear-animated-icon";
+
+export type StatusIndicatorStatus =
+  | UserStatus
+  | "pending"
+  | "away"
+  | "typing"
+  | "streaming";
 
 type StatusIndicatorProps = {
-  status?: "online" | "pending" | "away" | "offline" | "typing";
-} & ComponentProps<"div">;
+  status?: StatusIndicatorStatus;
+} & PropsWithClassName;
 
 export const StatusIndicator = ({
   status,
   className,
   ...props
 }: StatusIndicatorProps) => {
-  return status ? (
+  return (
     <div
       {...props}
       role="status"
       className={cn(
-        "aspect-square w-2 rounded-full",
+        "relative flex aspect-square w-2 after:absolute after:inset-0 after:rounded-full",
         status === "pending"
-          ? "animate-pulse bg-muted-foreground"
+          ? "after:animate-pulse after:bg-muted-foreground"
           : status === "away"
-            ? "bg-orange-400"
+            ? "after:bg-orange-400"
             : status === "online"
-              ? "bg-emerald-500"
-              : "bg-muted-foreground",
+              ? "after:bg-emerald-500"
+              : status === "offline"
+                ? "after:bg-muted-foreground"
+                : "",
         className,
       )}
-    />
-  ) : null;
+    >
+      {status === "streaming" && (
+        <GearAnimatedIcon className="h-full w-full scale-150 text-primary" />
+      )}
+    </div>
+  );
 };

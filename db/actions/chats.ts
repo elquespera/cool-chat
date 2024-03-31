@@ -2,6 +2,7 @@
 
 import { and, eq, or } from "drizzle-orm";
 import { db } from "../db";
+import { contactUserFilter } from "../schemas/auth";
 import {
   ChatInsert,
   ChatSelect,
@@ -9,10 +10,8 @@ import {
   OpenChat,
   chats,
 } from "../schemas/chats";
-import { withAuth } from "./with-auth";
 import { countUnreadMesages, getLastMessage } from "./messages";
-import { getSettings } from "./settings";
-import { contactUserFilter } from "../schemas/auth";
+import { withAuth } from "./with-auth";
 
 //to be removed
 export async function getUserChats(userId: string) {
@@ -72,10 +71,9 @@ export const getOpenChats = async () =>
         const { userOne, userTwo } = chat;
         const interlocutor = userOne.id === user.id ? userTwo : userOne;
 
-        const [unreadCount, lastMessage, settings] = await Promise.all([
+        const [unreadCount, lastMessage] = await Promise.all([
           countUnreadMesages(chat.id),
           getLastMessage(chat.id),
-          getSettings(interlocutor.id),
         ]);
 
         const lastData = lastMessage.ok ? lastMessage.data : null;
@@ -90,7 +88,7 @@ export const getOpenChats = async () =>
         return {
           ...chat,
           interlocutor,
-          status: settings.ok ? settings.data.status : null,
+          status: interlocutor.status,
           unreadCount: unreadCount.ok ? unreadCount.data : 0,
           lastMessage: lastContent,
           lastTimestamp: lastData?.createdAt,

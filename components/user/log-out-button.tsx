@@ -7,7 +7,7 @@ import { useState } from "react";
 import { IconButton } from "../common/icon-button";
 import { PowerOffIcon } from "../icons/power-off-icon";
 import { useSettings } from "../providers/settings/settings-context";
-import { defaultColor } from "@/constants";
+import { defaultSettings } from "@/constants";
 
 export function LogOutButton({ className }: PropsWithClassName) {
   const { setColor } = useSettings();
@@ -18,8 +18,8 @@ export function LogOutButton({ className }: PropsWithClassName) {
     setPending(true);
     try {
       await signOut();
+      setColor(defaultSettings.color);
       router.refresh();
-      setColor(defaultColor);
     } finally {
       setPending(false);
     }

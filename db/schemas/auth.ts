@@ -17,12 +17,16 @@ export const users = sqliteTable("user", {
     .$defaultFn(() => randomId()),
 
   role: text("role", { enum: UserRoles }).default("user").notNull(),
+  status: text("status", { enum: ["offline", "online"] })
+    .default("offline")
+    .notNull(),
 
   username: text("username"),
+  email: text("email").unique(),
+
   avatarUrl: text("avatar_url"),
   providerId: text("provider_id"),
 
-  email: text("email").unique(),
   hashedPassword: text("hashed_password"),
 
   createdAt: integer("created_at", { mode: "timestamp" })
@@ -60,14 +64,24 @@ export const sessions = sqliteTable("session", {
 
 export type UserSelect = typeof users.$inferSelect;
 export type UserInsert = typeof users.$inferInsert;
-export type ContactUser = Omit<UserSelect, "hashedPassword" | "providerId">;
+export type ContactUser = Omit<
+  UserSelect,
+  "hashedPassword" | "providerId" | "createdAt" | "updatedAt"
+>;
 export const contactUserFilter = {
   hashedPassword: false,
   providerId: false,
+  createAt: false,
+  updatedAt: false,
 } as const;
 
-export const { hashedPassword, providerId, ...contactUserColumns } =
-  getTableColumns(users);
+export const {
+  hashedPassword,
+  providerId,
+  createdAt,
+  updatedAt,
+  ...contactUserColumns
+} = getTableColumns(users);
 
 export type ContactUserWithChat = ContactUser & {
   chatId?: string;

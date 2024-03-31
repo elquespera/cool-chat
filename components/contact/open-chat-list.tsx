@@ -16,7 +16,6 @@ export function OpenChatList() {
           contact={data.interlocutor}
           href={`${routes.chat}/${data.id}`}
           selected={data.id === chat?.id}
-          status={data.status}
           secondLine={<SecondLine data={data} />}
           endDecoration={<EndDecoration data={data} />}
         />

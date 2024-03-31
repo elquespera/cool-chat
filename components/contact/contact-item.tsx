@@ -11,7 +11,6 @@ type ContactItemProps = {
   contact: ContactUser;
   href: string;
   selected?: boolean;
-  status?: UserStatus | null;
   secondLine?: ReactNode;
   endDecoration?: ReactNode;
 };
@@ -20,7 +19,6 @@ export function ContactItem({
   contact,
   href,
   selected,
-  status,
   secondLine,
   endDecoration,
 }: ContactItemProps) {
@@ -56,9 +54,9 @@ export function ContactItem({
       <div className="relative flex items-center justify-between gap-8 rounded-lg bg-message px-4 py-3 transition-colors group-hover:bg-accent group-hover:text-accent-foreground group-aria-selected:bg-message-own group-aria-selected:text-message-own-foreground">
         <UserInfo
           user={contact}
+          showStatus
           size="lg"
           oneLine
-          status={status ?? undefined}
           secondLine={secondLine}
         />
         {endDecoration}

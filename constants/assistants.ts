@@ -10,7 +10,7 @@ export const assistants = [
 
 export type AssistantType = (typeof assistants)[number];
 
-export const defaultAssistantType = "tinyllama";
+export const defaultAssistantType = "gemma:2b";
 
 export const assistantInfo: Record<
   AssistantType,

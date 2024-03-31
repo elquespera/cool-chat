@@ -3,13 +3,14 @@
 import { ThemeColor, themeColors } from "@/constants/theme-color";
 import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { SettingsContext } from "./settings-context";
-import { defaultBackground, defaultColor } from "@/constants";
+import { defaultSettings } from "@/constants";
 import { ThemeBackground } from "@/constants/theme-background";
 
 export type InitialSettings = {
   color: ThemeColor;
   background: ThemeBackground;
   sound: boolean;
+  resizeAttachments: boolean;
 };
 
 type SettingsProviderProps = {
@@ -25,6 +26,9 @@ export function SettingsProvider({
     initialSettings.background,
   );
   const [sound, setSound] = useState(initialSettings.sound);
+  const [resizeAttachments, setResizeAttachments] = useState(
+    initialSettings.resizeAttachments,
+  );
 
   const updateColorClass = (value: ThemeColor) => {
     themeColors.forEach((themeColor) =>
@@ -41,19 +45,21 @@ export function SettingsProvider({
     () => ({
       color,
       setColor: (value: ThemeColor) => {
-        const newValue = value || color || defaultColor;
+        const newValue = value || color || defaultSettings.color;
         setColor(newValue);
         updateColorClass(newValue);
       },
       background,
       setBackground: (value: ThemeBackground) => {
-        const newValue = value || background || defaultBackground;
+        const newValue = value || background || defaultSettings.background;
         setBackground(newValue);
       },
       sound,
       setSound,
+      resizeAttachments,
+      setResizeAttachments,
     }),
-    [color, background, sound],
+    [color, background, sound, resizeAttachments],
   );
 
   return (
