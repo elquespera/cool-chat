@@ -50,7 +50,7 @@ export function ChatWindow() {
   const streamingMsgVisible =
     isStreaming &&
     chat?.id === streamedMessage?.chatId &&
-    streamedMessage?.id !== messages?.[0].id;
+    streamedMessage?.id !== messages?.[0]?.id;
 
   const updateScrollButtonVisible = () => {
     const scrollArea = scrollAreaRef.current;

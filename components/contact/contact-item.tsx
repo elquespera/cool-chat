@@ -10,6 +10,7 @@ import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 type ContactItemProps = {
   contact: ContactUser;
   href: string;
+  chatId?: string;
   selected?: boolean;
   secondLine?: ReactNode;
   endDecoration?: ReactNode;
@@ -18,6 +19,7 @@ type ContactItemProps = {
 export function ContactItem({
   contact,
   href,
+  chatId,
   selected,
   secondLine,
   endDecoration,
@@ -54,6 +56,7 @@ export function ContactItem({
       <div className="relative flex items-center justify-between gap-8 rounded-lg bg-message px-4 py-3 transition-colors group-hover:bg-accent group-hover:text-accent-foreground group-aria-selected:bg-message-own group-aria-selected:text-message-own-foreground">
         <UserInfo
           user={contact}
+          chatId={chatId}
           showStatus
           size="lg"
           oneLine
