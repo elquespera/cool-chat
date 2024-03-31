@@ -24,6 +24,7 @@ export const sendMessage = async (
 
     const attachment = await createAttachment(
       attachmentForm?.get("attachment") as File,
+      resize,
     );
 
     const messageResponse = await db

@@ -17,6 +17,7 @@ import { useSocket } from "../providers/socket/socket-context";
 import { AttachmentButton } from "./attachment-button";
 import { EmojiPicker } from "./emoji-picker";
 import { useInsertEmoji } from "./use-insert-emoji";
+import { useSettings } from "../providers/settings/settings-context";
 
 export function ChatInput() {
   const router = useRouter();
@@ -24,6 +25,7 @@ export function ChatInput() {
   const formRef = useRef<HTMLFormElement>(null);
   const { socket } = useSocket();
   const { user } = useAuth();
+  const { resizeAttachments } = useSettings();
   const { interlocutor, chat, refetchOpenChats } = useChat();
   const { isAssistant, isStreaming, generateResponse } = useAssistant();
   const { refetchMessages } = useMessages();
@@ -57,6 +59,7 @@ export function ChatInput() {
         interlocutor.id,
         chat?.id,
         formData,
+        resizeAttachments,
       );
 
       if (result.ok) {
