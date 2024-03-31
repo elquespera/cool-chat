@@ -1,4 +1,4 @@
-import { defaultBackground, defaultColor, defaultSound } from "@/constants";
+import { defaultSettings } from "@/constants";
 import { ThemeBackground } from "@/constants/theme-background";
 import { ThemeColor } from "@/constants/theme-color";
 import { createContext, useContext } from "react";
@@ -10,15 +10,16 @@ type SettingsContextType = {
   setBackground: (background: ThemeBackground) => void;
   sound: boolean;
   setSound: (sound: boolean) => void;
+  resizeAttachments: boolean;
+  setResizeAttachments: (sound: boolean) => void;
 };
 
 export const SettingsContext = createContext<SettingsContextType>({
-  color: defaultColor,
+  ...defaultSettings,
   setColor: () => {},
-  background: defaultBackground,
   setBackground: () => {},
-  sound: defaultSound,
   setSound: () => {},
+  setResizeAttachments: () => {},
 });
 
 export const useSettings = () => useContext(SettingsContext);

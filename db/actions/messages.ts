@@ -129,40 +129,6 @@ export const countUnreadMesages = async (chatId: string) =>
     return result?.value ?? 0;
   });
 
-export const sendMessage = async (
-  message: string,
-  contactId: string,
-  chatId?: string,
-  attachmentForm?: FormData,
-) =>
-  withAuth<MessageWithChat>(async (user) => {
-    const chatResponse = chatId
-      ? await getChatById(chatId)
-      : await findOrCreateChat(user.id, contactId);
-
-    if (!chatResponse.ok) return;
-
-    const attachment = await createAttachment(
-      attachmentForm?.get("attachment") as File,
-    );
-
-    const messageResponse = await db
-      .insert(messages)
-      .values({
-        authorId: user.id,
-        chatId: chatResponse.data.id,
-        content: encryptText(message),
-        attachment,
-      })
-      .returning()
-      .get();
-
-    return db.query.messages.findFirst({
-      where: eq(messages.id, messageResponse.id),
-      with: { chat: true },
-    });
-  });
-
 const decryptMessage = <T extends MessageSelect>({
   content,
   ...restMessage

@@ -1,6 +1,6 @@
 "use client";
 import { routes } from "@/constants/routes";
-import { sendMessage } from "@/db/actions/messages";
+import { sendMessage } from "@/db/actions/send-message";
 import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 import { useRouter } from "next/navigation";
 import { FormEventHandler, useRef, useState } from "react";

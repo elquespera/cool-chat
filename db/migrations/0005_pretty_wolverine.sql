@@ -1,0 +1,1 @@
+ALTER TABLE settings ADD `resize_attachments` integer DEFAULT true NOT NULL;
