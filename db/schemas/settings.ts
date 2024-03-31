@@ -22,10 +22,6 @@ export const settings = sqliteTable("settings", {
   resizeAttachments: integer("resize_attachments", { mode: "boolean" })
     .default(defaultSettings.resizeAttachments)
     .notNull(),
-
-  status: text("status", { enum: ["offline", "online"] })
-    .default("offline")
-    .notNull(),
 });
 
 export type SettingsSelect = typeof settings.$inferSelect;

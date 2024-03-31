@@ -5,6 +5,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Server as SocketIOServer } from "socket.io";
 import { db } from "@/db/db";
 import { settings } from "@/db/schemas/settings";
+import { users } from "@/db/schemas/auth";
+import { eq } from "drizzle-orm";
 
 type NextApiResponseServerIO = NextApiResponse & {
   socket: Socket & {
@@ -70,8 +72,5 @@ export default function handler(
 }
 
 async function updateStatus(userId: string, status: "offline" | "online") {
-  await db.insert(settings).values({ userId, status }).onConflictDoUpdate({
-    target: settings.userId,
-    set: { status },
-  });
+  db.update(users).set({ status }).where(eq(users.id, userId));
 }

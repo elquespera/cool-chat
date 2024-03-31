@@ -12,7 +12,7 @@ export function ChatUser() {
     <GlassPanel className="flex h-20 items-center gap-2 shadow-sm">
       <UserInfo
         user={interlocutor}
-        status
+        showStatus
         size="lg"
         className="ms-12 sm:ms-0"
       />

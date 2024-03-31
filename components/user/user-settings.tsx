@@ -105,7 +105,12 @@ export function UserSettings() {
     >
       <div className="relative isolate flex h-10 items-center gap-2">
         <CollapsibleTrigger className="peer cursor-pointer select-none before:absolute before:inset-0">
-          <UserInfo user={user} avatarUrl={avatarUrl} status self />
+          <UserInfo
+            user={{ ...user, status: "online" }}
+            avatarUrl={avatarUrl}
+            showStatus
+            self
+          />
         </CollapsibleTrigger>
         <SoundSwitch className="ml-auto" />
         <ThemeSwitch />
