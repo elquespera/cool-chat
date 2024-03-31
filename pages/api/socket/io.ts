@@ -42,7 +42,6 @@ export default function handler(
     io.on("connection", (socket) => {
       socket.on("disconnect", () => {
         const userId = socket.data.userId;
-        console.log("user disconnected", userId);
         socket.broadcast.emit("userStatusChange", {
           userId,
           status: "offline",
@@ -52,7 +51,6 @@ export default function handler(
       });
 
       socket.on("userStatusChange", ({ userId, status }) => {
-        console.log("user status change", userId, status);
         socket.data.userId = userId;
         socket.broadcast.emit("userStatusChange", { userId, status });
         if (status === "offline" || status === "online") {
@@ -72,5 +70,6 @@ export default function handler(
 }
 
 async function updateStatus(userId: string, status: "offline" | "online") {
-  db.update(users).set({ status }).where(eq(users.id, userId));
+  console.log(`User status: ${userId} => ${status}`);
+  await db.update(users).set({ status }).where(eq(users.id, userId));
 }
