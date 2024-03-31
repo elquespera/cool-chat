@@ -51,7 +51,7 @@ export function useChatEvents(
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [typingContacts]);
+  }, [typingContacts, setTypingContacts]);
 
   // Mark messages delivered
   useCustomEvent(
