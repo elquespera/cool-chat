@@ -118,7 +118,10 @@ export function ChatWrapper({
         <div
           onMouseDown={handleMouseDown}
           onTouchStartCapture={handleTouchStart}
-          className={cn("relative z-50 hidden w-[2px] bg-border before:absolute before:inset-y-0 before:left-1/2 before:w-2 before:-translate-x-1/2  before:transition-colors after:absolute after:inset-y-0   after:left-1/2 after:w-4 after:-translate-x-1/2 after:cursor-ew-resize before:hover:bg-border sm:block", isResizing && 'before:bg-border')}
+          className={cn(
+            "relative z-50 hidden w-[2px] bg-border before:absolute before:inset-y-0 before:left-1/2 before:w-2 before:-translate-x-1/2  before:transition-colors after:absolute after:inset-y-0   after:left-1/2 after:w-4 after:-translate-x-1/2 after:cursor-ew-resize before:hover:bg-border sm:block",
+            isResizing && "before:bg-border",
+          )}
         />
         <Background
           type={background}

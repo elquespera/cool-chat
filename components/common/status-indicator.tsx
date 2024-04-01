@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
-import { ComponentProps } from "react";
-import { GearAnimatedIcon } from "../icons/gear-animated-icon";
 import { FadingCirclesIcon } from "../icons/fading-circles-icon";
+import { GearAnimatedIcon } from "../icons/gear-animated-icon";
 
 export type StatusIndicatorStatus =
   | UserStatus

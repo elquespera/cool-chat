@@ -3,9 +3,9 @@ import Link from "next/link";
 import { MouseEventHandler, ReactNode, useEffect, useRef } from "react";
 
 import { routes } from "@/constants/routes";
-import { useRouter } from "next/navigation";
-import { UserInfo } from "../user/user-info";
 import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
+import { useChatWindow } from "../providers/chat-window/chat-window-context";
+import { UserInfo } from "../user/user-info";
 
 type ContactItemProps = {
   contact: ContactUser;
@@ -24,15 +24,14 @@ export function ContactItem({
   secondLine,
   endDecoration,
 }: ContactItemProps) {
-  const router = useRouter();
+  const { navigate } = useChatWindow();
   const ref = useRef<HTMLAnchorElement>(null);
   const playClick = useSoundEffect("click");
 
   const handleClick: MouseEventHandler = (event) => {
-    playClick();
-    if (!selected) return;
     event.preventDefault();
-    router.push(routes.home);
+    playClick();
+    navigate(selected ? routes.home : href);
   };
 
   useEffect(() => {
