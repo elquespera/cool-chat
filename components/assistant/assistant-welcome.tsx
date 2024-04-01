@@ -9,10 +9,9 @@ import { addChat } from "@/db/actions/chats";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { IconButton } from "../common/icon-button";
-import { ChatConversationIcon } from "../icons/chat-conversation-icon";
+import { ArrowUpIcon } from "../icons/arrow-up-icon";
 import { useAuth } from "../providers/auth/auth-context";
 import { useChat } from "../providers/chat/chat-context";
-import { UserAvatar } from "../user/user-avatar";
 import { AssistantPicker } from "./assistant-picker";
 
 export function AssistantWelcome() {
@@ -50,26 +49,38 @@ export function AssistantWelcome() {
       <p className="mb-8 select-none font-semibold text-muted-foreground">
         Chat with an AI Assistant
       </p>
-      <div className="flex max-w-lg flex-col gap-8 rounded-lg border bg-card p-6 shadow-md @lg:p-8">
+      <div className="group relative flex max-w-md flex-col gap-6 rounded-lg border bg-card p-8 transition-shadow hover:shadow-xl">
         <AssistantPicker
+          className="relative z-10 self-center"
           assistant={assistantType}
           onAssistantChange={handleAssistantChange}
         />
-        <div className="flex flex-col items-center gap-4">
-          <UserAvatar className="h-32 w-32" avatarUrl={assistant.avatarUrl} />
-          <h3 className="text-xl font-semibold">{assistant.username}</h3>
-          <p className="mb-6 mt-2 min-h-20 text-sm font-medium text-muted-foreground">
+        <div className="flex flex-col items-center gap-2">
+          <img
+            alt={assistant.username}
+            src={assistant.avatarUrl}
+            className="max-w-40 rounded-full transition-transform group-hover:scale-105"
+          />
+          <h3 className="text-2xl font-semibold tracking-tight">
+            {assistant.username}
+          </h3>
+          <p className="mb-2 min-h-20 text-sm text-muted-foreground">
             {assistant.description}
           </p>
         </div>
-        <div className="mt-auto flex flex-wrap justify-between gap-2">
-          <IconButton variant="link" href={assistant.url}>
-            Reference
-          </IconButton>
-          <IconButton icon={<ChatConversationIcon />} onClick={handleChatClick}>
-            Start a Chat
-          </IconButton>
-        </div>
+        <IconButton
+          variant="link"
+          className="absolute bottom-8 left-8 z-10"
+          href={assistant.url}
+        >
+          Reference
+        </IconButton>
+        <button
+          onClick={handleChatClick}
+          className="bottom-8 right-8 self-end px-2 py-3 before:absolute before:inset-0"
+        >
+          <ArrowUpIcon className="h-6 w-6 rotate-90 transition-all group-hover:translate-x-1 group-hover:text-primary" />
+        </button>
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-import { CenteredMessage } from "@/components/common/centered-message";
 import { Spinner } from "@/components/common/spinner";
 import { ContactList } from "@/components/contact/contact-list";
 import { ContactScrollProvider } from "@/components/contact/contact-scroll-context";
@@ -38,8 +37,8 @@ export default function ChatLayout({ children }: PropsWithChildren) {
 
 function Loading() {
   return (
-    <CenteredMessage>
+    <div className="flex grow select-none flex-col items-center justify-center">
       <Spinner className="w-6" />
-    </CenteredMessage>
+    </div>
   );
 }
