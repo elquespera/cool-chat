@@ -13,7 +13,7 @@ export function BackgroundInternal({ type, preview }: BackgroundInternalProps) {
   return (
     <svg
       className={cn(
-        "absolute inset-0 fill-primary/50 opacity-15",
+        "absolute inset-0 fill-accent-foreground/30 opacity-15",
         preview
           ? "h-[250%] w-[250%] origin-top-left scale-[0.4] opacity-100"
           : "h-full w-full",

@@ -1,21 +1,23 @@
 import { UserAvatar } from "@/components/user/user-avatar";
 import { AssistantType, assistantInfo } from "@/constants/assistants";
+import { cn } from "@/lib/utils";
 import { ToggleOutlineItem } from "../common/toggle-outline-item";
 import { ToggleGroup } from "../ui/toggle-group";
 
 type AssistantPickerProps = {
   assistant: AssistantType;
   onAssistantChange: (value: AssistantType) => void;
-};
+} & PropsWithClassName;
 
 export function AssistantPicker({
   assistant,
   onAssistantChange,
+  className,
 }: AssistantPickerProps) {
   return (
     <ToggleGroup
       type="single"
-      className="flex flex-wrap justify-center gap-4"
+      className={cn("flex flex-wrap justify-center gap-4", className)}
       value={assistant}
       onValueChange={onAssistantChange}
     >

@@ -24,7 +24,10 @@ export function Background({
 }: BackgroundProps) {
   const Component = asChild ? Slot : "div";
   return (
-    <Component {...props} className={cn("relative overflow-hidden", className)}>
+    <Component
+      {...props}
+      className={cn("relative overflow-hidden bg-accent/30", className)}
+    >
       <>
         <BackgroundInternal type={type} preview={preview} />
         <div className="absolute inset-0 flex grow flex-col">{children}</div>

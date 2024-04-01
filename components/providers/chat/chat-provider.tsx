@@ -15,7 +15,7 @@ import {
 import useSWR from "swr";
 import { useAuth } from "../auth/auth-context";
 import { useSocket } from "../socket/socket-context";
-import { useChatEvents } from "./use-chat-events";
+import { TypingContactList, useChatEvents } from "./use-chat-events";
 
 export function ChatProvider({ children }: PropsWithChildren) {
   const { user } = useAuth();
@@ -24,6 +24,7 @@ export function ChatProvider({ children }: PropsWithChildren) {
     const result = await getOpenChats();
     return result.ok ? result.data : [];
   });
+  const [typingContacts, setTypingContacts] = useState<TypingContactList>({});
 
   const refetchOpenChats = useCallback(async () => {
     await mutate();
@@ -32,7 +33,7 @@ export function ChatProvider({ children }: PropsWithChildren) {
   const [chat, setChat] = useState<ChatSelect | null>(null);
   const [interlocutor, setInterlocutor] = useState<ContactUser | null>(null);
 
-  useChatEvents(openChats, refetchOpenChats);
+  useChatEvents(openChats, refetchOpenChats, typingContacts, setTypingContacts);
 
   useEffect(() => {
     if (!user || !openChats) return;
@@ -60,8 +61,9 @@ export function ChatProvider({ children }: PropsWithChildren) {
       setChat,
       openChats,
       refetchOpenChats,
+      typingContacts: Object.keys(typingContacts),
     }),
-    [interlocutor, chat, openChats, refetchOpenChats],
+    [interlocutor, chat, openChats, typingContacts, refetchOpenChats],
   );
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

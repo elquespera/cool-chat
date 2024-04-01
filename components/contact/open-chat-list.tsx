@@ -14,6 +14,7 @@ export function OpenChatList() {
         <ContactItem
           key={data.id}
           contact={data.interlocutor}
+          chatId={data.id}
           href={`${routes.chat}/${data.id}`}
           selected={data.id === chat?.id}
           secondLine={<SecondLine data={data} />}

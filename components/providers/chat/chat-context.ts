@@ -7,6 +7,7 @@ type ChatContextType = {
   setInterlocutor: (interlocutor: ContactUser | null) => void;
   chat: ChatSelect | null;
   setChat: (chat: ChatSelect | null) => void;
+  typingContacts: string[];
 
   openChats?: OpenChat[];
   refetchOpenChats: () => Promise<void>;
@@ -15,6 +16,7 @@ type ChatContextType = {
 export const ChatContext = createContext<ChatContextType>({
   interlocutor: null,
   chat: null,
+  typingContacts: [],
   setInterlocutor: () => {},
   setChat: () => {},
   refetchOpenChats: () => Promise.resolve(),

@@ -3,13 +3,14 @@ import Link from "next/link";
 import { MouseEventHandler, ReactNode, useEffect, useRef } from "react";
 
 import { routes } from "@/constants/routes";
-import { useRouter } from "next/navigation";
-import { UserInfo } from "../user/user-info";
 import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
+import { useChatWindow } from "../providers/chat-window/chat-window-context";
+import { UserInfo } from "../user/user-info";
 
 type ContactItemProps = {
   contact: ContactUser;
   href: string;
+  chatId?: string;
   selected?: boolean;
   secondLine?: ReactNode;
   endDecoration?: ReactNode;
@@ -18,19 +19,19 @@ type ContactItemProps = {
 export function ContactItem({
   contact,
   href,
+  chatId,
   selected,
   secondLine,
   endDecoration,
 }: ContactItemProps) {
-  const router = useRouter();
+  const { navigate } = useChatWindow();
   const ref = useRef<HTMLAnchorElement>(null);
   const playClick = useSoundEffect("click");
 
   const handleClick: MouseEventHandler = (event) => {
-    playClick();
-    if (!selected) return;
     event.preventDefault();
-    router.push(routes.home);
+    playClick();
+    navigate(selected ? routes.home : href);
   };
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export function ContactItem({
       <div className="relative flex items-center justify-between gap-8 rounded-lg bg-message px-4 py-3 transition-colors group-hover:bg-accent group-hover:text-accent-foreground group-aria-selected:bg-message-own group-aria-selected:text-message-own-foreground">
         <UserInfo
           user={contact}
+          chatId={chatId}
           showStatus
           size="lg"
           oneLine

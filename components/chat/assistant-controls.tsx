@@ -20,7 +20,7 @@ export function AssistantControls() {
     generateResponse,
     abortResponse,
   } = useAssistant();
-  const { refetchMessages } = useMessages();
+  const { refetchMessages, messages } = useMessages();
 
   const isOwnChat = assistantChat?.id === chat?.id;
 
@@ -64,7 +64,7 @@ export function AssistantControls() {
               aria-label="Regenerate response"
               toolTip="Regenerate response"
               toolTipOffset={10}
-              disabled={isStreaming}
+              disabled={isStreaming || !messages?.length}
               variant="ghost"
               onClick={handleRegenerateResponse}
               icon={<MagicIcon className="h-5 w-5 group-hover:text-primary" />}

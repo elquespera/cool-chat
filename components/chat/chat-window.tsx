@@ -14,12 +14,14 @@ import { ScrollArea } from "../ui/scroll-area";
 import { ChatError } from "./chat-error";
 import { PhotoProvider } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
+import { FadingCirclesIcon } from "../icons/fading-circles-icon";
+import { UserInfo } from "../user/user-info";
 
 const scrollButtonMargin = 250;
 const scrollButtonTimeout = 3000;
 
 export function ChatWindow() {
-  const { chat } = useChat();
+  const { chat, interlocutor, typingContacts } = useChat();
   const {
     messages,
     fetchNextPage,
@@ -50,7 +52,7 @@ export function ChatWindow() {
   const streamingMsgVisible =
     isStreaming &&
     chat?.id === streamedMessage?.chatId &&
-    streamedMessage?.id !== messages?.[0].id;
+    streamedMessage?.id !== messages?.[0]?.id;
 
   const updateScrollButtonVisible = () => {
     const scrollArea = scrollAreaRef.current;
@@ -130,7 +132,7 @@ export function ChatWindow() {
       <PhotoProvider>
         <ul
           ref={listRef}
-          className="mx-auto flex max-w-[48rem] flex-col-reverse px-4 pb-16 pt-28 @container md:px-8"
+          className="relative mx-auto flex max-w-[48rem] flex-col-reverse px-4 pb-16 pt-28 @container md:px-8"
         >
           {chat?.id === assistantChat?.id && assistantError && (
             <ChatError>{assistantError}</ChatError>
@@ -178,6 +180,17 @@ export function ChatWindow() {
       {isLoading && (
         <Spinner className="-translate-[50%] absolute left-[50%] top-24 w-6" />
       )}
+      <div
+        className={cn(
+          "absolute bottom-20 left-[50%] flex -translate-x-[50%] scale-0 select-none items-center rounded-lg bg-card/70 px-3 py-1 text-center text-sm font-medium text-muted-foreground opacity-0 shadow-msg backdrop-blur-sm transition-all duration-500",
+          interlocutor &&
+            typingContacts.includes(interlocutor.id) &&
+            "scale-100 opacity-100",
+        )}
+      >
+        <FadingCirclesIcon className="mr-1 h-6 w-6" />
+        {interlocutor?.username} is typing
+      </div>
     </ScrollArea>
   ) : null;
 }

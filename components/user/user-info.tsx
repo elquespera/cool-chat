@@ -9,12 +9,14 @@ import {
 import { UserAvatar } from "./user-avatar";
 import { UserText } from "./user-text";
 import { useAssistant } from "../providers/assistant/assistant-context";
+import { useChat } from "../providers/chat/chat-context";
 
 type UserInfoProps = {
   user: ContactUser;
   size?: "sm" | "md" | "lg";
   showStatus?: boolean;
   self?: boolean;
+  chatId?: string;
   avatarUrl?: string;
   oneLine?: boolean;
   secondLine?: ReactNode;
@@ -25,12 +27,14 @@ export function UserInfo({
   size = "md",
   avatarUrl,
   oneLine,
+  chatId,
   self,
   showStatus,
   secondLine,
   className,
   ...props
 }: UserInfoProps) {
+  const { typingContacts } = useChat();
   const { assistantChat, isStreaming } = useAssistant();
 
   const indicatorCn = cn(
@@ -42,16 +46,12 @@ export function UserInfo({
 
   if (user.role === "assistant") {
     if (isStreaming) {
-      if (
-        [assistantChat?.userOneId, assistantChat?.userTwoId].includes(user.id)
-      ) {
-        status = "streaming";
-      } else {
-        status = "offline";
-      }
+      status = chatId === assistantChat?.id ? "streaming" : "offline";
     } else {
       status = "online";
     }
+  } else if (typingContacts.includes(user.id)) {
+    status = "typing";
   }
 
   return (
