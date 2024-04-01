@@ -2,7 +2,9 @@
 import { MessageWithAuthor } from "@/db/schemas/messages";
 import { cn } from "@/lib/utils";
 import Markdown from "markdown-to-jsx";
-import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { PhotoView } from "react-photo-view";
 import { useIntersectionObserver } from "usehooks-ts";
 import { Timestamp } from "../common/timestamp";
 import { useAuth } from "../providers/auth/auth-context";
@@ -12,10 +14,8 @@ import { UserText } from "../user/user-text";
 import { MessageEditForm } from "./message-edit-form";
 import { MessageMenu } from "./message-menu";
 import { MessageStatus } from "./message-status";
-import { useMessageStatus } from "./use-message-status";
 import { MessageType, messageBorderRadii } from "./message-utils";
-import Image from "next/image";
-import { PhotoView } from "react-photo-view";
+import { useMessageStatus } from "./use-message-status";
 
 type MessageItemProps = {
   message: MessageWithAuthor;
@@ -99,33 +99,35 @@ export const MessageItem = ({
       {isFirst && (
         <div
           className={cn(
-            "mb-1 flex items-center gap-2",
+            "mb-1 flex items-center gap-2 @lg:mb-1.5 @lg:gap-3",
             ownMessage && "flex-row-reverse",
           )}
         >
           <UserAvatar
             className={cn(
-              "w-8 lg:w-10",
+              "w-6 @lg:w-8",
               ownMessage ? "bg-message-own" : "bg-message",
             )}
             avatarUrl={author.avatarUrl}
             role={author.role}
           />
           <UserText
-            className="text-sm lg:text-base"
+            className="text-sm text-muted-foreground @lg:text-base"
             username={author.username}
             email={author.email}
             oneLine
           />
-          <span className="mx-2 text-xs tracking-tight text-muted-foreground opacity-70 lg:text-sm">
-            <Timestamp time={createdAt} style={isEdited ? "short" : "long"} />
-            {isEdited && (
-              <>
-                {", edited "}
-                <Timestamp time={updatedAt} />
-              </>
-            )}
-          </span>
+          <Timestamp
+            time={createdAt}
+            style={isEdited ? "short" : "long"}
+            className="mx-2 text-xs tracking-tight text-muted-foreground @lg:text-sm"
+          />
+          {isEdited && (
+            <>
+              {", edited "}
+              <Timestamp time={updatedAt} />
+            </>
+          )}
         </div>
       )}
 
@@ -154,15 +156,16 @@ export const MessageItem = ({
           ) : (
             <>
               {attachment && (
-                <div className={cn("mb-2 flex", ownMessage && "justify-end")}>
+                <div className={cn("flex", ownMessage && "justify-end")}>
                   <PhotoView src={attachment}>
                     <Image
-                      width={300}
-                      height={300}
+                      width={320}
+                      height={320}
                       priority
                       className="h-auto w-auto cursor-pointer rounded-sm"
                       alt="Attachment image"
                       src={attachment}
+                      sizes="320px"
                     />
                   </PhotoView>
                 </div>
@@ -172,9 +175,10 @@ export const MessageItem = ({
                   {messageContent}
                 </div>
               )}
-              <div className="ml-auto flex items-center gap-2">
-                {ownMessage && <MessageStatus status={status} />}
-              </div>
+
+              {ownMessage && (
+                <MessageStatus className="ml-auto" status={status} />
+              )}
               {editingId !== id && (
                 <MessageMenu
                   open={menuOpen}

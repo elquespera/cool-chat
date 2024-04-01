@@ -1,14 +1,22 @@
 import { MessageStatus as MessageStatusType } from "@/db/schemas/messages";
 import { cn } from "@/lib/utils";
+import { ComponentProps } from "react";
 import { CheckIcon } from "../icons/check-icon";
 
 type MessageStatusProps = {
   status: MessageStatusType | null;
-};
+} & ComponentProps<"div">;
 
-export function MessageStatus({ status }: MessageStatusProps) {
+export function MessageStatus({
+  status,
+  className,
+  ...props
+}: MessageStatusProps) {
   return (
-    <span className="relative h-4 w-5">
+    <div
+      {...props}
+      className={cn("relative flex min-h-4 min-w-5 items-center", className)}
+    >
       <CheckIcon
         className={cn(
           "absolute text-muted-foreground opacity-50",
@@ -23,6 +31,6 @@ export function MessageStatus({ status }: MessageStatusProps) {
           )}
         />
       )}
-    </span>
+    </div>
   );
 }
