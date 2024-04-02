@@ -9,6 +9,8 @@ import { PropsWithChildren, useEffect, useRef, useState } from "react";
 import { useAuth } from "../auth/auth-context";
 import { SocketContext } from "./socket-context";
 
+const wsURL = process.env.WS_URL;
+
 export const SocketProvider = ({ children }: PropsWithChildren) => {
   const { user } = useAuth();
   const [isConnected, setIsConnected] = useState(false);
@@ -41,7 +43,7 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if (!user) return;
 
-    const ws = new WebSocket(`ws://localhost:3334/ws?userId=${user.id}`);
+    const ws = new WebSocket(`${wsURL}?userId=${user.id}`);
     wsRef.current = ws;
 
     ws.addEventListener("open", async () => {
