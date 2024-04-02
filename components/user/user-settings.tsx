@@ -85,12 +85,10 @@ export function UserSettings() {
     if (open) {
       setSavedColor(color);
       setSavedBackground(background);
-      playClickOn();
     } else {
       setColor(savedColor);
       setBackground(savedBackground);
       setAvatarUrl("");
-      playClickOff();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -104,7 +102,10 @@ export function UserSettings() {
       className="absolute bottom-0 w-full bg-background p-4 shadow-top"
     >
       <div className="relative isolate flex h-10 items-center gap-2">
-        <CollapsibleTrigger className="peer cursor-pointer select-none before:absolute before:inset-0">
+        <CollapsibleTrigger
+          className="peer cursor-pointer select-none before:absolute before:inset-0"
+          onClick={() => (open ? playClickOff() : playClickOn())}
+        >
           <UserInfo
             user={{ ...user, status: "online" }}
             avatarUrl={avatarUrl}

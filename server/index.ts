@@ -1,14 +1,8 @@
-import { randomUUID } from "crypto";
 import { updateUserStatus } from "./db";
 import { socketRoutes } from "./src/socket-routes";
 import { SocketData, SocketMessageType, UserStatus } from "./src/socket-types";
+import { addTicket, hasTicket, openTicketCount } from "./src/tickets";
 import { verifyHMAC } from "./src/verfy-hmac";
-import {
-  addTicket,
-  hasTicket,
-  openTicketCount,
-  openTickets,
-} from "./src/tickets";
 
 const roomName = "cool-chat";
 
@@ -19,8 +13,6 @@ const server = Bun.serve<SocketData>({
       const userId = url.searchParams.get("userId");
       const ticket = url.searchParams.get("ticket");
       const isAuth = ticket && hasTicket(ticket);
-
-      console.log(isAuth, openTickets);
 
       if (userId && isAuth) {
         const success = server.upgrade(req, { data: { userId, ticket } });

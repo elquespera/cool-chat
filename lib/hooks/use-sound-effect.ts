@@ -1,5 +1,4 @@
 import { useSettings } from "@/components/providers/settings/settings-context";
-import useSound, { PlayOptions } from "use-sound";
 
 const sounds = {
   click: "/sounds/minimal-pop-click-ui-4.mp3",
@@ -14,11 +13,11 @@ type SoundType = keyof typeof sounds;
 
 export function useSoundEffect(soundType: SoundType) {
   const { sound } = useSettings();
-  const [play] = useSound(sounds[soundType]);
 
-  return (force?: boolean, options?: PlayOptions) => {
+  return (force?: boolean) => {
     if (force === undefined && !sound) return;
     if (force === false) return;
-    play(options);
+
+    new Audio(sounds[soundType]).play();
   };
 }
