@@ -46,4 +46,4 @@ jobs:
         run: echo "${{secrets.ENV_FILE_SERVER_PROD }}" > ./server/.env
 
       - name: Restart process with pm2
-        run: pm2 restart cool-chat-prod
+        run: pm2 reload cool-chat-prod
