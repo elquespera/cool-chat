@@ -8,7 +8,8 @@ import type {
 
 import { socketRoutes } from "@/server/src/socket-routes";
 import { User } from "lucia";
-import { PropsWithChildren, useEffect, useRef, useState } from "react";
+import { PropsWithChildren, useEffect, useMemo } from "react";
+import useWebSocket, { ReadyState } from "react-use-websocket";
 import { SocketContext } from "./socket-context";
 
 const wsURL = `${process.env.NEXT_PUBLIC_WS_URL}${socketRoutes.connect}`;
@@ -23,67 +24,57 @@ export const SocketProvider = ({
   ticket,
   children,
 }: SocketProviderProps) => {
-  const [isConnected, setIsConnected] = useState(false);
-
-  const wsRef = useRef<WebSocket | null>(null);
-
-  const updateUserStatus = (status: UserStatus) => {
-    if (!user || !wsRef.current) return;
-    const message: SocketMessageType = {
-      userId: user.id,
-      type: "userstatuschange",
-      payload: {
-        userId: user.id,
-        status,
+  const { readyState, lastJsonMessage, sendJsonMessage } =
+    useWebSocket<SocketMessageType>(
+      `${wsURL}?userId=${user?.id}&ticket=${ticket}`,
+      {
+        shouldReconnect: () => true,
+        reconnectAttempts: 20,
+        reconnectInterval: 3000,
       },
-    };
-    wsRef.current.send(JSON.stringify(message));
-  };
-
-  const updateMessageStatus = (payload: MessageUpdate) => {
-    if (!user || !wsRef.current) return;
-    const message: SocketMessageType = {
-      userId: user.id,
-      type: "messageupdate",
-      payload,
-    };
-    wsRef.current.send(JSON.stringify(message));
-  };
+    );
 
   useEffect(() => {
-    if (!user || !ticket) return;
+    if (!lastJsonMessage || !user) return;
 
-    const ws = new WebSocket(`${wsURL}?userId=${user.id}&ticket=${ticket}`);
-    wsRef.current = ws;
+    try {
+      const { type, userId, payload } = lastJsonMessage;
+      if (userId === user.id) return;
+      dispatchCustomEvent(type, payload);
+    } catch {}
+  }, [lastJsonMessage, user]);
 
-    ws.addEventListener("open", async () => {
-      setIsConnected(true);
-    });
+  const value = useMemo(
+    () => ({
+      isConnected: readyState === ReadyState.OPEN,
 
-    ws.addEventListener("close", async () => {
-      setIsConnected(false);
-    });
+      updateUserStatus: (status: UserStatus) => {
+        if (!user) return;
+        sendJsonMessage({
+          userId: user.id,
+          type: "userstatuschange",
+          payload: {
+            userId: user.id,
+            status,
+          },
+        });
+      },
 
-    ws.addEventListener("message", async (event: MessageEvent<string>) => {
-      try {
-        const parsed: SocketMessageType = JSON.parse(event.data);
-        const { type, userId, payload } = parsed;
-        if (userId === user.id) return;
+      updateMessageStatus: (payload: MessageUpdate) => {
+        if (!user) return;
 
-        dispatchCustomEvent(type, payload);
-      } catch (e) {
-        console.error(e);
-      }
-    });
+        sendJsonMessage({
+          type: "messageupdate",
+          userId: user.id,
+          payload,
+        });
+      },
+    }),
 
-    return () => ws.close();
-  }, [user, ticket]);
+    [user, readyState, sendJsonMessage],
+  );
 
   return (
-    <SocketContext.Provider
-      value={{ isConnected, updateUserStatus, updateMessageStatus }}
-    >
-      {children}
-    </SocketContext.Provider>
+    <SocketContext.Provider value={value}>{children}</SocketContext.Provider>
   );
 };
