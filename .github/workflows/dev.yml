@@ -39,11 +39,14 @@ jobs:
       - name: Create .env file
         run: echo "${{secrets.ENV_FILE_DEV }}" > .env
 
-      - name: Create server .env file
-        run: echo "${{secrets.ENV_FILE_SERVER_DEV }}" > ./server/.env
-
       - name: Build project
         run: npm run build --if-present
+
+      - name: SERVER install dependencies
+        run: cd server && bun install
+
+      - name: Create server .env file
+        run: echo "${{secrets.ENV_FILE_SERVER_DEV }}" > .env
 
       - name: Restart process with pm2
         run: pm2 restart cool-chat-dev
