@@ -9,6 +9,7 @@
     "start": "concurrently -P --names \"NEXTJS,SERVER\" -c \"auto\" \"next start -- {@}\" \"cd server && bun ./index.ts\"",
     "lint": "next lint",
     "check": "tsc && next lint",
+    "update": "bunx npm-check-updates -ui",
     "db:studio": "drizzle-kit studio",
     "migrations:generate": "drizzle-kit generate:sqlite",
     "migrations:push": "drizzle-kit push:sqlite",
