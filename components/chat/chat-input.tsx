@@ -3,7 +3,7 @@ import { routes } from "@/constants/routes";
 import { sendMessage } from "@/db/actions/send-message";
 import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 import { useRouter } from "next/navigation";
-import { FormEventHandler, useEffect, useRef, useState } from "react";
+import { FormEventHandler, useRef, useState } from "react";
 import { GlassPanel } from "../common/glass-panel";
 import { IconButton } from "../common/icon-button";
 import { InputWrapper } from "../common/input-wrapper";
@@ -13,17 +13,17 @@ import { useAssistant } from "../providers/assistant/assistant-context";
 import { useAuth } from "../providers/auth/auth-context";
 import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
+import { useSettings } from "../providers/settings/settings-context";
 import { useSocket } from "../providers/socket/socket-context";
 import { AttachmentButton } from "./attachment-button";
 import { EmojiPicker } from "./emoji-picker";
 import { useInsertEmoji } from "./use-insert-emoji";
-import { useSettings } from "../providers/settings/settings-context";
 
 export function ChatInput() {
   const router = useRouter();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const { socket } = useSocket();
+  const { updateUserStatus, updateMessageStatus } = useSocket();
   const { user } = useAuth();
   const { resizeAttachments } = useSettings();
   const { interlocutor, chat, refetchOpenChats } = useChat();
@@ -67,7 +67,7 @@ export function ChatInput() {
         setAttachment(undefined);
         playSound();
 
-        socket?.emit("messageUpdate", {
+        updateMessageStatus({
           messageId: result.data.id,
           chatId: result.data.chatId,
           authorId: result.data.authorId,
@@ -117,11 +117,7 @@ export function ChatInput() {
             value={message}
             onValueChange={(value) => {
               setMessage(value);
-              if (!user) return;
-              socket?.emit("userStatusChange", {
-                userId: user.id,
-                status: "typing",
-              });
+              updateUserStatus("typing");
             }}
             className="pb-1 ps-1"
             placeholder="Write a message..."

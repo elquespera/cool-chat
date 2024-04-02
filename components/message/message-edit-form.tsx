@@ -17,7 +17,7 @@ export function MessageEditForm({
   const [value, setValue] = useState(content);
   const [pending, setPending] = useState(false);
   const { setEditingId, refetchMessages } = useMessages();
-  const { socket } = useSocket();
+  const { updateMessageStatus } = useSocket();
   const { interlocutor } = useChat();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -35,7 +35,7 @@ export function MessageEditForm({
       });
 
       if (result.ok) {
-        socket?.emit("messageUpdate", {
+        updateMessageStatus({
           chatId: result.data.chatId,
           messageId: result.data.id,
           authorId: result.data.authorId,
@@ -62,7 +62,7 @@ export function MessageEditForm({
       <MultiTextArea
         value={value}
         onValueChange={setValue}
-        className="@lg:text-base w-full text-sm"
+        className="w-full text-sm @lg:text-base"
         formRef={formRef}
         autoFocus
         autoSelectAll

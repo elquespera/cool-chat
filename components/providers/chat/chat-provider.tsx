@@ -19,7 +19,7 @@ import { TypingContactList, useChatEvents } from "./use-chat-events";
 
 export function ChatProvider({ children }: PropsWithChildren) {
   const { user } = useAuth();
-  const { socket } = useSocket();
+  const { updateMessageStatus } = useSocket();
   const { data: openChats, mutate } = useSWR<OpenChat[]>(user?.id, async () => {
     const result = await getOpenChats();
     return result.ok ? result.data : [];
@@ -43,7 +43,7 @@ export function ChatProvider({ children }: PropsWithChildren) {
       if (!result.ok) return;
 
       const { authorId, chatId, id } = result.data;
-      socket?.emit("messageUpdate", {
+      updateMessageStatus({
         messageId: id,
         chatId,
         authorId,
@@ -51,7 +51,7 @@ export function ChatProvider({ children }: PropsWithChildren) {
         status: "delivered",
       });
     });
-  }, [openChats, socket, user]);
+  }, [openChats, updateMessageStatus, user]);
 
   const value = useMemo(
     () => ({

@@ -4,7 +4,7 @@ import { useAuth } from "../auth/auth-context";
 import { useSocket } from "../socket/socket-context";
 import { updateMessage } from "@/db/actions/messages";
 import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export type TypingContactList = Record<string, number>;
 
@@ -17,7 +17,7 @@ export function useChatEvents(
   setTypingContacts: (value: TypingContactList) => void,
 ) {
   const { user } = useAuth();
-  const { socket } = useSocket();
+  const { updateMessageStatus } = useSocket();
   const playMessageAlert = useSoundEffect("message-alert");
 
   // Refetch on user status change
@@ -29,9 +29,9 @@ export function useChatEvents(
           const newTypingList = { ...typingContacts };
           newTypingList[userId] = Date.now();
           setTypingContacts(newTypingList);
+        } else {
+          refetchOpenChats();
         }
-
-        refetchOpenChats();
       }
     },
     [openChats, refetchOpenChats],
@@ -62,7 +62,7 @@ export function useChatEvents(
         const result = await updateMessage(messageId, { status: "delivered" });
 
         if (result.ok) {
-          socket?.emit("messageUpdate", {
+          updateMessageStatus({
             messageId,
             interlocutorId,
             status: "delivered",
@@ -73,6 +73,6 @@ export function useChatEvents(
         refetchOpenChats();
       }
     },
-    [user, socket, refetchOpenChats],
+    [user, updateMessageStatus, refetchOpenChats],
   );
 }

@@ -6,7 +6,7 @@ import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
 
 export function useMessageStatus({ id, chatId, authorId }: MessageSelect) {
-  const { socket } = useSocket();
+  const { updateMessageStatus } = useSocket();
   const { interlocutor, refetchOpenChats } = useChat();
   const { refetchMessages } = useMessages();
 
@@ -19,7 +19,7 @@ export function useMessageStatus({ id, chatId, authorId }: MessageSelect) {
         : await updateMessage(id, { status });
 
     if (result.ok) {
-      socket?.emit("messageUpdate", {
+      updateMessageStatus({
         messageId: id,
         chatId,
         authorId,
