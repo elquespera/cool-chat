@@ -43,10 +43,7 @@ export function MessageProvider({ children }: PropsWithChildren) {
   useCustomEvent(
     "messageupdate",
     async ({ chatId, status }) => {
-      console.log("msg update");
       if (chat?.id !== chatId) return;
-
-      console.log("chat");
 
       refetchMessages(
         status === "created" || status === "delivered" ? "smooth" : undefined,

@@ -39,11 +39,7 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
   };
 
   useEffect(() => {
-    if (!user) {
-      wsRef.current?.close();
-      wsRef.current = null;
-      return;
-    }
+    if (!user) return;
 
     const ws = new WebSocket(`ws://localhost:3334/ws?userId=${user.id}`);
     wsRef.current = ws;
