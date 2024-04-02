@@ -19,6 +19,10 @@ const server = Bun.serve<SocketData>({
       if (userId && isAuth) {
         const success = server.upgrade(req, { data: { userId, ticket } });
         if (success) return undefined;
+      } else {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+        });
       }
     }
 
@@ -33,11 +37,18 @@ const server = Bun.serve<SocketData>({
 
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        statusText: "Unauthorized",
       });
     }
 
-    return new Response(JSON.stringify({ status: "running" }));
+    if (url.pathname === socketRoutes.status && req.method === "GET") {
+      return new Response(
+        JSON.stringify({ status: "running", active_users: openTickets.size }),
+      );
+    }
+
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+    });
   },
 
   websocket: {
