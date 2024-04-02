@@ -1,11 +1,12 @@
 import { createHash, createHmac } from "crypto";
 
-const hmacSecret = process.env.OLLAMA_API_HMAC_SECRET!;
+const defaultSecret = process.env.OLLAMA_API_HMAC_SECRET!;
 
 export function generateHMAC(
   url: string,
   method: string,
   body?: BodyInit | null,
+  hmacSecret = defaultSecret,
 ) {
   const hmac = createHmac("sha256", hmacSecret);
   const time = Date.now().toString();
@@ -25,7 +26,8 @@ export function generateHMAC(
 
 export function fetchHMAC(
   url: string,
-  { method, headers, body, ...rest }: RequestInit,
+  { method, headers, body, ...rest }: RequestInit = {},
+  hmacSecret = defaultSecret,
 ) {
   return fetch(url, {
     ...rest,
@@ -33,7 +35,7 @@ export function fetchHMAC(
     headers: {
       ...headers,
       "Content-Type": "application/json",
-      Authorization: generateHMAC(url, method || "GET", body),
+      Authorization: generateHMAC(url, method || "GET", body, hmacSecret),
     },
     body,
   });

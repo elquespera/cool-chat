@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { FadingCirclesIcon } from "../icons/fading-circles-icon";
 import { GearAnimatedIcon } from "../icons/gear-animated-icon";
-import type { UserStatus } from "@/server/socket-types";
+import type { UserStatus } from "@/server/src/socket-types";
 
 export type StatusIndicatorStatus =
   | UserStatus

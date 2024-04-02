@@ -1,5 +1,6 @@
 export type SocketData = {
   userId: string;
+  ticket: string;
 };
 
 export type UserStatus = "online" | "offline" | "typing";

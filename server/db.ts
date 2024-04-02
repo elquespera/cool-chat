@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/bun-sqlite";
 import { Database } from "bun:sqlite";
 import { schema } from "../db/schema";
-import { UserStatus } from "./socket-types";
+import { UserStatus } from "./src/socket-types";
 import { users } from "../db/schemas/auth";
 import { eq } from "drizzle-orm";
 
