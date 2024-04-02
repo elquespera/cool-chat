@@ -29,7 +29,7 @@ export const SocketProvider = ({
       `${wsURL}?userId=${user?.id}&ticket=${ticket}`,
       {
         shouldReconnect: () => true,
-        reconnectAttempts: 20,
+        reconnectAttempts: process.env.NODE_ENV === "production" ? 20 : 2,
         reconnectInterval: 3000,
       },
     );
