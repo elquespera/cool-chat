@@ -9,7 +9,7 @@
     "start": "concurrently -P --names \"NEXTJS,SERVER\" -c \"auto\" \"next start -- {@}\" \"cd server && bun ./index.ts\"",
     "lint": "next lint",
     "check": "tsc && next lint",
-    "update": "bunx npm-check-updates -ui",
+    "update": "bunx npm-check-updates -ui -p bun",
     "db:studio": "drizzle-kit studio",
     "migrations:generate": "drizzle-kit generate:sqlite",
     "migrations:push": "drizzle-kit push:sqlite",
@@ -61,7 +61,7 @@
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.12",
     "@types/bun": "^1.0.12",
-    "@types/node": "^20.12.2",
+    "@types/node": "^20.12.3",
     "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.23",
     "autoprefixer": "^10.4.19",
