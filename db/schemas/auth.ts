@@ -1,4 +1,5 @@
 import { randomId } from "@/lib/random-id";
+import { UserStatus } from "@/server/socket-types";
 import { getTableColumns, sql } from "drizzle-orm";
 import {
   integer,
