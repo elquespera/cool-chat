@@ -1,51 +1,78 @@
 "use client";
 import { dispatchCustomEvent } from "@/lib/custom-event";
-import { PropsWithChildren, useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import type {
+  MessageUpdate,
+  SocketMessageType,
+  UserStatus,
+} from "@/server/socket-types";
+import { PropsWithChildren, useEffect, useRef, useState } from "react";
 import { useAuth } from "../auth/auth-context";
-import { IOSocket, SocketContext } from "./socket-context";
+import { SocketContext } from "./socket-context";
+
+const wsURL = process.env.WS_URL;
 
 export const SocketProvider = ({ children }: PropsWithChildren) => {
   const { user } = useAuth();
-
-  const [socket, setSocket] = useState<IOSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+
+  const wsRef = useRef<WebSocket | null>(null);
+
+  const updateUserStatus = (status: UserStatus) => {
+    if (!user || !wsRef.current) return;
+    const message: SocketMessageType = {
+      userId: user.id,
+      type: "userstatuschange",
+      payload: {
+        userId: user.id,
+        status,
+      },
+    };
+    wsRef.current.send(JSON.stringify(message));
+  };
+
+  const updateMessageStatus = (payload: MessageUpdate) => {
+    if (!user || !wsRef.current) return;
+    const message: SocketMessageType = {
+      userId: user.id,
+      type: "messageupdate",
+      payload,
+    };
+    wsRef.current.send(JSON.stringify(message));
+  };
 
   useEffect(() => {
     if (!user) return;
 
-    const socket: IOSocket = io(process.env.NEXT_PUBLIC_SITE_URL!, {
-      path: process.env.NEXT_PUBLIC_SOCKET_IO_URL,
-      addTrailingSlash: false,
-    });
+    const ws = new WebSocket(`${wsURL}?userId=${user.id}`);
+    wsRef.current = ws;
 
-    socket.on("connect", () => {
-      socket.emit("userStatusChange", { userId: user.id, status: "online" });
+    ws.addEventListener("open", async () => {
       setIsConnected(true);
     });
 
-    socket.on("disconnect", () => {
-      socket.emit("userStatusChange", { userId: user.id, status: "offline" });
+    ws.addEventListener("close", async () => {
       setIsConnected(false);
     });
 
-    socket.on("messageUpdate", (payload) =>
-      dispatchCustomEvent("messageupdate", payload),
-    );
+    ws.addEventListener("message", async (event: MessageEvent<string>) => {
+      try {
+        const parsed: SocketMessageType = JSON.parse(event.data);
+        const { type, userId, payload } = parsed;
+        if (userId === user.id) return;
 
-    socket.on("userStatusChange", (payload) =>
-      dispatchCustomEvent("userstatuschange", payload),
-    );
+        dispatchCustomEvent(type, payload);
+      } catch (e) {
+        console.error(e);
+      }
+    });
 
-    setSocket(socket);
-
-    return () => {
-      socket.disconnect();
-    };
+    return () => ws.close();
   }, [user]);
 
   return (
-    <SocketContext.Provider value={{ socket, isConnected }}>
+    <SocketContext.Provider
+      value={{ isConnected, updateUserStatus, updateMessageStatus }}
+    >
       {children}
     </SocketContext.Provider>
   );

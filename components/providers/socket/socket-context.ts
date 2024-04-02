@@ -1,16 +1,16 @@
+import { MessageUpdate, UserStatus } from "@/server/socket-types";
 import { createContext, useContext } from "react";
-import type { Socket } from "socket.io-client";
-
-export type IOSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
 type SocketContextType = {
-  socket: IOSocket | null;
   isConnected: boolean;
+  updateUserStatus: (status: UserStatus) => void;
+  updateMessageStatus: (payload: MessageUpdate) => void;
 };
 
 export const SocketContext = createContext<SocketContextType>({
-  socket: null,
   isConnected: false,
+  updateUserStatus: () => {},
+  updateMessageStatus: () => {},
 });
 
 export const useSocket = () => useContext(SocketContext);

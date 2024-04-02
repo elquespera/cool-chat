@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "scripts": {
+    "dev": "bun run --hot ./index.ts",
+    "start": "bun run ./index.ts"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.30.6"
+  }
+}
