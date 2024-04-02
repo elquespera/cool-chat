@@ -51,7 +51,6 @@
     "react-photo-view": "^1.2.4",
     "react-use-websocket": "^4.8.1",
     "sharp": "^0.33.3",
-    "socket.io": "^4.7.5",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
