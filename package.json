@@ -6,7 +6,7 @@
     "dev": "concurrently --names \"NEXTJS,SERVER\" -c \"auto\" \"next dev\" \"cd server && bun --hot ./index.ts\"",
     "turbo": "concurrently --names \"NEXTJS,SERVER\" -c \"auto\" \"next dev --turbo\" \"cd server && bun --hot ./index.ts\"",
     "build": "next build",
-    "start": "concurrently -P --names \"NEXTJS,SERVER\" -c \"auto\" \"next start -- {@}\" \"cd server && bun ./index.ts\"",
+    "start": "concurrently -P -k --names \"NEXTJS,SERVER\" -c \"auto\" \"next start -- {@}\" \"cd server && bun ./index.ts\"",
     "lint": "next lint",
     "check": "tsc && next lint",
     "update": "bunx npm-check-updates -ui -p bun",
