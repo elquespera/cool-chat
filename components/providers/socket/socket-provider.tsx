@@ -9,7 +9,7 @@ import { PropsWithChildren, useEffect, useRef, useState } from "react";
 import { useAuth } from "../auth/auth-context";
 import { SocketContext } from "./socket-context";
 
-const wsURL = process.env.WS_URL;
+const wsURL = process.env.NEXT_PUBLIC_WS_URL!;
 
 export const SocketProvider = ({ children }: PropsWithChildren) => {
   const { user } = useAuth();
