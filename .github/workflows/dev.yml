@@ -46,7 +46,7 @@ jobs:
         run: cd server && bun install
 
       - name: SERVER - Create.env file
-        run: echo "${{secrets.ENV_FILE_SERVER_DEV }}" > .env
+        run: echo "${{secrets.ENV_FILE_SERVER_DEV }}" > ./server/.env
 
       - name: Restart process with pm2
         run: pm2 restart cool-chat-dev
