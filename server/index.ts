@@ -3,10 +3,14 @@ import { updateUserStatus } from "./db";
 import { socketRoutes } from "./src/socket-routes";
 import { SocketData, SocketMessageType, UserStatus } from "./src/socket-types";
 import { verifyHMAC } from "./src/verfy-hmac";
+import {
+  addTicket,
+  hasTicket,
+  openTicketCount,
+  openTickets,
+} from "./src/tickets";
 
 const roomName = "cool-chat";
-
-const openTickets: Set<string> = new Set();
 
 const server = Bun.serve<SocketData>({
   fetch(req, server) {
@@ -14,7 +18,9 @@ const server = Bun.serve<SocketData>({
     if (url.pathname === socketRoutes.connect) {
       const userId = url.searchParams.get("userId");
       const ticket = url.searchParams.get("ticket");
-      const isAuth = ticket && openTickets.has(ticket);
+      const isAuth = ticket && hasTicket(ticket);
+
+      console.log(isAuth, openTickets);
 
       if (userId && isAuth) {
         const success = server.upgrade(req, { data: { userId, ticket } });
@@ -30,9 +36,7 @@ const server = Bun.serve<SocketData>({
       const authorization = req.headers.get("Authorization");
 
       if (verifyHMAC(authorization, url.pathname, "GET")) {
-        const ticket = randomUUID();
-        openTickets.add(ticket);
-        return new Response(JSON.stringify({ ticket }));
+        return new Response(JSON.stringify({ ticket: addTicket() }));
       }
 
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -42,7 +46,7 @@ const server = Bun.serve<SocketData>({
 
     if (url.pathname === socketRoutes.status && req.method === "GET") {
       return new Response(
-        JSON.stringify({ status: "running", active_users: openTickets.size }),
+        JSON.stringify({ status: "running", active_users: openTicketCount() }),
       );
     }
 
@@ -57,14 +61,14 @@ const server = Bun.serve<SocketData>({
       await publishUserStatus(ws.data.userId, "online");
       console.log(`Connection open wtih ${ws.data.userId}`);
     },
-    message(_, message) {
+
+    message: (_, message) => {
       server.publish(roomName, message);
-      console.log(message);
     },
+
     close: async (ws) => {
       console.log(`Connection closed with ${ws.data.userId}`);
       await publishUserStatus(ws.data.userId, "offline");
-      openTickets.delete(ws.data.ticket);
       ws.unsubscribe(roomName);
     },
   },
