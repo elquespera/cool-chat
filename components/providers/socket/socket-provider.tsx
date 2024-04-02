@@ -26,7 +26,7 @@ export const SocketProvider = ({
 }: SocketProviderProps) => {
   const { readyState, lastJsonMessage, sendJsonMessage } =
     useWebSocket<SocketMessageType>(
-      `${wsURL}?userId=${user?.id}&ticket=${ticket}`,
+      user && ticket ? `${wsURL}?userId=${user?.id}&ticket=${ticket}` : null,
       {
         shouldReconnect: () => true,
         reconnectAttempts: process.env.NODE_ENV === "production" ? 20 : 2,
