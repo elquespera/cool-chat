@@ -39,6 +39,9 @@ jobs:
       - name: Create .env file
         run: echo "${{secrets.ENV_FILE_PROD }}" > .env
 
+      - name: Create server .env file
+        run: echo "${{secrets.ENV_FILE_SERVER_PROD }}" > ./server/.env
+
       - name: Build project
         run: npm run build --if-present
 
