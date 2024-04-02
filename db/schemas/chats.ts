@@ -3,7 +3,7 @@ import { relations, sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { ContactUser, users } from "./auth";
 import { messages } from "./messages";
-import { UserStatus } from "@/server/socket-types";
+import { UserStatus } from "@/server/src/socket-types";
 
 export const chats = sqliteTable("chat", {
   id: text("id", { length: 36 })

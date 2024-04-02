@@ -4,15 +4,25 @@ import type {
   MessageUpdate,
   SocketMessageType,
   UserStatus,
-} from "@/server/socket-types";
+} from "@/server/src/socket-types";
+
+import { socketRoutes } from "@/server/src/socket-routes";
+import { User } from "lucia";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
-import { useAuth } from "../auth/auth-context";
 import { SocketContext } from "./socket-context";
 
-const wsURL = process.env.NEXT_PUBLIC_WS_URL!;
+const wsURL = `${process.env.NEXT_PUBLIC_WS_URL}${socketRoutes.connect}`;
 
-export const SocketProvider = ({ children }: PropsWithChildren) => {
-  const { user } = useAuth();
+type SocketProviderProps = {
+  user: User | null;
+  ticket: string | null;
+} & PropsWithChildren;
+
+export const SocketProvider = ({
+  user,
+  ticket,
+  children,
+}: SocketProviderProps) => {
   const [isConnected, setIsConnected] = useState(false);
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -41,9 +51,9 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
   };
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !ticket) return;
 
-    const ws = new WebSocket(`${wsURL}?userId=${user.id}`);
+    const ws = new WebSocket(`${wsURL}?userId=${user.id}&ticket=${ticket}`);
     wsRef.current = ws;
 
     ws.addEventListener("open", async () => {
@@ -67,7 +77,7 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
     });
 
     return () => ws.close();
-  }, [user]);
+  }, [user, ticket]);
 
   return (
     <SocketContext.Provider

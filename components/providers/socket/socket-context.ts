@@ -1,4 +1,4 @@
-import { MessageUpdate, UserStatus } from "@/server/socket-types";
+import { MessageUpdate, UserStatus } from "@/server/src/socket-types";
 import { createContext, useContext } from "react";
 
 type SocketContextType = {

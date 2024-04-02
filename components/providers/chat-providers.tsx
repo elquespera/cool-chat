@@ -13,6 +13,7 @@ import {
   SettingsProvider,
 } from "./settings/settings-provider";
 import { SocketProvider } from "./socket/socket-provider";
+import { getWebsocketTicket } from "@/lib/ws/get-ws-ticket";
 
 export async function ChatProviders({ children }: PropsWithChildren) {
   const { user } = await getAuth();
@@ -20,19 +21,23 @@ export async function ChatProviders({ children }: PropsWithChildren) {
   const assistants = assistantsResponse.ok ? assistantsResponse.data : null;
 
   let settings: InitialSettings = defaultSettings;
+  let ticket: string | null = null;
 
   if (user) {
-    const settingsResult = await getSettings(user.id);
-    if (settingsResult.ok) {
-      settings = settingsResult.data;
+    const settingsResponse = await getSettings(user.id);
+    if (settingsResponse.ok) {
+      settings = settingsResponse.data;
     }
+
+    const ticketResponse = await getWebsocketTicket();
+    if (ticketResponse.ok) ticket = ticketResponse.data;
   }
 
   return (
     <AuthProvider user={user}>
       <SettingsProvider initialSettings={settings}>
         <ChatWindowProvider>
-          <SocketProvider>
+          <SocketProvider user={user} ticket={ticket}>
             <ChatProvider>
               <AssistantProvider assistants={assistants}>
                 <MessageProvider>{children}</MessageProvider>
