@@ -8,7 +8,7 @@ import {
 import { readAttachment } from "@/lib/attachment";
 import { getAuth } from "@/lib/auth/get-auth";
 import { fetchHMAC } from "@/lib/hmac";
-import { randomId } from "@/lib/random-id";
+import { randomId } from "@/lib/random/random-id";
 
 type OllamaMessage = {
   role: string;

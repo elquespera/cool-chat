@@ -6,6 +6,7 @@ import { ComponentProps, useEffect, useState } from "react";
 import { AdminIcon } from "../icons/admin-icon";
 import { AssistantIcon } from "../icons/assistant-icon";
 import { UserIcon } from "../icons/user-icon";
+import { AnonymousIcon } from "../icons/anonymous-icon";
 
 type UserAvatarProps = {
   avatarUrl: string | null;
@@ -25,9 +26,11 @@ export function UserAvatar({
   const Icon =
     role === "admin"
       ? AdminIcon
-      : role === "assistant"
-        ? AssistantIcon
-        : UserIcon;
+      : role === "anonymous"
+        ? AnonymousIcon
+        : role === "assistant"
+          ? AssistantIcon
+          : UserIcon;
 
   return (
     <div

@@ -1,28 +1,27 @@
+import { BackButton } from "@/components/chat/back-button";
 import { NotFound } from "@/components/common/not-found";
 import { routes } from "@/constants/routes";
 import { findChatByIds, getChatById } from "@/db/actions/chats";
 import { getUserById } from "@/db/actions/users";
 import { ContactUser } from "@/db/schemas/auth";
 import { ChatWithUsers } from "@/db/schemas/chats";
-import { getAuth } from "@/lib/auth/get-auth";
+import { User } from "lucia";
 import { redirect } from "next/navigation";
 import { PropsWithChildren } from "react";
 import { InjectChatInfo } from "./inject-chat-info";
-import { BackButton } from "@/components/chat/back-button";
 
 type ChatInfoWrapperProps = {
+  user: User;
   interlocutorId: string | null;
   chatId: string | null;
 } & PropsWithChildren;
 
 export async function ChatInfoWrapper({
-  children,
+  user,
   interlocutorId,
   chatId,
+  children,
 }: ChatInfoWrapperProps) {
-  const { user } = await getAuth();
-  if (!user) redirect(routes.welcome);
-
   let interlocutor: ContactUser | null = null;
   let chat: ChatWithUsers | null = null;
   let body = children;

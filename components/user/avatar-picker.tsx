@@ -1,12 +1,12 @@
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { ToggleGroup } from "@/components/ui/toggle-group";
+import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
+import { randomAvatars } from "@/lib/random/random-avatar";
 import { cn } from "@/lib/utils";
 import { ComponentProps, useState } from "react";
 import { IconButton } from "../common/icon-button";
-import { UserAvatar } from "./user-avatar";
-import { generateAvatarURLs } from "@/lib/generate-avatar-url";
-import { RefreshIcon } from "../icons/refresh-icon";
-import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 import { ToggleOutlineItem } from "../common/toggle-outline-item";
+import { RefreshIcon } from "../icons/refresh-icon";
+import { UserAvatar } from "./user-avatar";
 
 type AvatarPickerProps = {
   count?: number;
@@ -21,13 +21,13 @@ export function AvatarPicker({
   className,
   ...props
 }: AvatarPickerProps) {
-  const [avatars, setAvatars] = useState(generateAvatarURLs(count));
+  const [avatars, setAvatars] = useState(randomAvatars(count));
   const playClick = useSoundEffect("click");
   const playRegenerate = useSoundEffect("refresh");
 
   const handleRegenerateClick = () => {
     playRegenerate;
-    setAvatars(generateAvatarURLs(count));
+    setAvatars(randomAvatars(count));
     onUrlChange("");
   };
 

@@ -7,17 +7,16 @@ import {
   UserInsert,
   contactUserColumns,
   contactUserFilter,
+  sessions,
   users,
 } from "../schemas/auth";
 import { withAuth } from "./with-auth";
+import { chats } from "../schemas/chats";
 
 // Auth Actions without Authentication
-export async function getUserByEmailOrUsername(emailOrUsername: string) {
+export async function getUserByEmail(email: string) {
   return db.query.users.findFirst({
-    where: or(
-      eq(users.email, emailOrUsername),
-      eq(users.username, emailOrUsername),
-    ),
+    where: or(eq(users.email, email)),
   });
 }
 
@@ -62,4 +61,20 @@ export const updateUser = async (userId: string, data: UserInsert) =>
       .where(eq(users.id, userId))
       .returning(contactUserColumns)
       .get(),
+  );
+
+export const deleteUser = async (userId: string) =>
+  withAuth<ContactUser>(async () =>
+    db.transaction(async (tx) => {
+      await tx.delete(sessions).where(eq(sessions.userId, userId));
+      await tx
+        .delete(chats)
+        .where(or(eq(chats.userOneId, userId), eq(chats.userTwoId, userId)));
+
+      return tx
+        .delete(users)
+        .where(eq(users.id, userId))
+        .returning(contactUserColumns)
+        .get();
+    }),
   );

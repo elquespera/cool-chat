@@ -17,6 +17,7 @@ type AuthPageProps = {
   searchParams: {
     redirectURI?: string;
     message?: string;
+    email?: string;
   };
 };
 

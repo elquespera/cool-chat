@@ -1,40 +1,21 @@
 "use server";
 
-import { emailMatcher, passwordMatcher, usernameMatcher } from "@/constants";
 import { routes } from "@/constants/routes";
 import { addUserWithoutAuth as addUser } from "@/db/actions/users";
 import { LibsqlError } from "@libsql/client";
-import { Scrypt } from "lucia";
 import { redirect } from "next/navigation";
 import { createSession } from "./session";
+import { randomUsername } from "../random/random-username";
+import { randomEmail } from "../random/random-email";
 
-export async function signUp(
-  email: string,
-  password: string,
-  username: string,
+export async function signUpAsAnonymous(
   redirectURI: string = routes.home,
 ): Promise<AuthActionResult> {
-  if (!emailMatcher.test(email))
-    return {
-      error: "Invalid email.",
-    };
-
-  if (!usernameMatcher.test(username))
-    return {
-      error: "Username must be at least 4 caracters long.",
-    };
-
-  if (!passwordMatcher.test(password)) {
-    return {
-      error:
-        "Password must be at least 8 characters including a lowercase letter, an uppercase letter, and a number.",
-    };
-  }
-
-  const hashedPassword = await new Scrypt().hash(password);
-
   try {
-    const user = await addUser({ email, username, hashedPassword });
+    const email = randomEmail();
+    const username = randomUsername();
+    const user = await addUser({ email, username, role: "anonymous" });
+
     if (!user) throw new Error("Can't add user.");
     await createSession(user.id);
   } catch (e) {
