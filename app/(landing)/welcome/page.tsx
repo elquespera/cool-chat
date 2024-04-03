@@ -1,4 +1,5 @@
 import peopleChat from "@/assets/images/people-chat.svg";
+import { AnonymousButton } from "@/components/auth/anonymous-button";
 import { IconButton } from "@/components/common/icon-button";
 import { ArrowUpIcon } from "@/components/icons/arrow-up-icon";
 import { routes } from "@/constants/routes";
@@ -24,13 +25,16 @@ export default async function WelcomePage() {
         <span className="text-foreground">digital assistant</span> never leaving
         the app.
       </p>
-      <IconButton
-        href={routes.signUp}
-        icon={<ArrowUpIcon className="ml-1 rotate-90" />}
-        reverse
-      >
-        Sign Up
-      </IconButton>
+      <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+        <AnonymousButton />
+        <IconButton
+          href={routes.signUp}
+          icon={<ArrowUpIcon className="ml-1 rotate-90" />}
+          reverse
+        >
+          Sign Up
+        </IconButton>
+      </div>
       <Image
         priority
         src={peopleChat}

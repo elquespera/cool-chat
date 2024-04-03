@@ -1,7 +1,7 @@
 "use client";
 
-import personMale from "@/assets/images/person-male.svg";
 import personFemale from "@/assets/images/person-female.svg";
+import personMale from "@/assets/images/person-male.svg";
 import { signUp } from "@/lib/auth/sign-up";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -12,7 +12,9 @@ import { Hint } from "../common/hint";
 import { authProvidersInfo } from "@/constants/auth-providers-info";
 import { formatRedirectURI } from "@/lib/auth/format-redirect-uri";
 import { signIn } from "@/lib/auth/sign-in";
+import Image from "next/image";
 import { IconButton } from "../common/icon-button";
+import { ExclamationTriangleIcon } from "../icons/exclamation-triangle-icon";
 import {
   Card,
   CardContent,
@@ -21,9 +23,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Input } from "../ui/input";
-import { ExclamationTriangleIcon } from "../icons/exclamation-triangle-icon";
-import Image from "next/image";
-import { AnonymousIcon } from "../icons/anonymous-icon";
+import { AnonymousButton } from "./anonymous-button";
 
 type AuthFormProps = {
   type: "signIn" | "signUp";
@@ -178,10 +178,9 @@ export default function AuthForm({
               </Hint>
             ))}
           </div>
+
           <Divider className="my-6">try it out as</Divider>
-          <IconButton type="button" variant="outline" icon={<AnonymousIcon />}>
-            Anonymous
-          </IconButton>
+          <AnonymousButton />
 
           <p className="mt-6 text-sm text-muted-foreground">
             {type === "signIn"

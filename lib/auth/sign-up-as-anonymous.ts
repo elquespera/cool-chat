@@ -14,7 +14,7 @@ export async function signUpAsAnonymous(
   try {
     const email = randomEmail();
     const username = randomUsername();
-    const user = await addUser({ email, username });
+    const user = await addUser({ email, username, role: "anonymous" });
 
     if (!user) throw new Error("Can't add user.");
     await createSession(user.id);

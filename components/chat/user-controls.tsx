@@ -3,12 +3,12 @@ import { IconButton } from "../common/icon-button";
 import { PhoneIcon } from "../icons/phone-icon";
 import { VideoCameraIcon } from "../icons/video-camera-icon";
 import { useChat } from "../providers/chat/chat-context";
+import { isHuman } from "@/lib/is-human";
 
 export function UserControls() {
   const { interlocutor, chat } = useChat();
 
-  const isUser =
-    interlocutor?.role === "user" || interlocutor?.role === "admin";
+  const isUser = interlocutor && isHuman(interlocutor);
 
   return (
     !!(isUser && chat) && (

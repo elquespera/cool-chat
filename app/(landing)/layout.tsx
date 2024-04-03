@@ -22,7 +22,7 @@ export default function LandingLayout({
             CoolChat
           </h1>
         </Link>
-        <IconButton variant="ghost" href={routes.signIn}>
+        <IconButton variant="outline" href={routes.signIn}>
           Log In
         </IconButton>
 

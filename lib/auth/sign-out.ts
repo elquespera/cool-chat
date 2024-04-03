@@ -1,10 +1,15 @@
 "use server";
+import { deleteUser } from "@/db/actions/users";
 import { getAuth } from "./get-auth";
 import { destroySession } from "./session";
 
 export async function signOut(): Promise<AuthActionResult> {
-  const { session } = await getAuth();
-  if (!session) return { error: "Unauthorized" };
+  const { session, user } = await getAuth();
+  if (!session || !user) return { error: "Unauthorized" };
 
-  destroySession(session.id);
+  if (user.role === "anonymous") {
+    await deleteUser(user.id);
+  }
+
+  await destroySession(session.id);
 }

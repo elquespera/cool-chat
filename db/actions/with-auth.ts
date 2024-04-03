@@ -10,9 +10,13 @@ export async function withAuth<T>(
   const { user } = await getAuth();
   if (!user) return { ok: false, error: "Unauthorized access." };
 
-  const data = await dbAction(user);
-
-  if (data) return { ok: true, data };
+  try {
+    const data = await dbAction(user);
+    if (data) return { ok: true, data };
+  } catch (error) {
+    console.error(error);
+    return { ok: false, error: String(error) };
+  }
 
   return { ok: false, error: notFoundMsg };
 }
