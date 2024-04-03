@@ -14,12 +14,15 @@ export default async function WelcomePage() {
     <main className="mx-auto flex max-w-[800px] grow flex-col items-center px-4 py-8">
       <h1 className="mb-12 text-center text-4xl font-bold leading-tight tracking-tighter">
         <span className="text-primary">Connect</span> with your{" "}
-        <span className="text-muted-foreground">friends</span> with CoolChat
-        anytime, anywhere for <span className="text-primary">free</span>
+        <span className="text-muted-foreground">friends</span> with{" "}
+        <span className="text-primary">CoolChat</span> anytime, anywhere for{" "}
+        <span className="text-muted-foreground">free</span>.
       </h1>
-      <p className="mb-8 text-center">
-        Elevate your conversations with CoolChat. Chat with your friends or talk
-        to a digital assistant never leaving the window.
+      <p className="mb-8 text-center text-xl font-medium text-muted-foreground">
+        Elevate your conversations with CoolChat. Chat with your{" "}
+        <span className="text-foreground">friends</span> or talk to a{" "}
+        <span className="text-foreground">digital assistant</span> never leaving
+        the app.
       </p>
       <IconButton
         href={routes.signUp}
