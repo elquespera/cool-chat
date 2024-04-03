@@ -12,12 +12,9 @@ import {
 import { withAuth } from "./with-auth";
 
 // Auth Actions without Authentication
-export async function getUserByEmailOrUsername(emailOrUsername: string) {
+export async function getUserByEmail(email: string) {
   return db.query.users.findFirst({
-    where: or(
-      eq(users.email, emailOrUsername),
-      eq(users.username, emailOrUsername),
-    ),
+    where: or(eq(users.email, email)),
   });
 }
 

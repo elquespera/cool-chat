@@ -23,19 +23,22 @@ import {
 import { Input } from "../ui/input";
 import { ExclamationTriangleIcon } from "../icons/exclamation-triangle-icon";
 import Image from "next/image";
+import { AnonymousIcon } from "../icons/anonymous-icon";
 
 type AuthFormProps = {
   type: "signIn" | "signUp";
   redirectURI?: string;
   message?: string;
+  email?: string;
 };
 
 export default function AuthForm({
   type,
   redirectURI,
   message,
+  email: defaultEmail,
 }: AuthFormProps) {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(defaultEmail ?? "");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
@@ -48,7 +51,7 @@ export default function AuthForm({
     if (password !== repeatPassword)
       return { error: "Passwords do not match." };
 
-    return signUp(email, password, username, redirectURI);
+    return signUp(email.trim(), password.trim(), username.trim(), redirectURI);
   };
 
   const handleSubmit: FormEventHandler = async (event) => {
@@ -70,13 +73,13 @@ export default function AuthForm({
         priority
         src={personMale}
         alt="Male Person"
-        className="absolute max-h-72 -translate-x-52 -translate-y-40"
+        className="absolute max-h-72 -translate-x-48 -translate-y-40"
       />
 
       <Image
         src={personFemale}
         alt="Female Person"
-        className="absolute max-h-72 translate-x-64 translate-y-20"
+        className="absolute max-h-72 translate-x-60 translate-y-20"
       />
       <Card className="relative max-w-sm bg-card/80">
         <CardHeader>
@@ -102,9 +105,7 @@ export default function AuthForm({
                 type={type === "signUp" ? "email" : "text"}
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                placeholder={
-                  type === "signUp" ? "email (required)" : "email or username"
-                }
+                placeholder={type === "signUp" ? "email (required)" : "email"}
                 required
               />
             </div>
@@ -120,7 +121,9 @@ export default function AuthForm({
                     name="username"
                     value={username}
                     onChange={(event) => setUsername(event.target.value)}
-                    placeholder="username"
+                    placeholder={
+                      type === "signUp" ? "username (required)" : "username"
+                    }
                   />
                 )}
               </div>
@@ -156,7 +159,7 @@ export default function AuthForm({
                 )}
               </div>
             )}
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p className="px-2 text-sm text-destructive">{error}</p>}
             <IconButton type="submit" className="mt-4" pending={pending}>
               {type === "signIn" ? "Sign In" : "Sign Up with Email"}
             </IconButton>
@@ -175,8 +178,8 @@ export default function AuthForm({
               </Hint>
             ))}
           </div>
-          <Divider className="my-6">or try it out as</Divider>
-          <IconButton type="button" variant="outline">
+          <Divider className="my-6">try it out as</Divider>
+          <IconButton type="button" variant="outline" icon={<AnonymousIcon />}>
             Anonymous
           </IconButton>
 
@@ -188,6 +191,8 @@ export default function AuthForm({
               href={formatRedirectURI(
                 type === "signIn" ? "signUp" : "signIn",
                 redirectURI,
+                ["message", message],
+                ["email", email],
               )}
               className="font-medium text-muted-foreground hover:text-primary"
             >

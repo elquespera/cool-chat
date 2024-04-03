@@ -17,8 +17,8 @@ export default function LandingLayout({
       />
       <header className="sticky top-0 flex items-center gap-4 bg-background/80 p-6 shadow-sm backdrop-blur-sm">
         <Link href={routes.welcome} className="mr-auto">
-          <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight">
-            <ChatDuoIcon className="shrink-0 text-primary" />
+          <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tighter">
+            <ChatDuoIcon className="h-[1.5em] w-[1.5em] shrink-0 text-primary" />
             CoolChat
           </h1>
         </Link>

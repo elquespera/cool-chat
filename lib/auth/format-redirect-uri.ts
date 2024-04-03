@@ -1,10 +1,10 @@
-import { authMessageKey, redirectURIKey } from "@/constants";
+import { redirectURIKey } from "@/constants";
 import { routes } from "@/constants/routes";
 
 export function formatRedirectURI(
   type: "signIn" | "signUp" | "github" | "google",
-  redirectURI?: string,
-  message?: string
+  redirectURI: string | undefined,
+  ...otherParams: Array<[string, string?]>
 ) {
   const searchParams = new URLSearchParams();
 
@@ -12,9 +12,9 @@ export function formatRedirectURI(
     searchParams.set(redirectURIKey, redirectURI);
   }
 
-  if (message) {
-    searchParams.set(authMessageKey, message);
-  }
+  otherParams.forEach(([key, value]) => {
+    if (value) searchParams.set(key, value);
+  });
 
   const params = searchParams.toString();
   const parts: string[] = [routes[type]];

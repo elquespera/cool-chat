@@ -1,6 +1,6 @@
 "use server";
 
-import { emailMatcher, passwordMatcher } from "@/constants";
+import { emailMatcher, passwordMatcher, usernameMatcher } from "@/constants";
 import { routes } from "@/constants/routes";
 import { addUserWithoutAuth as addUser } from "@/db/actions/users";
 import { LibsqlError } from "@libsql/client";
@@ -11,7 +11,7 @@ import { createSession } from "./session";
 export async function signUp(
   email: string,
   password: string,
-  username?: string,
+  username: string,
   redirectURI: string = routes.home,
 ): Promise<AuthActionResult> {
   if (!emailMatcher.test(email))
@@ -19,10 +19,15 @@ export async function signUp(
       error: "Invalid email.",
     };
 
+  if (!usernameMatcher.test(username))
+    return {
+      error: "Username must be at least 4 caracters long.",
+    };
+
   if (!passwordMatcher.test(password)) {
     return {
       error:
-        "The password must be at least 8 characters including a lowercase letter, an uppercase letter, and a number.",
+        "Password must be at least 8 characters including a lowercase letter, an uppercase letter, and a number.",
     };
   }
 
