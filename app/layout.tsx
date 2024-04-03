@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
+import { defaultSettings } from "@/constants";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className="blue">
+    <html lang="en" suppressHydrationWarning className={defaultSettings.color}>
       <body className={cn("flex min-h-[100dvh] flex-col", inter.className)}>
         <CommonProviders>{children}</CommonProviders>
       </body>

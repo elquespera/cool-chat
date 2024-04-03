@@ -8,7 +8,7 @@ export const passwordMatcher =
 
 export const defaultSettings = {
   sound: true,
-  color: "blue",
+  color: "picton-blue",
   background: "circuit-board",
   resizeAttachments: true,
 } as const;

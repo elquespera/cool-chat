@@ -1,6 +1,7 @@
 /*** THEME COLORS ***/
 
 export const themeColors = [
+  "picton-blue",
   "blue",
   "orange",
   "green",
@@ -15,6 +16,7 @@ export const themeColorInfo: Record<
   ThemeColor,
   { name: string; color: string }
 > = {
+  "picton-blue": { name: "Picton Blue", color: "hsl(200,68%,51%)" },
   blue: { name: "Blue", color: "hsl(221.2 83.2% 53.3%)" },
   orange: { name: "Orange", color: "hsl(24.6 95% 53.1%)" },
   green: { name: "Green", color: "hsl(142.1 76.2% 36.3%)" },
