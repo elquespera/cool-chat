@@ -26,9 +26,6 @@ jobs:
       - name: Create .env file
         run: echo "${{secrets.ENV_FILE_PROD }}" > .env
 
-      - name: Next.Js cache
-        uses: jongwooo/next-cache@v1
-
       - name: Build project
         run: npm run build --if-present
 
@@ -39,7 +36,7 @@ jobs:
         run: echo "${{secrets.ENV_FILE_SERVER_PROD }}" > ./server/.env
 
       - name: Restart SERVER process with pm2
-        run: pm2 reload cool-chat-server-prod
+        run: pm2 reload cool-chat-prod-server
 
       - name: Restart process with pm2
         run: pm2 reload cool-chat-prod
