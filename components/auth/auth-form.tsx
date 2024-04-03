@@ -1,5 +1,7 @@
 "use client";
 
+import personMale from "@/assets/images/person-male.svg";
+import personFemale from "@/assets/images/person-female.svg";
 import { signUp } from "@/lib/auth/sign-up";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -20,6 +22,7 @@ import {
 } from "../ui/card";
 import { Input } from "../ui/input";
 import { ExclamationTriangleIcon } from "../icons/exclamation-triangle-icon";
+import Image from "next/image";
 
 type AuthFormProps = {
   type: "signIn" | "signUp";
@@ -62,119 +65,138 @@ export default function AuthForm({
   };
 
   return (
-    <Card className="max-w-sm self-center">
-      <CardHeader>
-        <CardTitle>
-          {type === "signIn" ? "Log in" : "Create an account"}
-        </CardTitle>
-        <CardDescription>
-          {message && (
-            <p className="my-4 flex items-center gap-2 rounded-md border border-destructive px-3 py-2 text-sm font-medium text-destructive">
-              <ExclamationTriangleIcon className="h-4 w-4" />
-              {message}
-            </p>
-          )}
-          Use an email and password or one of the social accounts you have.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col">
-        <form className="flex flex-col" onSubmit={handleSubmit}>
-          <div className="overflow-hidden p-1">
-            <Input
-              autoFocus
-              name="email"
-              type={type === "signUp" ? "email" : "text"}
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder={
-                type === "signUp" ? "email (required)" : "email or username"
-              }
-              required
-            />
-          </div>
-          {type === "signUp" && (
-            <div
-              className={cn(
-                "h-0 overflow-hidden transition-all delay-200 duration-500",
-                email.length && "h-12 p-1",
-              )}
-            >
-              {!!email.length && (
-                <Input
-                  name="username"
-                  value={username}
-                  onChange={(event) => setUsername(event.target.value)}
-                  placeholder="username"
-                />
-              )}
-            </div>
-          )}
-          <div className="overflow-hidden p-1">
-            <Input
-              name="password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder={
-                type === "signUp" ? "password (required)" : "password"
-              }
-              required
-            />
-          </div>
-          {type === "signUp" && (
-            <div
-              className={cn(
-                "h-0 overflow-hidden transition-all delay-200 duration-500",
-                password.length && "h-12 p-1",
-              )}
-            >
-              {!!password.length && (
-                <Input
-                  name="repeat_password"
-                  type="password"
-                  value={repeatPassword}
-                  onChange={(event) => setRepeatPassword(event.target.value)}
-                  placeholder="repeat password"
-                  required
-                />
-              )}
-            </div>
-          )}
-          {error && <p className="text-sm text-destructive">{error}</p>}
-          <IconButton type="submit" className="mt-4" pending={pending}>
-            {type === "signIn" ? "Sign In" : "Sign Up with Email"}
-          </IconButton>
-        </form>
-        <Divider className="my-6">or continue with</Divider>
-        <div className="flex justify-center gap-4">
-          {authProvidersInfo.map(({ id, icon: Icon }) => (
-            <Hint key={id} className="capitalize" value={id}>
-              <IconButton
-                variant="outline"
-                href={formatRedirectURI(id, redirectURI)}
-                className="text-muted-foreground hover:text-accent-foreground"
-                aria-label={id}
-                icon={<Icon className="h-6 w-6" />}
-              />
-            </Hint>
-          ))}
-        </div>
-        <p className="mt-6 text-sm text-muted-foreground">
-          {type === "signIn"
-            ? "Don't have an account yet?"
-            : "Already have an account?"}{" "}
-          <Link
-            href={formatRedirectURI(
-              type === "signIn" ? "signUp" : "signIn",
-              redirectURI,
+    <div className="relative flex grow flex-col items-center justify-center overflow-x-hidden pt-12">
+      <Image
+        priority
+        src={personMale}
+        alt="Male Person"
+        className="absolute max-h-72 -translate-x-52 -translate-y-40"
+      />
+
+      <Image
+        src={personFemale}
+        alt="Female Person"
+        className="absolute max-h-72 translate-x-64 translate-y-20"
+      />
+      <Card className="relative max-w-sm bg-card/80">
+        <CardHeader>
+          <CardTitle className="text-2xl">
+            {type === "signIn" ? "Log in" : "Create an account"}
+          </CardTitle>
+          <CardDescription>
+            {message && (
+              <p className="my-4 flex items-center gap-2 rounded-md border border-destructive px-3 py-2 text-sm font-medium text-destructive">
+                <ExclamationTriangleIcon className="h-4 w-4" />
+                {message}
+              </p>
             )}
-            className="font-medium text-muted-foreground hover:text-primary"
-          >
-            Click here to sign {type === "signIn" ? "up" : "in"}
-          </Link>
-          .
-        </p>
-      </CardContent>
-    </Card>
+            Use an email and password or one of the social accounts you have.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col">
+          <form className="flex flex-col" onSubmit={handleSubmit}>
+            <div className="overflow-hidden p-1">
+              <Input
+                autoFocus
+                name="email"
+                type={type === "signUp" ? "email" : "text"}
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder={
+                  type === "signUp" ? "email (required)" : "email or username"
+                }
+                required
+              />
+            </div>
+            {type === "signUp" && (
+              <div
+                className={cn(
+                  "h-0 overflow-hidden transition-all delay-200 duration-500",
+                  email.length && "h-12 p-1",
+                )}
+              >
+                {!!email.length && (
+                  <Input
+                    name="username"
+                    value={username}
+                    onChange={(event) => setUsername(event.target.value)}
+                    placeholder="username"
+                  />
+                )}
+              </div>
+            )}
+            <div className="overflow-hidden p-1">
+              <Input
+                name="password"
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder={
+                  type === "signUp" ? "password (required)" : "password"
+                }
+                required
+              />
+            </div>
+            {type === "signUp" && (
+              <div
+                className={cn(
+                  "h-0 overflow-hidden transition-all delay-200 duration-500",
+                  password.length && "h-12 p-1",
+                )}
+              >
+                {!!password.length && (
+                  <Input
+                    name="repeat_password"
+                    type="password"
+                    value={repeatPassword}
+                    onChange={(event) => setRepeatPassword(event.target.value)}
+                    placeholder="repeat password"
+                    required
+                  />
+                )}
+              </div>
+            )}
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <IconButton type="submit" className="mt-4" pending={pending}>
+              {type === "signIn" ? "Sign In" : "Sign Up with Email"}
+            </IconButton>
+          </form>
+          <Divider className="my-6">or continue with</Divider>
+          <div className="flex justify-center gap-4">
+            {authProvidersInfo.map(({ id, icon: Icon }) => (
+              <Hint key={id} className="capitalize" value={id}>
+                <IconButton
+                  variant="outline"
+                  href={formatRedirectURI(id, redirectURI)}
+                  className="text-muted-foreground hover:text-accent-foreground"
+                  aria-label={id}
+                  icon={<Icon className="h-6 w-6" />}
+                />
+              </Hint>
+            ))}
+          </div>
+          <Divider className="my-6">or try it out as</Divider>
+          <IconButton type="button" variant="outline">
+            Anonymous
+          </IconButton>
+
+          <p className="mt-6 text-sm text-muted-foreground">
+            {type === "signIn"
+              ? "Don't have an account yet?"
+              : "Already have an account?"}{" "}
+            <Link
+              href={formatRedirectURI(
+                type === "signIn" ? "signUp" : "signIn",
+                redirectURI,
+              )}
+              className="font-medium text-muted-foreground hover:text-primary"
+            >
+              Click here to sign {type === "signIn" ? "up" : "in"}
+            </Link>
+            .
+          </p>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

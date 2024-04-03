@@ -36,8 +36,6 @@ export default async function WelcomePage() {
         src={peopleChat}
         alt="People chatting"
         className="mt-16 w-auto max-w-sm"
-        width={7842}
-        height={6961}
       />
     </main>
   );
