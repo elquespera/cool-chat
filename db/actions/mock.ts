@@ -1,20 +1,22 @@
 "use server";
-import { generateAvatarURL } from "@/lib/generate-avatar-url";
-import { randomInt } from "crypto";
+import { encryptText } from "@/lib/encrypt-text";
+import { randomEmail } from "@/lib/random/random-email";
+import { randomInt } from "@/lib/random/random-int";
 import { db } from "../db";
 import { ChatSelect } from "../schemas/chats";
 import { messages } from "../schemas/messages";
 import { addChat } from "./chats";
 import { addUser } from "./users";
 import { withAuth } from "./with-auth";
-import { encryptText } from "@/lib/encrypt-text";
+import { randomUsername } from "@/lib/random/random-username";
+import { randomAvatar } from "@/lib/random/random-avatar";
 
 export const createMockConversation = async () =>
   withAuth<ChatSelect>(async (user) => {
     const mockUserResponse = await addUser({
-      username: mockNames[randomInt(0, mockNames.length)],
-      avatarUrl: generateAvatarURL(),
-      email: `test${randomInt(20, 1000)}@mail.com`,
+      username: randomUsername(),
+      avatarUrl: randomAvatar(),
+      email: randomEmail(),
       hashedPassword: process.env.MOCK_USER_PASSWORD_HASH,
     });
 
@@ -56,49 +58,6 @@ export const createMockConversation = async () =>
 
     return mockChat;
   });
-
-const mockNames = [
-  "Alice",
-  "Bob",
-  "Charlie",
-  "David",
-  "Emma",
-  "Frank",
-  "Grace",
-  "Henry",
-  "Ivy",
-  "Jack",
-  "Kate",
-  "Liam",
-  "Mia",
-  "Nora",
-  "Oliver",
-  "Penny",
-  "Quinn",
-  "Ryan",
-  "Sophia",
-  "Tyler",
-  "Alexander",
-  "Benjamin",
-  "Charlotte",
-  "Eleanor",
-  "Frederick",
-  "Isabella",
-  "Jonathan",
-  "Katherine",
-  "Nicholas",
-  "Victoria",
-  "Michael James",
-  "Jennifer Rose",
-  "Christopher Lee",
-  "Sarah Michelle",
-  "Daniel Patrick",
-  "Elizabeth Anne",
-  "William John",
-  "Margaret Mary",
-  "Robert Alexander",
-  "Catherine Louise",
-];
 
 const mockMessages = [
   {

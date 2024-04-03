@@ -3,7 +3,7 @@ import { relations, sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { UserSelect, users } from "./auth";
 import { ChatSelect, chats } from "./chats";
-import { randomId } from "@/lib/random-id";
+import { randomId } from "@/lib/random/random-id";
 
 const MessageStatuses = ["deleted", "delivered", "read"] as const;
 export type MessageStatus = (typeof MessageStatuses)[number];

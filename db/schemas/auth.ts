@@ -1,4 +1,4 @@
-import { randomId } from "@/lib/random-id";
+import { randomId } from "@/lib/random/random-id";
 import { UserStatus } from "@/server/src/socket-types";
 import { getTableColumns, sql } from "drizzle-orm";
 import {
@@ -8,7 +8,7 @@ import {
   text,
 } from "drizzle-orm/sqlite-core";
 
-const UserRoles = ["user", "assistant", "admin"] as const;
+const UserRoles = ["user", "assistant", "admin", "anonymous"] as const;
 export type UserRole = (typeof UserRoles)[number];
 
 const UserStatuses = ["online", "offline"] as const;

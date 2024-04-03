@@ -1,4 +1,4 @@
-import { randomId } from "@/lib/random-id";
+import { randomId } from "@/lib/random/random-id";
 import { relations, sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { ContactUser, users } from "./auth";

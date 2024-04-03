@@ -1,4 +1,4 @@
-export const generateAvatarURL = () =>
+export const randomAvatar = () =>
   "https://avataaars.io/?avatarStyle=Transparent&" +
   Object.entries(avatarStyles)
     .map(
@@ -7,8 +7,8 @@ export const generateAvatarURL = () =>
     )
     .join("&");
 
-export const generateAvatarURLs = (length: number) =>
-  Array.from({ length }).map(generateAvatarURL);
+export const randomAvatars = (length: number) =>
+  Array.from({ length }).map(randomAvatar);
 
 const avatarStyles = {
   topType: [
