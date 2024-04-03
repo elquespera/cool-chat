@@ -26,9 +26,6 @@ jobs:
       - name: Create .env file
         run: echo "${{secrets.ENV_FILE_DEV }}" > .env
 
-      # - name: Next.Js cache
-      #   uses: jongwooo/next-cache@v1
-
       - name: Build project
         run: npm run build --if-present
 
