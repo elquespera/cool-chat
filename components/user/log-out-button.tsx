@@ -1,36 +1,28 @@
 "use client";
 
+import { defaultSettings } from "@/constants";
 import { signOut } from "@/lib/auth/sign-out";
+import { usePendingState } from "@/lib/hooks/use-pending-state";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { IconButton } from "../common/icon-button";
 import { PowerOffIcon } from "../icons/power-off-icon";
 import { useSettings } from "../providers/settings/settings-context";
-import { defaultSettings } from "@/constants";
 
 export function LogOutButton({ className }: PropsWithClassName) {
   const { setColor } = useSettings();
-  const [pending, setPending] = useState(false);
-  const router = useRouter();
 
-  const handleLogOut = async () => {
-    setPending(true);
-    try {
-      await signOut();
-      setColor(defaultSettings.color);
-      router.refresh();
-    } finally {
-      setPending(false);
-    }
-  };
+  const { trigger: handleLogOut, isPending } = usePendingState(async () => {
+    await signOut();
+    setColor(defaultSettings.color);
+  });
 
   return (
     <IconButton
+      type="button"
       className={cn(className)}
       variant="secondary"
       size="sm"
-      pending={pending}
+      pending={isPending}
       reverse
       onClick={handleLogOut}
       icon={<PowerOffIcon />}
