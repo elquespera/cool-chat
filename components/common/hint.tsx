@@ -22,6 +22,6 @@ export const Hint = forwardRef<ElementRef<typeof TooltipContent>, HintProps>(
     ) : (
       children
     );
-  }
+  },
 );
 Hint.displayName = "Hint";

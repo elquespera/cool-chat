@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { FormEventHandler, useState } from "react";
 import { Divider } from "../common/divider";
-import { Hint } from "../common/hint";
 
 import { authProvidersInfo } from "@/constants/auth-providers-info";
 import { formatRedirectURI } from "@/lib/auth/format-redirect-uri";
@@ -24,6 +23,9 @@ import {
 } from "../ui/card";
 import { Input } from "../ui/input";
 import { AnonymousButton } from "./anonymous-button";
+import { AnonymousIcon } from "../icons/anonymous-icon";
+import { signUpAsAnonymous } from "@/lib/auth/sign-up-as-anonymous";
+import { useRouter } from "next/navigation";
 
 type AuthFormProps = {
   type: "signIn" | "signUp";
@@ -38,6 +40,7 @@ export default function AuthForm({
   message,
   email: defaultEmail,
 }: AuthFormProps) {
+  const router = useRouter();
   const [email, setEmail] = useState(defaultEmail ?? "");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -68,18 +71,18 @@ export default function AuthForm({
   };
 
   return (
-    <div className="relative flex grow flex-col items-center justify-center overflow-x-hidden pt-12">
+    <div className="relative flex grow flex-col items-center justify-center overflow-x-hidden px-4 pt-12">
       <Image
         priority
         src={personMale}
         alt="Male Person"
-        className="absolute max-h-72 -translate-x-48 -translate-y-40"
+        className="absolute max-h-72 -translate-y-36 translate-x-[max(-200px,-35vw)]"
       />
 
       <Image
         src={personFemale}
         alt="Female Person"
-        className="absolute max-h-72 translate-x-60 translate-y-20"
+        className="absolute max-h-72 translate-x-[min(45vw,260px)] translate-y-20"
       />
       <Card className="relative max-w-sm bg-card/80">
         <CardHeader>
@@ -165,22 +168,30 @@ export default function AuthForm({
             </IconButton>
           </form>
           <Divider className="my-6">or continue with</Divider>
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center gap-5">
             {authProvidersInfo.map(({ id, icon: Icon }) => (
-              <Hint key={id} className="capitalize" value={id}>
-                <IconButton
-                  variant="outline"
-                  href={formatRedirectURI(id, redirectURI)}
-                  className="text-muted-foreground hover:text-accent-foreground"
-                  aria-label={id}
-                  icon={<Icon className="h-6 w-6" />}
-                />
-              </Hint>
+              <IconButton
+                key={id}
+                variant="outline"
+                toolTip={<span className="capitalize">{id}</span>}
+                toolTipOffset={10}
+                className="h-12 w-12 text-muted-foreground hover:text-primary"
+                aria-label={id}
+                icon={<Icon className="h-7 w-7" />}
+                onClick={() => router.push(formatRedirectURI(id, redirectURI))}
+              />
             ))}
-          </div>
 
-          <Divider className="my-6">try it out as</Divider>
-          <AnonymousButton />
+            <IconButton
+              variant="outline"
+              toolTip="Anonymous User"
+              aria-label="Anonymous user"
+              toolTipOffset={10}
+              className="h-12 w-12 text-muted-foreground hover:text-primary"
+              icon={<AnonymousIcon className="h-7 w-7" />}
+              onClick={() => signUpAsAnonymous()}
+            />
+          </div>
 
           <p className="mt-6 text-sm text-muted-foreground">
             {type === "signIn"
