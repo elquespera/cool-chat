@@ -8,11 +8,12 @@ import type {
 
 import { socketRoutes } from "@/server/src/socket-routes";
 import { User } from "lucia";
-import { PropsWithChildren, useEffect, useMemo } from "react";
+import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { SocketContext } from "./socket-context";
 
-const wsURL = `${process.env.NEXT_PUBLIC_WS_URL}${socketRoutes.connect}`;
+const baseWsURL = `${process.env.NEXT_PUBLIC_WS_URL}${socketRoutes.connect}`;
+const wsDelay = 1000;
 
 type SocketProviderProps = {
   user: User | null;
@@ -24,15 +25,26 @@ export const SocketProvider = ({
   ticket,
   children,
 }: SocketProviderProps) => {
+  const [wsURL, setWsURL] = useState<string | null>(null);
+
+  useEffect(() => {
+    const timer =
+      user && ticket
+        ? setTimeout(
+            () => setWsURL(`${baseWsURL}?userId=${user?.id}&ticket=${ticket}`),
+            wsDelay,
+          )
+        : setTimeout(() => setWsURL(null));
+
+    return () => clearTimeout(timer);
+  }, [user, ticket]);
+
   const { readyState, lastJsonMessage, sendJsonMessage } =
-    useWebSocket<SocketMessageType>(
-      user && ticket ? `${wsURL}?userId=${user?.id}&ticket=${ticket}` : null,
-      {
-        shouldReconnect: () => true,
-        reconnectAttempts: process.env.NODE_ENV === "production" ? 20 : 2,
-        reconnectInterval: 3000,
-      },
-    );
+    useWebSocket<SocketMessageType>(wsURL, {
+      shouldReconnect: () => true,
+      reconnectAttempts: process.env.NODE_ENV === "production" ? 20 : 2,
+      reconnectInterval: 3000,
+    });
 
   useEffect(() => {
     if (!lastJsonMessage || !user) return;

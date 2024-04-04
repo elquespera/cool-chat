@@ -64,7 +64,7 @@ const server = Bun.serve<SocketData>({
       ws.unsubscribe(roomName);
     },
   },
-  port: process.env.PORT || 3000,
+  port: process.env.SERVER_PORT || 3000,
 });
 
 const publishUserStatus = async (userId: string, status: UserStatus) => {
