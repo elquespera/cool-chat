@@ -1,23 +1,12 @@
-type MessageUpdateEvent = CustomEvent<{
-  chatId: string;
-  messageId: string;
-  authorId: string;
-  interlocutorId: string;
-  status: MessageActionType;
-}>;
+type MessageUpdateEvent = CustomEvent<MessageUpdate>;
+type UserStatusChangeEvent = CustomEvent<UserStatusChange>;
 
-type UserStatusChangeEvent = CustomEvent<{
-  userId: string;
-  status: UserStatus;
-}>;
-
-interface CustomEventHandlersMap {
-  chatclick: CustomEvent;
+type CustomEventHandlersMap = {
   messageupdate: MessageUpdateEvent;
   userstatuschange: UserStatusChangeEvent;
-}
+};
 
 type CustomEventPayload<T extends keyof CustomEventHandlersMap> =
-  CustomEventHandlersMap[T] extends CustomEvent<infer T> ? T : never;
+  CustomEventHandlersMap[T] extends CustomEvent<infer R> ? R : never;
 
 interface GlobalEventHandlersEventMap extends CustomEventHandlersMap {}

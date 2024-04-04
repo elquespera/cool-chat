@@ -117,7 +117,7 @@ export function ChatInput() {
             value={message}
             onValueChange={(value) => {
               setMessage(value);
-              updateUserStatus("typing");
+              updateUserStatus("typing", interlocutor.id);
             }}
             className="pb-1 ps-1"
             placeholder="Write a message..."

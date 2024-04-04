@@ -3,7 +3,7 @@ import { createContext, useContext } from "react";
 
 type SocketContextType = {
   isConnected: boolean;
-  updateUserStatus: (status: UserStatus) => void;
+  updateUserStatus: (status: UserStatus, interlocutorId?: string) => void;
   updateMessageStatus: (payload: MessageUpdate) => void;
 };
 

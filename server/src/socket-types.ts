@@ -4,18 +4,18 @@ export type SocketData = {
 };
 
 export type UserStatus = "online" | "offline" | "typing";
-
-export type UserStatusChange = {
-  userId: string;
-  status: UserStatus;
-};
-
 export type MessageActionType =
   | "created"
   | "updated"
   | "delivered"
   | "read"
   | "deleted";
+
+export type UserStatusChange = {
+  userId: string;
+  status: UserStatus;
+  interlocutorId?: string;
+};
 
 export type MessageUpdate = {
   messageId: string;
