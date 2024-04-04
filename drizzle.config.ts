@@ -5,6 +5,6 @@ import { dbConfig as dbCredentials } from "./db/db-config";
 export default {
   schema: "./db/schemas",
   out: "./db/migrations",
-  driver: "libsql",
+  driver: "better-sqlite",
   dbCredentials,
 } satisfies Config;
