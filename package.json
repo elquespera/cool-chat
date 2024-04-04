@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently --names \"NEXTJS,SERVER\" -c \"auto\" \"next dev\" \"cd server && bun --hot ./index.ts\"",
-    "turbo": "concurrently --names \"NEXTJS,SERVER\" -c \"auto\" \"next dev --turbo\" \"cd server && bun --hot ./index.ts\"",
+    "dev": "concurrently --names \"NEXTJS,SERVER\" -c \"auto\" \"next dev\" \"cd server && bun --hot --env-file=../.env ./index.ts\"",
+    "turbo": "concurrently --names \"NEXTJS,SERVER\" -c \"auto\" \"next dev --turbo\" \"cd server && bun --hot --env-file=../.env ./index.ts\"",
     "build": "next build",
     "start": "next start",
     "server": "cd server && bun ./index.ts",

@@ -3,8 +3,8 @@
     "@types/bun": "latest"
   },
   "scripts": {
-    "dev": "bun run --hot ./index.ts",
-    "start": "bun run ./index.ts"
+    "dev": "bun run --env-file=../.env --hot ./index.ts",
+    "start": "bun run --env-file=../.env ./index.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.30.6"
