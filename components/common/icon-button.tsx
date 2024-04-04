@@ -7,6 +7,8 @@ import {
   MouseEventHandler,
   ReactNode,
   forwardRef,
+  useEffect,
+  useState,
   useTransition,
 } from "react";
 import { UrlObject } from "url";
@@ -27,6 +29,8 @@ type IconButtonProps = {
   toolTipOffset?: number;
   navTransition?: boolean;
 } & ComponentPropsWithoutRef<typeof Button>;
+
+const pendingDelay = 200;
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   (
@@ -49,7 +53,8 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
     },
     ref,
   ) => {
-    const [isPending, startTransition] = useTransition();
+    const [isPendingInternal, startTransition] = useTransition();
+    const [isPending, setIsPending] = useState(false);
     const router = useRouter();
     const isExternal = href && !href.toString().startsWith("/");
 
@@ -70,6 +75,16 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       ) : (
         icon
       );
+
+    useEffect(() => {
+      if (!isPendingInternal) {
+        setIsPending(false);
+        return;
+      }
+
+      const timer = setTimeout(() => setIsPending(true), pendingDelay);
+      return () => clearTimeout(timer);
+    }, [isPendingInternal]);
 
     const content = (
       <>
