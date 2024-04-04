@@ -1,22 +1,18 @@
 "use server";
 import { encryptText } from "@/lib/encrypt-text";
-import { randomEmail } from "@/lib/random/random-email";
 import { randomInt } from "@/lib/random/random-int";
+import { randomUser } from "@/lib/random/random-user";
 import { db } from "../db";
 import { ChatSelect } from "../schemas/chats";
 import { messages } from "../schemas/messages";
 import { addChat } from "./chats";
 import { addUser } from "./users";
 import { withAuth } from "./with-auth";
-import { randomUsername } from "@/lib/random/random-username";
-import { randomAvatar } from "@/lib/random/random-avatar";
 
 export const createMockConversation = async () =>
   withAuth<ChatSelect>(async (user) => {
     const mockUserResponse = await addUser({
-      username: randomUsername(),
-      avatarUrl: randomAvatar(),
-      email: randomEmail(),
+      ...randomUser(true),
       hashedPassword: process.env.MOCK_USER_PASSWORD_HASH,
     });
 

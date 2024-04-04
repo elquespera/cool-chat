@@ -23,8 +23,11 @@ export function useChatEvents(
   // Refetch on user status change
   useCustomEvent(
     "userstatuschange",
-    ({ userId, status }) => {
-      if (openChats?.some(({ interlocutor }) => interlocutor.id === userId)) {
+    ({ userId, status, interlocutorId }) => {
+      if (
+        interlocutorId === user?.id &&
+        openChats?.some(({ interlocutor }) => interlocutor.id === userId)
+      ) {
         if (status === "typing") {
           const newTypingList = { ...typingContacts };
           newTypingList[userId] = Date.now();
@@ -42,7 +45,7 @@ export function useChatEvents(
       const newTypingList = { ...typingContacts };
       const now = Date.now();
       Object.entries(newTypingList).forEach(([userId, timestamp]) => {
-        if (now - newTypingList[userId] > typingDelay) {
+        if (now - timestamp > typingDelay) {
           delete newTypingList[userId];
         }
       });

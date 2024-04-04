@@ -27,18 +27,6 @@ export const SocketProvider = ({
 }: SocketProviderProps) => {
   const [wsURL, setWsURL] = useState<string | null>(null);
 
-  useEffect(() => {
-    const timer =
-      user && ticket
-        ? setTimeout(
-            () => setWsURL(`${baseWsURL}?userId=${user?.id}&ticket=${ticket}`),
-            wsDelay,
-          )
-        : setTimeout(() => setWsURL(null));
-
-    return () => clearTimeout(timer);
-  }, [user, ticket]);
-
   const { readyState, lastJsonMessage, sendJsonMessage } =
     useWebSocket<SocketMessageType>(wsURL, {
       shouldReconnect: () => true,
@@ -56,17 +44,30 @@ export const SocketProvider = ({
     } catch {}
   }, [lastJsonMessage, user]);
 
+  useEffect(() => {
+    const timer =
+      user && ticket
+        ? setTimeout(
+            () => setWsURL(`${baseWsURL}?userId=${user?.id}&ticket=${ticket}`),
+            wsDelay,
+          )
+        : setTimeout(() => setWsURL(null));
+
+    return () => clearTimeout(timer);
+  }, [user, ticket]);
+
   const value = useMemo(
     () => ({
       isConnected: readyState === ReadyState.OPEN,
 
-      updateUserStatus: (status: UserStatus) => {
+      updateUserStatus: (status: UserStatus, interlocutorId?: string) => {
         if (!user) return;
         sendJsonMessage({
           userId: user.id,
           type: "userstatuschange",
           payload: {
             userId: user.id,
+            interlocutorId,
             status,
           },
         });
