@@ -157,10 +157,10 @@ export const MessageItem = ({
                 <div className={cn("flex", ownMessage && "justify-end")}>
                   <PhotoView src={attachment}>
                     <Image
-                      width={320}
-                      height={320}
+                      width="0"
+                      height="0"
                       priority
-                      className="h-auto w-auto cursor-pointer rounded-sm"
+                      className="h-auto w-[320px] cursor-pointer rounded-sm"
                       alt="Attachment image"
                       src={attachment}
                       sizes="320px"

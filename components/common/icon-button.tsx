@@ -30,7 +30,7 @@ type IconButtonProps = {
   navTransition?: boolean;
 } & ComponentPropsWithoutRef<typeof Button>;
 
-const pendingDelay = 200;
+const pendingDelay = 250;
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   (
@@ -70,7 +70,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         pendingIcon ? (
           pendingIcon
         ) : (
-          <Spinner className="w-4" />
+          <Spinner className="w-[1em]" />
         )
       ) : (
         icon
