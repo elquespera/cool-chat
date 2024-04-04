@@ -3,7 +3,6 @@
 import { emailMatcher, passwordMatcher, usernameMatcher } from "@/constants";
 import { routes } from "@/constants/routes";
 import { addUserWithoutAuth as addUser } from "@/db/actions/users";
-import { LibsqlError } from "@libsql/client";
 import { Scrypt } from "lucia";
 import { redirect } from "next/navigation";
 import { createSession } from "./session";
@@ -11,25 +10,22 @@ import { createSession } from "./session";
 export async function signUp(
   email: string,
   password: string,
+  repeatPassword: string,
   username: string,
   redirectURI: string = routes.home,
 ): Promise<AuthActionResult> {
-  if (!emailMatcher.test(email))
-    return {
-      error: "Invalid email.",
-    };
+  if (password !== repeatPassword) return { error: "Passwords do not match." };
+
+  if (!emailMatcher.test(email)) return { error: "Invalid email." };
 
   if (!usernameMatcher.test(username))
-    return {
-      error: "Username must be at least 4 caracters long.",
-    };
+    return { error: "Username must be at least 4 caracters long." };
 
-  if (!passwordMatcher.test(password)) {
+  if (!passwordMatcher.test(password))
     return {
       error:
         "Password must be at least 8 characters including a lowercase letter, an uppercase letter, and a number.",
     };
-  }
 
   const hashedPassword = await new Scrypt().hash(password);
 
@@ -38,12 +34,6 @@ export async function signUp(
     if (!user) throw new Error("Can't add user.");
     await createSession(user.id);
   } catch (e) {
-    if ((e as LibsqlError).code === "SQLITE_CONSTRAINT_UNIQUE") {
-      return {
-        error:
-          "Email already in use. If you already have an account, please sign in using this email.",
-      };
-    }
     console.error(e);
     return {
       error:

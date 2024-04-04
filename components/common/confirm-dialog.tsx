@@ -1,5 +1,6 @@
 "use client";
 
+import { usePendingState } from "@/lib/hooks/use-pending-state";
 import { PropsWithChildren, ReactNode, useState } from "react";
 import { Button } from "../ui/button";
 import {
@@ -29,25 +30,19 @@ export default function ConfirmDialog({
   onOpenChange,
 }: ConfirmDialogProps) {
   const [open, setOpen] = useState(false);
-  const [pending, setPending] = useState(false);
 
   const handleOpenChange = (open: boolean) => {
-    if (pending) return;
+    if (isPending) return;
     setOpen(open);
     if (onOpenChange) onOpenChange(open);
   };
 
-  const handleConfirmClick = async () => {
-    setPending(true);
-    try {
+  const { trigger: handleConfirmClick, isPending } = usePendingState(
+    async () => {
       const result = onSuccess ? await onSuccess() : true;
-      if (result !== false) {
-        setOpen(false);
-      }
-    } finally {
-      setPending(false);
-    }
-  };
+      if (result !== false) setOpen(false);
+    },
+  );
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -59,15 +54,15 @@ export default function ConfirmDialog({
         </DialogHeader>
         <DialogFooter>
           <Button
-            disabled={pending}
+            disabled={isPending}
             onClick={() => setOpen(false)}
             variant="outline"
           >
             Cancel
           </Button>
           <IconButton
-            disabled={pending}
-            icon={pending && <Spinner className="mr-auto text-lg" />}
+            disabled={isPending}
+            icon={isPending && <Spinner className="mr-auto text-lg" />}
             onClick={handleConfirmClick}
           >
             Continue
