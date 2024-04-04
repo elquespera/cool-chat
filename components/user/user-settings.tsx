@@ -5,12 +5,15 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { ThemeBackground } from "@/constants/theme-background";
 import { ThemeColor } from "@/constants/theme-color";
 import { createMockConversation } from "@/db/actions/mock";
 import { updateSettings } from "@/db/actions/settings";
 import { updateUser } from "@/db/actions/users";
+import { usePendingFormState } from "@/lib/hooks/use-pending-state";
+import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
 import { useRouter } from "next/navigation";
-import { FormEventHandler, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IconButton } from "../common/icon-button";
 import { ChatConversationIcon } from "../icons/chat-conversation-icon";
 import { ChevronUpIcon } from "../icons/chevron-up-icon";
@@ -19,14 +22,12 @@ import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSettings } from "../providers/settings/settings-context";
 import { AvatarPicker } from "./avatar-picker";
+import { BackgroundPicker } from "./background-picker";
 import { ColorPicker } from "./color-picker";
 import { LogOutButton } from "./log-out-button";
+import SoundSwitch from "./sound-switch";
 import ThemeSwitch from "./theme-switch";
 import { UserInfo } from "./user-info";
-import SoundSwitch from "./sound-switch";
-import { useSoundEffect } from "@/lib/hooks/use-sound-effect";
-import { BackgroundPicker } from "./background-picker";
-import { ThemeBackground } from "@/constants/theme-background";
 
 export function UserSettings() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export function UserSettings() {
   const { refetchOpenChats } = useChat();
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
-  const [pending, setPending] = useState(false);
+
   const [savedColor, setSavedColor] = useState<ThemeColor>(color);
   const [savedBackground, setSavedBackground] =
     useState<ThemeBackground>(background);
@@ -46,32 +47,23 @@ export function UserSettings() {
   const isTouched =
     !!avatarUrl || savedColor !== color || savedBackground !== background;
 
-  const handleSubmit: FormEventHandler = async (event) => {
-    event.preventDefault();
+  const { trigger: handleSubmit, isPending } = usePendingFormState(async () => {
     if (!user) return;
-    setPending(true);
-    try {
-      if (color !== savedColor || background !== savedBackground) {
-        const result = await updateSettings({ color, background });
-        setSavedColor(result.ok ? result.data.color : savedColor);
-        setSavedBackground(
-          result.ok ? result.data.background : savedBackground,
-        );
-      }
-
-      if (avatarUrl) {
-        const result = await updateUser(user.id, { avatarUrl });
-        if (result) {
-          refetchMessages();
-          router.refresh();
-        }
-      }
-
-      setOpen(false);
-    } finally {
-      setPending(false);
+    if (color !== savedColor || background !== savedBackground) {
+      const result = await updateSettings({ color, background });
+      setSavedColor(result.ok ? result.data.color : savedColor);
+      setSavedBackground(result.ok ? result.data.background : savedBackground);
     }
-  };
+
+    if (avatarUrl) {
+      const result = await updateUser(user.id, { avatarUrl });
+      if (result) {
+        refetchMessages();
+        router.refresh();
+      }
+    }
+    setOpen(false);
+  });
 
   const handleMockConversationClick = async () => {
     const result = await createMockConversation();
@@ -148,8 +140,8 @@ export function UserSettings() {
               <IconButton
                 type="submit"
                 size="sm"
-                disabled={pending}
-                pending={pending}
+                disabled={isPending}
+                pending={isPending}
               >
                 Save
               </IconButton>

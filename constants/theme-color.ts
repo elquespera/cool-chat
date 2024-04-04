@@ -2,12 +2,11 @@
 
 export const themeColors = [
   "picton-blue",
-  "blue",
-  "orange",
-  "green",
-  "red",
-  "violet",
   "monochrome",
+  "pigment-green",
+  "blue-violet",
+  "pumpkin",
+  "rose",
 ] as const;
 
 export type ThemeColor = (typeof themeColors)[number];
@@ -17,10 +16,9 @@ export const themeColorInfo: Record<
   { name: string; color: string }
 > = {
   "picton-blue": { name: "Picton Blue", color: "hsl(200,68%,51%)" },
-  blue: { name: "Blue", color: "hsl(221.2 83.2% 53.3%)" },
-  orange: { name: "Orange", color: "hsl(24.6 95% 53.1%)" },
-  green: { name: "Green", color: "hsl(142.1 76.2% 36.3%)" },
-  red: { name: "Red", color: "hsl(346.8 77.2% 49.8%)" },
-  violet: { name: "Violet", color: "hsl(262.1 83.3% 57.8%)" },
   monochrome: { name: "Monochrome", color: "hsl(240 5.9% 10%)" },
+  "pigment-green": { name: "Pigment Green", color: "hsl(142.1 76.2% 36.3%)" },
+  "blue-violet": { name: "Blue Violet", color: "hsl(262.1 83.3% 57.8%)" }, //#7C3AED
+  rose: { name: "Rose", color: "hsl(346.8 77.2% 49.8%)" },
+  pumpkin: { name: "Pumpkin", color: "hsl(24.6 95% 53.1%)" },
 } as const;

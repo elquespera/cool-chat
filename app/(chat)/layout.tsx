@@ -5,7 +5,10 @@ import { ContactSearchInput } from "@/components/contact/contact-search-input";
 import { ChatProviders } from "@/components/providers/chat-providers";
 import { SearchContactsProvider } from "@/components/providers/search-contacts/search-contacts-provider";
 import { UserSettings } from "@/components/user/user-settings";
+import { routes } from "@/constants/routes";
+import { getAuth } from "@/lib/auth/get-auth";
 import dynamic from "next/dynamic";
+import { redirect } from "next/navigation";
 import { PropsWithChildren } from "react";
 
 const ChatWrapper = dynamic(
@@ -16,7 +19,10 @@ const ChatWrapper = dynamic(
   { ssr: false, loading: () => <Loading /> },
 );
 
-export default function ChatLayout({ children }: PropsWithChildren) {
+export default async function ChatLayout({ children }: PropsWithChildren) {
+  const { user } = await getAuth();
+  if (!user) redirect(routes.welcome);
+
   return (
     <ChatProviders>
       <ChatWrapper

@@ -1,11 +1,12 @@
+import { updateMessage } from "@/db/actions/messages";
 import { MessageWithAuthor } from "@/db/schemas/messages";
-import { MultiTextArea } from "../common/multi-textarea";
-import { FormEventHandler, useRef, useState } from "react";
+import { usePendingFormState } from "@/lib/hooks/use-pending-state";
+import { useRef, useState } from "react";
 import { IconButton } from "../common/icon-button";
+import { MultiTextArea } from "../common/multi-textarea";
+import { useChat } from "../providers/chat/chat-context";
 import { useMessages } from "../providers/message/message-context";
 import { useSocket } from "../providers/socket/socket-context";
-import { useChat } from "../providers/chat/chat-context";
-import { updateMessage } from "@/db/actions/messages";
 
 type MessageEditFormProps = {
   message: MessageWithAuthor;
@@ -15,41 +16,34 @@ export function MessageEditForm({
   message: { content, id },
 }: MessageEditFormProps) {
   const [value, setValue] = useState(content);
-  const [pending, setPending] = useState(false);
   const { setEditingId, refetchMessages } = useMessages();
   const { updateMessageStatus } = useSocket();
   const { interlocutor } = useChat();
   const formRef = useRef<HTMLFormElement>(null);
 
-  const isValid = interlocutor && !pending && value && value !== content;
+  const isValid = interlocutor && value && value !== content;
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
-    event.preventDefault();
+  const { trigger: handleSubmit, isPending } = usePendingFormState(async () => {
     if (!isValid) return;
 
-    setPending(true);
-    try {
-      const result = await updateMessage(id, {
-        content: value,
-        updatedAt: new Date(),
+    const result = await updateMessage(id, {
+      content: value,
+      updatedAt: new Date(),
+    });
+
+    if (result.ok) {
+      updateMessageStatus({
+        chatId: result.data.chatId,
+        messageId: result.data.id,
+        authorId: result.data.authorId,
+        interlocutorId: interlocutor.id,
+        status: "updated",
       });
 
-      if (result.ok) {
-        updateMessageStatus({
-          chatId: result.data.chatId,
-          messageId: result.data.id,
-          authorId: result.data.authorId,
-          interlocutorId: interlocutor.id,
-          status: "updated",
-        });
-
-        await refetchMessages();
-        setEditingId(undefined);
-      }
-    } finally {
-      setPending(false);
+      await refetchMessages();
+      setEditingId(undefined);
     }
-  };
+  });
 
   const handleCancel = () => setEditingId(undefined);
 
@@ -73,8 +67,8 @@ export function MessageEditForm({
           type="submit"
           size="sm"
           className="h-7"
-          pending={pending}
-          disabled={!isValid}
+          pending={isPending}
+          disabled={!isValid || isPending}
         >
           OK
         </IconButton>

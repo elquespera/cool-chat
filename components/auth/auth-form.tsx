@@ -5,14 +5,18 @@ import personMale from "@/assets/images/person-male.svg";
 import { signUp } from "@/lib/auth/sign-up";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { FormEventHandler, useState } from "react";
+import { useState } from "react";
 import { Divider } from "../common/divider";
 
 import { authProvidersInfo } from "@/constants/auth-providers-info";
 import { formatRedirectURI } from "@/lib/auth/format-redirect-uri";
 import { signIn } from "@/lib/auth/sign-in";
+import { signUpAsAnonymous } from "@/lib/auth/sign-up-as-anonymous";
+import { usePendingFormState } from "@/lib/hooks/use-pending-state";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { IconButton } from "../common/icon-button";
+import { AnonymousIcon } from "../icons/anonymous-icon";
 import { ExclamationTriangleIcon } from "../icons/exclamation-triangle-icon";
 import {
   Card,
@@ -22,10 +26,6 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Input } from "../ui/input";
-import { AnonymousButton } from "./anonymous-button";
-import { AnonymousIcon } from "../icons/anonymous-icon";
-import { signUpAsAnonymous } from "@/lib/auth/sign-up-as-anonymous";
-import { useRouter } from "next/navigation";
 
 type AuthFormProps = {
   type: "signIn" | "signUp";
@@ -45,30 +45,24 @@ export default function AuthForm({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string>();
 
-  const handleSignIn = async () => signIn(email, password, redirectURI);
-
-  const handleSignUp = async () => {
-    if (password !== repeatPassword)
-      return { error: "Passwords do not match." };
-
-    return signUp(email.trim(), password.trim(), username.trim(), redirectURI);
-  };
-
-  const handleSubmit: FormEventHandler = async (event) => {
-    event.preventDefault();
-    setPending(true);
-    try {
-      const result =
-        type === "signIn" ? await handleSignIn() : await handleSignUp();
-
-      setError(result?.error);
-    } finally {
-      setPending(false);
-    }
-  };
+  const {
+    trigger: handleSubmit,
+    isPending,
+    error,
+  } = usePendingFormState(async () => {
+    const result =
+      type === "signIn"
+        ? await signIn(email, password, redirectURI)
+        : await signUp(
+            email.trim(),
+            password,
+            repeatPassword,
+            username.trim(),
+            redirectURI,
+          );
+    if (result?.error) throw new Error(result.error);
+  });
 
   return (
     <div className="relative flex grow flex-col items-center justify-center overflow-x-hidden px-4 pt-12">
@@ -76,7 +70,7 @@ export default function AuthForm({
         priority
         src={personMale}
         alt="Male Person"
-        className="absolute max-h-72 -translate-y-36 translate-x-[max(-200px,-35vw)]"
+        className="absolute max-h-72 -translate-y-3 translate-x-[max(-200px,-35vw)]"
       />
 
       <Image
@@ -122,6 +116,7 @@ export default function AuthForm({
                 {!!email.length && (
                   <Input
                     name="username"
+                    required
                     value={username}
                     onChange={(event) => setUsername(event.target.value)}
                     placeholder={
@@ -162,8 +157,12 @@ export default function AuthForm({
                 )}
               </div>
             )}
-            {error && <p className="px-2 text-sm text-destructive">{error}</p>}
-            <IconButton type="submit" className="mt-4" pending={pending}>
+            {error instanceof Error && (
+              <p className="px-2 text-sm text-destructive">
+                {String(error.message)}
+              </p>
+            )}
+            <IconButton type="submit" className="mt-4" pending={isPending}>
               {type === "signIn" ? "Sign In" : "Sign Up with Email"}
             </IconButton>
           </form>

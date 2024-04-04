@@ -1,8 +1,6 @@
-type AuthActionResult =
-  | {
-      error?: string;
-    }
-  | undefined;
+type AuthActionResult = {
+  error: string;
+} | void;
 
 type ProviderUser = {
   id: string;

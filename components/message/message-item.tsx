@@ -117,17 +117,15 @@ export const MessageItem = ({
             email={author.email}
             oneLine
           />
-          <Timestamp
-            time={createdAt}
-            style={isEdited ? "short" : "long"}
-            className="mx-2 text-xs tracking-tight text-muted-foreground @lg:text-sm"
-          />
-          {isEdited && (
-            <>
-              {", edited "}
-              <Timestamp time={updatedAt} />
-            </>
-          )}
+          <span className="mx-2 text-xs tracking-tight text-muted-foreground @lg:text-sm">
+            <Timestamp time={createdAt} style={isEdited ? "short" : "long"} />
+            {isEdited && (
+              <>
+                {", edited "}
+                <Timestamp time={updatedAt} />
+              </>
+            )}
+          </span>
         </div>
       )}
 
@@ -138,8 +136,8 @@ export const MessageItem = ({
           attachment && "flex-col",
           id === editingId && "w-[calc(100%-1.5em)] lg:w-[calc(100%-2em)]",
           ownMessage
-            ? "border-message-own-border mr-[1.5rem] text-message-own-foreground after:bg-message-own lg:mr-[2rem]"
-            : "border-message-border ml-[1.5rem] text-message-foreground after:bg-message lg:ml-[2rem]",
+            ? "mr-[1.5rem] border-message-own-border text-message-own-foreground after:bg-message-own lg:mr-[2rem]"
+            : "ml-[1.5rem] border-message-border text-message-foreground after:bg-message lg:ml-[2rem]",
           status === "deleted" && "opacity-50",
         )}
         style={{ borderRadius: messageBorderRadii[type][Number(ownMessage)] }}
@@ -159,10 +157,10 @@ export const MessageItem = ({
                 <div className={cn("flex", ownMessage && "justify-end")}>
                   <PhotoView src={attachment}>
                     <Image
-                      width={320}
-                      height={320}
+                      width="0"
+                      height="0"
                       priority
-                      className="h-auto w-auto cursor-pointer rounded-sm"
+                      className="h-auto w-[320px] cursor-pointer rounded-sm"
                       alt="Attachment image"
                       src={attachment}
                       sizes="320px"

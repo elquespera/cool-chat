@@ -13,14 +13,14 @@ export async function signIn(
 ): Promise<AuthActionResult> {
   const user = await getUserByEmail(email);
   if (!user || !user.hashedPassword)
-    return { error: "Incorrect username or password" };
+    return { error: "Incorrect email or password" };
 
   const isPasswordValid = await new Scrypt().verify(
     user.hashedPassword,
     password,
   );
 
-  if (!isPasswordValid) return { error: "Incorrect username or password" };
+  if (!isPasswordValid) return { error: "Incorrect email or password" };
 
   await createSession(user.id);
 
