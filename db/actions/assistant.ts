@@ -10,7 +10,7 @@ export const getAssistantUsers = async () =>
       Object.values(assistantInfo).map(async ({ id, username, avatarUrl }) => {
         const result = await getUserById(id);
         if (result.ok) return result.data;
-        const user: ContactUser = await db
+        const user: ContactUser = db
           .insert(users)
           .values({ id, username, avatarUrl, role: "assistant" })
           .returning(contactUserColumns)
@@ -22,8 +22,8 @@ export const getAssistantUsers = async () =>
     return {
       tinydolphin: assistants[0],
       tinyllama: assistants[1],
-      "gemma:2b": assistants[2],
-      qwen: assistants[3],
-      "knoopx/llava-phi-2:3b-q8_0": assistants[4],
+      phi3: assistants[2],
+      "gemma:2b": assistants[3],
+      qwen: assistants[4],
     };
   });
