@@ -66,6 +66,8 @@ export const POST = async (request: Request) => {
     body: JSON.stringify({ model, messages, stream: true }),
   });
 
+  console.log(response);
+
   if (!response.body)
     return new Response("No response from Ollama", { status: 500 });
 

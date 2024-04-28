@@ -3,14 +3,14 @@
 export const assistants = [
   "tinydolphin",
   "tinyllama",
+  "phi3",
   "gemma:2b",
   "qwen",
-  "knoopx/llava-phi-2:3b-q8_0",
 ] as const;
 
 export type AssistantType = (typeof assistants)[number];
 
-export const defaultAssistantType = "gemma:2b";
+export const defaultAssistantType = "phi3";
 
 export const assistantInfo: Record<
   AssistantType,
@@ -38,6 +38,14 @@ export const assistantInfo: Record<
     avatarUrl: "/assistants/tinyllama.jpg",
     url: "https://github.com/jzhang38/TinyLlama",
   },
+  phi3: {
+    id: "phi3",
+    username: "Phi-3 Mini",
+    description:
+      "Phi-3 Mini is a lightweight open model trained with the datasets that includes both synthetic data and the filtered publicly available websites data with a focus on high-quality and reasoning dense properties.",
+    avatarUrl: "/assistants/phi3.webp",
+    url: "https://azure.microsoft.com/en-us/blog/introducing-phi-3-redefining-whats-possible-with-slms/",
+  },
   "gemma:2b": {
     id: "gemma:2b",
     username: "Gemma",
@@ -53,13 +61,5 @@ export const assistantInfo: Record<
       "Qwen is a series of transformer-based large language models by Alibaba Cloud, pre-trained on a large volume of data, including web texts, books, code, etc.",
     avatarUrl: "/assistants/qwen.webp",
     url: "https://github.com/QwenLM/Qwen",
-  },
-  "knoopx/llava-phi-2:3b-q8_0": {
-    id: "knoopx/llava-phi-2:3b-q8_0",
-    username: "Llava Phi 2",
-    description:
-      "LLaVA is an open-source chatbot trained by fine-tuning Phi-2 on GPT-generated multimodal instruction-following data. It is an auto-regressive language model, based on the transformer architecture.",
-    avatarUrl: "/assistants/llava.webp",
-    url: "https://huggingface.co/kejcao/llava-phi-2-GGUF",
   },
 } as const;
