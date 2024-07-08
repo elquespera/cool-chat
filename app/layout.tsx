@@ -1,11 +1,10 @@
 import { CommonProviders } from "@/components/providers/common-providers";
-import { cn } from "@/lib/utils";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "@/styles/globals.css";
 import { defaultSettings } from "@/constants";
-
-const inter = Inter({ subsets: ["latin"] });
+import { cn } from "@/lib/utils";
+import "@/styles/globals.css";
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "CoolChat",
@@ -18,8 +17,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={defaultSettings.color}>
-      <body className={cn("flex min-h-[100dvh] flex-col", inter.className)}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn(
+        defaultSettings.color,
+        GeistSans.variable,
+        GeistMono.variable,
+      )}
+    >
+      <body className="flex min-h-[100dvh] flex-col">
         <CommonProviders>{children}</CommonProviders>
       </body>
     </html>
