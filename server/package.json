@@ -7,6 +7,6 @@
     "start": "bun run --env-file=../.env ./index.ts"
   },
   "dependencies": {
-    "drizzle-orm": "^0.30.6"
+    "drizzle-orm": "^0.31.4"
   }
 }

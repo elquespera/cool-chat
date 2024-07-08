@@ -4,6 +4,9 @@ on:
   push:
     branches: ["develop"]
 
+  # Allow to trigger the workflow manually
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ["self-hosted", "dev"]
