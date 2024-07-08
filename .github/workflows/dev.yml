@@ -35,8 +35,8 @@ jobs:
       - name: SERVER - Install dependencies
         run: cd server && bun i
 
-      # - name: Restart SERVER process with pm2
-      #   run: pm2 reload cool-chat-dev-server
+      - name: Restart SERVER process with pm2
+        run: pm2 reload cool-chat-dev-server
 
-      # - name: Restart process with pm2
-      #   run: pm2 reload cool-chat-dev
+      - name: Restart process with pm2
+        run: pm2 reload cool-chat-dev
